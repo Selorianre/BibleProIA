@@ -186,6 +186,30 @@
 
 
     /* =========================
+       MESSAGE UTILISATEUR
+    ========================= */
+
+    .user-message {
+        max-width: 850px;
+        margin: 20px auto;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .user-message-content {
+        max-width: 70%;
+        padding: 13px 17px;
+        border-radius: 16px;
+        background: #202123;
+        color: white;
+        line-height: 1.5;
+        font-size: 15px;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+
+
+    /* =========================
        ANSWER
     ========================= */
 
@@ -198,6 +222,7 @@
         line-height: 1.7;
         white-space: pre-wrap;
         font-size: 15px;
+        overflow-wrap: anywhere;
     }
 
     .answer-header {
@@ -218,6 +243,7 @@
         align-items: center;
         justify-content: center;
         font-size: 15px;
+        flex-shrink: 0;
     }
 
 
@@ -261,6 +287,7 @@
     }
 
     @keyframes thinkingDots {
+
         0%, 60%, 100% {
             opacity: 0.2;
         }
@@ -268,6 +295,7 @@
         30% {
             opacity: 1;
         }
+
     }
 
 
@@ -332,6 +360,7 @@
     .send-button:disabled {
         opacity: 0.6;
         cursor: wait;
+        transform: none;
     }
 
     .disclaimer {
@@ -375,6 +404,26 @@
 
         .welcome h1 {
             font-size: 25px;
+        }
+
+        .user-message {
+            padding: 0 5px;
+        }
+
+        .user-message-content {
+            max-width: 85%;
+        }
+
+        .answer {
+            margin-left: 5px;
+            margin-right: 5px;
+            padding: 20px;
+        }
+
+        .thinking {
+            margin-left: 5px;
+            margin-right: 5px;
+            padding: 20px;
         }
 
     }
@@ -466,11 +515,10 @@
 
 <!-- CHAT -->
 
-<section class="chat">
+<section class="chat" id="chat">
 
 
     {% if not reponse %}
-
 
     <div class="welcome">
 
@@ -478,11 +526,9 @@
             ✝
         </div>
 
-
         <h1>
             Bienvenue sur BibleProIA
         </h1>
-
 
         <p>
             Pose une question sur la Bible,
@@ -494,9 +540,7 @@
 
     </div>
 
-
     {% else %}
-
 
     <div class="answer">
 
@@ -510,16 +554,14 @@
 
         </div>
 
-
         {{ reponse }}
 
     </div>
 
-
     {% endif %}
 
 
-    <!-- INDICATEUR D'ACTIVITÉ -->
+    <!-- INDICATEUR -->
 
     <div
         class="thinking"
@@ -538,11 +580,13 @@
             </span>
 
             <span class="thinking-text">
+
                 réfléchit<span class="thinking-dots">
                     <span>.</span>
                     <span>.</span>
                     <span>.</span>
                 </span>
+
             </span>
 
         </div>
@@ -558,7 +602,10 @@
 
 <div class="input-container">
 
-    <form method="POST" id="question-form">
+    <form
+        method="POST"
+        id="question-form"
+    >
 
         <div class="input-wrapper">
 
@@ -570,7 +617,6 @@
                 autocomplete="off"
                 required
             >
-
 
             <button
                 type="submit"
@@ -604,21 +650,198 @@
     const thinking = document.getElementById("thinking");
     const sendButton = document.getElementById("send-button");
     const input = document.getElementById("question-input");
+    const chat = document.getElementById("chat");
 
-    form.addEventListener("submit", function() {
 
-        if (!input.value.trim()) {
+    form.addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const question = input.value.trim();
+
+        if (!question) {
             return;
         }
 
-        // Affiche immédiatement l'indicateur
+
+        /* =========================
+           RETIRE L'ACCUEIL
+        ========================= */
+
+        const welcome = document.querySelector(".welcome");
+
+        if (welcome) {
+            welcome.remove();
+        }
+
+
+        /* =========================
+           MESSAGE UTILISATEUR
+        ========================= */
+
+        const userMessage = document.createElement("div");
+
+        userMessage.className = "user-message";
+
+        const userContent = document.createElement("div");
+
+        userContent.className = "user-message-content";
+
+        userContent.textContent = question;
+
+        userMessage.appendChild(userContent);
+
+        chat.appendChild(userMessage);
+
+
+        /* =========================
+           NETTOIE LE CHAMP
+        ========================= */
+
+        input.value = "";
+
+
+        /* =========================
+           AFFICHAGE INDICATEUR
+        ========================= */
+
         thinking.style.display = "block";
 
-        // Désactive le bouton pour éviter plusieurs envois
+        chat.scrollTop = chat.scrollHeight;
+
+
+        /* =========================
+           BLOQUE LE BOUTON
+        ========================= */
+
         sendButton.disabled = true;
 
-        // Change légèrement le bouton pendant le chargement
         sendButton.innerHTML = "…";
+
+
+        try {
+
+            const formData = new FormData();
+
+            formData.append("question", question);
+
+
+            /* =========================
+               ENVOI À FLASK
+            ========================= */
+
+            const response = await fetch("/", {
+                method: "POST",
+                body: formData
+            });
+
+
+            const html = await response.text();
+
+
+            /* =========================
+               LECTURE DE LA RÉPONSE
+            ========================= */
+
+            const parser = new DOMParser();
+
+            const responseDocument =
+                parser.parseFromString(html, "text/html");
+
+
+            const answer =
+                responseDocument.querySelector(".answer");
+
+
+            /* =========================
+               CACHE L'INDICATEUR
+            ========================= */
+
+            thinking.style.display = "none";
+
+
+            if (answer) {
+
+                const newAnswer =
+                    answer.cloneNode(true);
+
+                chat.appendChild(newAnswer);
+
+            } else {
+
+                const errorMessage =
+                    document.createElement("div");
+
+                errorMessage.className = "answer";
+
+                errorMessage.innerHTML = `
+
+                    <div class="answer-header">
+
+                        <div class="ai-icon">
+                            ✝
+                        </div>
+
+                        BibleProIA
+
+                    </div>
+
+                    Une erreur est survenue
+                    lors de la génération de la réponse.
+
+                `;
+
+                chat.appendChild(errorMessage);
+
+            }
+
+        } catch (error) {
+
+            thinking.style.display = "none";
+
+
+            const errorMessage =
+                document.createElement("div");
+
+            errorMessage.className = "answer";
+
+            errorMessage.innerHTML = `
+
+                <div class="answer-header">
+
+                    <div class="ai-icon">
+                        ✝
+                    </div>
+
+                    BibleProIA
+
+                </div>
+
+                Impossible de contacter BibleProIA.
+
+            `;
+
+            chat.appendChild(errorMessage);
+
+        }
+
+
+        /* =========================
+           RÉACTIVE LE BOUTON
+        ========================= */
+
+        sendButton.disabled = false;
+
+        sendButton.innerHTML = "↑";
+
+        input.focus();
+
+
+        /* =========================
+           DESCEND EN BAS
+        ========================= */
+
+        chat.scrollTop = chat.scrollHeight;
 
     });
 
