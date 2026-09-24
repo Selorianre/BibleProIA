@@ -1,1285 +1,1179 @@
 <!DOCTYPE html>
+
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BibleProIA</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+```
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<style>
+    * {
+        box-sizing: border-box;
+    }
 
-        html,
-        body {
-            margin: 0;
-            width: 100%;
-            height: 100%;
-            font-family: Arial, sans-serif;
-            background: #0f1117;
-            color: #ffffff;
-        }
+    html, body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        font-family: Arial, sans-serif;
+        background: #0f1117;
+        color: #fff;
+    }
 
-        body {
-            overflow: hidden;
-        }
+    body {
+        overflow: hidden;
+    }
 
-        button,
-        textarea,
-        input {
-            font-family: inherit;
-        }
+    button,
+    textarea,
+    input {
+        font-family: inherit;
+    }
 
-        .app {
-            display: flex;
-            width: 100%;
-            height: 100vh;
-        }
+    .app {
+        display: flex;
+        width: 100%;
+        height: 100vh;
+    }
 
-        /* =========================
-           SIDEBAR
-        ========================= */
+    /* SIDEBAR */
 
+    .sidebar {
+        width: 260px;
+        height: 100vh;
+        background: #171a21;
+        border-right: 1px solid #292d36;
+        display: flex;
+        flex-direction: column;
+        padding: 18px;
+        flex-shrink: 0;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 21px;
+        font-weight: bold;
+        margin-bottom: 22px;
+    }
+
+    .logo-icon,
+    .welcome-icon,
+    .avatar {
+        background: #fff;
+        color: #111;
+    }
+
+    .logo-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .new-chat {
+        width: 100%;
+        border: none;
+        background: #242934;
+        color: #fff;
+        padding: 12px;
+        border-radius: 9px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-bottom: 22px;
+    }
+
+    .new-chat:hover {
+        background: #303642;
+    }
+
+    .history-title {
+        color: #9da3ae;
+        font-size: 12px;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+    }
+
+    .history {
+        flex: 1;
+        overflow-y: auto;
+        min-height: 0;
+    }
+
+    .history-empty {
+        color: #777d88;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .conversation {
+        padding: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        color: #d9dce2;
+        font-size: 14px;
+        margin-bottom: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .conversation:hover {
+        background: #242934;
+    }
+
+    .sidebar-bottom {
+        border-top: 1px solid #292d36;
+        padding-top: 12px;
+    }
+
+    .sidebar-button {
+        width: 100%;
+        border: none;
+        background: transparent;
+        color: #fff;
+        text-align: left;
+        padding: 11px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .sidebar-button:hover {
+        background: #242934;
+    }
+
+    .account-connected {
+        display: none;
+    }
+
+    .account-connected.active {
+        display: block;
+    }
+
+    .account-email {
+        font-size: 12px;
+        color: #9da3ae;
+        margin-top: 3px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* MAIN */
+
+    .main {
+        flex: 1;
+        min-width: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .topbar {
+        height: 60px;
+        min-height: 60px;
+        border-bottom: 1px solid #292d36;
+        display: flex;
+        align-items: center;
+        padding: 0 22px;
+        font-weight: bold;
+    }
+
+    .chat {
+        flex: 1;
+        overflow-y: auto;
+        padding: 30px 20px 140px;
+    }
+
+    /* WELCOME */
+
+    .welcome {
+        max-width: 760px;
+        margin: 80px auto;
+        text-align: center;
+    }
+
+    .welcome-icon {
+        width: 64px;
+        height: 64px;
+        margin: auto auto 20px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 27px;
+        font-weight: bold;
+    }
+
+    .welcome h1 {
+        margin-bottom: 10px;
+    }
+
+    .welcome p {
+        color: #9da3ae;
+        line-height: 1.5;
+    }
+
+    /* MESSAGES */
+
+    .message {
+        max-width: 850px;
+        margin: 0 auto 24px;
+        display: flex;
+    }
+
+    .message.user {
+        justify-content: flex-end;
+    }
+
+    .message.ai {
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .avatar {
+        width: 32px;
+        min-width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .user-bubble {
+        max-width: 75%;
+        background: #292e39;
+        padding: 11px 15px;
+        border-radius: 15px;
+        line-height: 1.5;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+
+    .ai-text {
+        max-width: 75%;
+        line-height: 1.65;
+        white-space: pre-wrap;
+        color: #e5e7eb;
+        word-wrap: break-word;
+    }
+
+    /* THINKING */
+
+    .thinking {
+        color: #9da3ae;
+        font-size: 14px;
+        padding-top: 7px;
+    }
+
+    .dots::after {
+        content: "";
+        animation: dots 1.5s infinite;
+    }
+
+    @keyframes dots {
+        0% { content: ""; }
+        25% { content: "."; }
+        50% { content: ".."; }
+        75% { content: "..."; }
+        100% { content: ""; }
+    }
+
+    /* INPUT */
+
+    .input-area {
+        position: fixed;
+        bottom: 0;
+        left: 260px;
+        right: 0;
+        padding: 18px 20px 22px;
+        background: linear-gradient(transparent, #0f1117 25%);
+        z-index: 20;
+    }
+
+    .input-wrapper {
+        max-width: 850px;
+        margin: auto;
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        background: #1b1f27;
+        border: 1px solid #303540;
+        border-radius: 15px;
+        padding: 8px;
+    }
+
+    textarea {
+        flex: 1;
+        resize: none;
+        border: none;
+        outline: none;
+        background: transparent;
+        color: #fff;
+        font-size: 15px;
+        min-height: 42px;
+        max-height: 180px;
+        padding: 10px;
+        line-height: 1.5;
+    }
+
+    textarea::placeholder {
+        color: #777d88;
+    }
+
+    .send-button {
+        width: 42px;
+        height: 42px;
+        border: none;
+        border-radius: 11px;
+        background: #fff;
+        color: #111;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: bold;
+        flex-shrink: 0;
+    }
+
+    .send-button:disabled {
+        opacity: .4;
+        cursor: default;
+    }
+
+    /* MODALES */
+
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, .72);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .modal-overlay.active {
+        display: flex;
+    }
+
+    .modal {
+        width: 100%;
+        max-width: 400px;
+        background: #191c23;
+        border: 1px solid #303540;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, .4);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .modal-header h2 {
+        margin: 0;
+    }
+
+    .close-modal {
+        border: none;
+        background: transparent;
+        color: #aaa;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    .modal input {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 12px;
+        border-radius: 8px;
+        border: 1px solid #363b46;
+        background: #101218;
+        color: #fff;
+        outline: none;
+    }
+
+    .modal-primary {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background: #fff;
+        color: #111;
+        cursor: pointer;
+        font-weight: bold;
+        margin-top: 5px;
+    }
+
+    .modal-primary:disabled {
+        opacity: .5;
+        cursor: default;
+    }
+
+    .modal-secondary {
+        width: 100%;
+        padding: 11px;
+        border: 1px solid #363b46;
+        border-radius: 8px;
+        background: transparent;
+        color: #fff;
+        cursor: pointer;
+        margin-top: 9px;
+    }
+
+    .modal-status {
+        min-height: 20px;
+        margin-top: 12px;
+        font-size: 13px;
+        color: #ff9c9c;
+        line-height: 1.4;
+    }
+
+    .modal-info {
+        color: #969ca7;
+        font-size: 13px;
+        line-height: 1.5;
+        margin-bottom: 15px;
+    }
+
+    /* SETTINGS */
+
+    .settings-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, .35);
+        z-index: 900;
+    }
+
+    .settings-overlay.active {
+        display: block;
+    }
+
+    .settings-panel {
+        position: fixed;
+        top: 0;
+        right: -390px;
+        width: 360px;
+        max-width: 90vw;
+        height: 100vh;
+        background: #191c23;
+        border-left: 1px solid #303540;
+        z-index: 950;
+        padding: 25px;
+        transition: right .25s ease;
+        overflow-y: auto;
+    }
+
+    .settings-panel.active {
+        right: 0;
+    }
+
+    .settings-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .settings-header h2 {
+        margin: 0;
+        font-size: 22px;
+    }
+
+    .settings-close {
+        border: none;
+        background: transparent;
+        color: #aaa;
+        font-size: 25px;
+        cursor: pointer;
+    }
+
+    .settings-section {
+        margin-bottom: 28px;
+    }
+
+    .settings-label {
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .settings-description {
+        color: #8f96a2;
+        font-size: 13px;
+        line-height: 1.5;
+        margin-bottom: 12px;
+    }
+
+    .settings-options {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .settings-option {
+        flex: 1;
+        min-width: 130px;
+        border: 1px solid #363b46;
+        background: #101218;
+        color: #fff;
+        padding: 12px;
+        border-radius: 9px;
+        cursor: pointer;
+    }
+
+    .settings-option:hover {
+        background: #242934;
+    }
+
+    .settings-option.active {
+        border-color: #fff;
+        background: #303642;
+    }
+
+    .logout-button {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #493333;
+        border-radius: 9px;
+        background: #24191b;
+        color: #ffb1b1;
+        cursor: pointer;
+    }
+
+    .logout-button:hover {
+        background: #302024;
+    }
+
+    .not-connected {
+        color: #8f96a2;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    /* LIGHT THEME */
+
+    body.light-theme {
+        background: #f5f6f8;
+        color: #17191d;
+    }
+
+    body.light-theme .sidebar {
+        background: #fff;
+        border-color: #e0e2e6;
+    }
+
+    body.light-theme .logo-icon,
+    body.light-theme .welcome-icon,
+    body.light-theme .avatar {
+        background: #17191d;
+        color: #fff;
+    }
+
+    body.light-theme .new-chat {
+        background: #eeeeF1;
+        color: #17191d;
+    }
+
+    body.light-theme .new-chat:hover,
+    body.light-theme .conversation:hover,
+    body.light-theme .sidebar-button:hover {
+        background: #e2e4e8;
+    }
+
+    body.light-theme .history-title,
+    body.light-theme .history-empty {
+        color: #777d88;
+    }
+
+    body.light-theme .conversation,
+    body.light-theme .sidebar-button {
+        color: #30343b;
+    }
+
+    body.light-theme .sidebar-bottom,
+    body.light-theme .topbar {
+        border-color: #e0e2e6;
+    }
+
+    body.light-theme .welcome p {
+        color: #707680;
+    }
+
+    body.light-theme .user-bubble {
+        background: #e4e6eb;
+        color: #17191d;
+    }
+
+    body.light-theme .ai-text {
+        color: #30343b;
+    }
+
+    body.light-theme .thinking {
+        color: #707680;
+    }
+
+    body.light-theme .input-area {
+        background: linear-gradient(transparent, #f5f6f8 25%);
+    }
+
+    body.light-theme .input-wrapper {
+        background: #fff;
+        border-color: #d8dbe0;
+    }
+
+    body.light-theme textarea {
+        color: #17191d;
+    }
+
+    body.light-theme .settings-panel {
+        background: #fff;
+        border-color: #e0e2e6;
+        color: #17191d;
+    }
+
+    body.light-theme .settings-description {
+        color: #707680;
+    }
+
+    body.light-theme .settings-option {
+        background: #f4f5f7;
+        color: #17191d;
+        border-color: #d8dbe0;
+    }
+
+    body.light-theme .settings-option:hover {
+        background: #e7e9ed;
+    }
+
+    body.light-theme .settings-option.active {
+        background: #dedfe3;
+        border-color: #17191d;
+    }
+
+    body.light-theme .modal {
+        background: #fff;
+        color: #17191d;
+        border-color: #d8dbe0;
+    }
+
+    body.light-theme .modal input {
+        background: #f5f6f8;
+        color: #17191d;
+        border-color: #d8dbe0;
+    }
+
+    body.light-theme .modal-secondary {
+        color: #17191d;
+        border-color: #d8dbe0;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 700px) {
         .sidebar {
-            width: 260px;
-            height: 100vh;
-            background: #171a21;
-            border-right: 1px solid #292d36;
-            display: flex;
-            flex-direction: column;
-            padding: 18px;
-            flex-shrink: 0;
+            width: 70px;
+            padding: 12px 8px;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 21px;
-            font-weight: bold;
-            margin-bottom: 22px;
-        }
-
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: #ffffff;
-            color: #171a21;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            flex-shrink: 0;
+        .logo span,
+        .new-chat span,
+        .history-title,
+        .history,
+        .account-button span {
+            display: none;
         }
 
         .new-chat {
-            width: 100%;
-            border: none;
-            background: #242934;
-            color: white;
-            padding: 12px;
-            border-radius: 9px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-bottom: 22px;
-        }
-
-        .new-chat:hover {
-            background: #303642;
-        }
-
-        .history-title {
-            color: #9da3ae;
-            font-size: 12px;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-
-        .history {
-            flex: 1;
-            overflow-y: auto;
-            min-height: 0;
-        }
-
-        .history-empty {
-            color: #777d88;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        .conversation {
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            color: #d9dce2;
-            font-size: 14px;
-            margin-bottom: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .conversation:hover {
-            background: #242934;
-        }
-
-        .sidebar-bottom {
-            border-top: 1px solid #292d36;
-            padding-top: 12px;
+            font-size: 20px;
+            padding: 10px 5px;
         }
 
         .sidebar-button {
-            width: 100%;
-            border: none;
-            background: transparent;
-            color: #ffffff;
-            text-align: left;
-            padding: 11px 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
+            text-align: center;
+            font-size: 18px;
         }
 
-        .sidebar-button:hover {
-            background: #242934;
-        }
-
-        .account-connected {
-            display: none;
-        }
-
-        .account-connected.active {
-            display: block;
-        }
-
-        .account-email {
-            font-size: 12px;
-            color: #9da3ae;
-            margin-top: 3px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        /* =========================
-           MAIN
-        ========================= */
-
-        .main {
-            flex: 1;
-            min-width: 0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+        .input-area {
+            left: 70px;
         }
 
         .topbar {
-            height: 60px;
-            min-height: 60px;
-            border-bottom: 1px solid #292d36;
-            display: flex;
-            align-items: center;
-            padding: 0 22px;
-            font-weight: bold;
+            padding: 0 15px;
         }
 
         .chat {
-            flex: 1;
-            overflow-y: auto;
-            padding: 30px 20px 140px;
+            padding-left: 12px;
+            padding-right: 12px;
         }
 
-        /* =========================
-           ACCUEIL
-        ========================= */
-
-        .welcome {
-            max-width: 760px;
-            margin: 80px auto;
-            text-align: center;
-        }
-
-        .welcome-icon {
-            width: 64px;
-            height: 64px;
-            margin: auto auto 20px;
-            border-radius: 18px;
-            background: white;
-            color: #111111;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 27px;
-            font-weight: bold;
-        }
-
-        .welcome h1 {
-            margin-bottom: 10px;
-        }
-
-        .welcome p {
-            color: #9da3ae;
-            line-height: 1.5;
-        }
-
-        /* =========================
-           MESSAGES
-        ========================= */
-
-        .message {
-            max-width: 850px;
-            margin: 0 auto 24px;
-            display: flex;
-        }
-
-        .message.user {
-            justify-content: flex-end;
-        }
-
-        .message.ai {
-            justify-content: flex-start;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .avatar {
-            width: 32px;
-            min-width: 32px;
-            height: 32px;
-            border-radius: 9px;
-            background: white;
-            color: #111111;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .user-bubble {
-            max-width: 75%;
-            background: #292e39;
-            padding: 11px 15px;
-            border-radius: 15px;
-            line-height: 1.5;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
+        .user-bubble,
         .ai-text {
-            max-width: 75%;
-            line-height: 1.65;
-            white-space: pre-wrap;
-            color: #e5e7eb;
-            word-wrap: break-word;
+            max-width: 85%;
         }
+    }
+</style>
+```
 
-        /* =========================
-           REFLEXION
-        ========================= */
-
-        .thinking {
-            color: #9da3ae;
-            font-size: 14px;
-            padding-top: 7px;
-        }
-
-        .dots::after {
-            content: "";
-            animation: dots 1.5s infinite;
-        }
-
-        @keyframes dots {
-            0% {
-                content: "";
-            }
-
-            25% {
-                content: ".";
-            }
-
-            50% {
-                content: "..";
-            }
-
-            75% {
-                content: "...";
-            }
-
-            100% {
-                content: "";
-            }
-        }
-
-        /* =========================
-           ZONE DE SAISIE
-        ========================= */
-
-        .input-area {
-            position: fixed;
-            bottom: 0;
-            left: 260px;
-            right: 0;
-            padding: 18px 20px 22px;
-            background: linear-gradient(
-                transparent,
-                #0f1117 25%
-            );
-            z-index: 20;
-        }
-
-        .input-wrapper {
-            max-width: 850px;
-            margin: auto;
-            display: flex;
-            align-items: flex-end;
-            gap: 8px;
-            background: #1b1f27;
-            border: 1px solid #303540;
-            border-radius: 15px;
-            padding: 8px;
-        }
-
-        textarea {
-            flex: 1;
-            resize: none;
-            border: none;
-            outline: none;
-            background: transparent;
-            color: white;
-            font-family: inherit;
-            font-size: 15px;
-            min-height: 42px;
-            max-height: 180px;
-            padding: 10px;
-            line-height: 1.5;
-        }
-
-        textarea::placeholder {
-            color: #777d88;
-        }
-
-        .send-button {
-            width: 42px;
-            height: 42px;
-            border: none;
-            border-radius: 11px;
-            background: white;
-            color: #111111;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-
-        .send-button:disabled {
-            opacity: 0.4;
-            cursor: default;
-        }
-
-        /* =========================
-           MODALES
-        ========================= */
-
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.72);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal {
-            width: 100%;
-            max-width: 400px;
-            background: #191c23;
-            border: 1px solid #303540;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, .4);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .modal-header h2 {
-            margin: 0;
-        }
-
-        .close-modal {
-            border: none;
-            background: transparent;
-            color: #aaa;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .modal input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 12px;
-            border-radius: 8px;
-            border: 1px solid #363b46;
-            background: #101218;
-            color: white;
-            outline: none;
-        }
-
-        .modal-primary {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            background: white;
-            color: #111111;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 5px;
-        }
-
-        .modal-primary:disabled {
-            opacity: .5;
-            cursor: default;
-        }
-
-        .modal-secondary {
-            width: 100%;
-            padding: 11px;
-            border: 1px solid #363b46;
-            border-radius: 8px;
-            background: transparent;
-            color: white;
-            cursor: pointer;
-            margin-top: 9px;
-        }
-
-        .modal-status {
-            min-height: 20px;
-            margin-top: 12px;
-            font-size: 13px;
-            color: #ff9c9c;
-            line-height: 1.4;
-        }
-
-        .modal-info {
-            color: #969ca7;
-            font-size: 13px;
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
-
-        /* =========================
-           PARAMETRES
-        ========================= */
-
-        .settings-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.35);
-            z-index: 900;
-        }
-
-        .settings-overlay.active {
-            display: block;
-        }
-
-        .settings-panel {
-            position: fixed;
-            top: 0;
-            right: -390px;
-            width: 360px;
-            max-width: 90vw;
-            height: 100vh;
-            background: #191c23;
-            border-left: 1px solid #303540;
-            z-index: 950;
-            padding: 25px;
-            transition: right .25s ease;
-            overflow-y: auto;
-        }
-
-        .settings-panel.active {
-            right: 0;
-        }
-
-        .settings-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .settings-header h2 {
-            margin: 0;
-            font-size: 22px;
-        }
-
-        .settings-close {
-            border: none;
-            background: transparent;
-            color: #aaaaaa;
-            font-size: 25px;
-            cursor: pointer;
-        }
-
-        .settings-section {
-            margin-bottom: 28px;
-        }
-
-        .settings-label {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .settings-description {
-            color: #8f96a2;
-            font-size: 13px;
-            line-height: 1.5;
-            margin-bottom: 12px;
-        }
-
-        .settings-options {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .settings-option {
-            flex: 1;
-            min-width: 130px;
-            border: 1px solid #363b46;
-            background: #101218;
-            color: #ffffff;
-            padding: 12px;
-            border-radius: 9px;
-            cursor: pointer;
-        }
-
-        .settings-option:hover {
-            background: #242934;
-        }
-
-        .settings-option.active {
-            border-color: #ffffff;
-            background: #303642;
-        }
-
-        .logout-button {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #493333;
-            border-radius: 9px;
-            background: #24191b;
-            color: #ffb1b1;
-            cursor: pointer;
-        }
-
-        .logout-button:hover {
-            background: #302024;
-        }
-
-        .not-connected {
-            color: #8f96a2;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        /* =========================
-           THEME CLAIR
-        ========================= */
-
-        body.light-theme {
-            background: #f5f6f8;
-            color: #17191d;
-        }
-
-        body.light-theme .sidebar {
-            background: #ffffff;
-            border-color: #e0e2e6;
-        }
-
-        body.light-theme .logo-icon {
-            background: #17191d;
-            color: white;
-        }
-
-        body.light-theme .new-chat {
-            background: #eeeeF1;
-            color: #17191d;
-        }
-
-        body.light-theme .new-chat:hover {
-            background: #e2e4e8;
-        }
-
-        body.light-theme .history-title {
-            color: #777d88;
-        }
-
-        body.light-theme .conversation {
-            color: #30343b;
-        }
-
-        body.light-theme .conversation:hover {
-            background: #eeeeF1;
-        }
-
-        body.light-theme .sidebar-bottom {
-            border-color: #e0e2e6;
-        }
-
-        body.light-theme .sidebar-button {
-            color: #17191d;
-        }
-
-        body.light-theme .sidebar-button:hover {
-            background: #eeeeF1;
-        }
-
-        body.light-theme .topbar {
-            border-color: #e0e2e6;
-        }
-
-        body.light-theme .welcome p {
-            color: #707680;
-        }
-
-        body.light-theme .user-bubble {
-            background: #e4e6eb;
-            color: #17191d;
-        }
-
-        body.light-theme .ai-text {
-            color: #30343b;
-        }
-
-        body.light-theme .thinking {
-            color: #707680;
-        }
-
-        body.light-theme .input-area {
-            background: linear-gradient(
-                transparent,
-                #f5f6f8 25%
-            );
-        }
-
-        body.light-theme .input-wrapper {
-            background: #ffffff;
-            border-color: #d8dbe0;
-        }
-
-        body.light-theme textarea {
-            color: #17191d;
-        }
-
-        body.light-theme textarea::placeholder {
-            color: #8a9099;
-        }
-
-        body.light-theme .settings-panel {
-            background: #ffffff;
-            border-color: #e0e2e6;
-            color: #17191d;
-        }
-
-        body.light-theme .settings-description {
-            color: #707680;
-        }
-
-        body.light-theme .settings-option {
-            background: #f4f5f7;
-            color: #17191d;
-            border-color: #d8dbe0;
-        }
-
-        body.light-theme .settings-option:hover {
-            background: #e7e9ed;
-        }
-
-        body.light-theme .settings-option.active {
-            background: #dedfe3;
-            border-color: #17191d;
-        }
-
-        body.light-theme .modal {
-            background: #ffffff;
-            color: #17191d;
-            border-color: #d8dbe0;
-        }
-
-        body.light-theme .modal input {
-            background: #f5f6f8;
-            color: #17191d;
-            border-color: #d8dbe0;
-        }
-
-        body.light-theme .modal-secondary {
-            color: #17191d;
-            border-color: #d8dbe0;
-        }
-
-        /* =========================
-           MOBILE
-        ========================= */
-
-        @media (max-width: 700px) {
-
-            .sidebar {
-                width: 70px;
-                padding: 12px 8px;
-            }
-
-            .logo span,
-            .new-chat span,
-            .history-title,
-            .history,
-            .account-button span {
-                display: none;
-            }
-
-            .new-chat {
-                font-size: 20px;
-                padding: 10px 5px;
-            }
-
-            .sidebar-button {
-                text-align: center;
-                font-size: 18px;
-            }
-
-            .input-area {
-                left: 70px;
-            }
-
-            .topbar {
-                padding: 0 15px;
-            }
-
-            .chat {
-                padding-left: 12px;
-                padding-right: 12px;
-            }
-
-            .user-bubble,
-            .ai-text {
-                max-width: 85%;
-            }
-        }
-    </style>
 </head>
 
 <body>
 
 <div class="app">
 
-    <!-- =========================
-         SIDEBAR
-    ========================== -->
+```
+<aside class="sidebar">
 
-    <aside class="sidebar">
-
-        <div class="logo">
-            <div class="logo-icon">✝</div>
-            <span>BibleProIA</span>
-        </div>
-
-        <button
-            type="button"
-            class="new-chat"
-            id="newChatButton"
-        >
-            ＋ <span id="newChatText">Nouvelle conversation</span>
-        </button>
-
-        <div
-            class="history-title"
-            id="historyTitle"
-        >
-            Historique
-        </div>
-
-        <div
-            class="history"
-            id="history"
-        >
-            <div
-                class="history-empty"
-                id="historyEmpty"
-            >
-                Connecte-toi pour enregistrer et retrouver tes conversations.
-            </div>
-        </div>
-
-        <div class="sidebar-bottom">
-
-            <button
-                type="button"
-                class="sidebar-button"
-                id="settingsButton"
-            >
-                ⚙️ <span id="settingsButtonText">Paramètres</span>
-            </button>
-
-            <div
-                class="account-connected"
-                id="accountConnected"
-            >
-                <button
-    type="button"
-    class="sidebar-button"
-    id="accountButton"
->
-    👤 <span id="accountText">Mon compte</span>
-
-    <div
-        class="account-email"
-        id="accountEmail"
-    ></div>
-</button>
-            </div>
-
-            <div id="accountDisconnected">
-
-                <button
-                    type="button"
-                    class="sidebar-button"
-                    id="loginButton"
-                >
-                    🔐 <span id="loginButtonText">Se connecter</span>
-                </button>
-
-            </div>
-
-        </div>
-
-    </aside>
-
-
-    <!-- =========================
-         MAIN
-    ========================== -->
-
-    <main class="main">
-
-        <div class="topbar">
-            BibleProIA
-        </div>
-
-        <div
-            class="chat"
-            id="chat"
-        >
-
-            <div
-                class="welcome"
-                id="welcome"
-            >
-
-                <div class="welcome-icon">
-                    ✝
-                </div>
-
-                <h1 id="welcomeTitle">
-                    Bienvenue sur BibleProIA
-                </h1>
-
-                <p id="welcomeText">
-                    Pose ta question sur la Bible,
-                    le christianisme ou l'adventisme
-                    du septième jour.
-                </p>
-
-                <p>
-                    <small id="welcomeAccountText">
-                        Tu peux discuter sans créer de compte.
-                        La connexion sert uniquement à sauvegarder
-                        ton historique.
-                    </small>
-                </p>
-
-            </div>
-
-        </div>
-
-    </main>
-
-</div>
-
-
-<!-- =========================
-     ZONE DE SAISIE
-========================== -->
-
-<div class="input-area">
-
-    <form id="chatForm">
-
-        <div class="input-wrapper">
-
-            <textarea
-                id="messageInput"
-                name="question"
-                placeholder="Pose ta question..."
-                rows="1"
-                autocomplete="off"
-            ></textarea>
-
-            <button
-                type="submit"
-                class="send-button"
-                id="sendButton"
-            >
-                ↑
-            </button>
-
-        </div>
-
-    </form>
-
-</div>
-
-
-<!-- =========================
-     REPONSE SERVEUR
-========================== -->
-
-{% if reponse %}
-<div
-    id="server-answer"
-    style="display:none;"
->
-    <div class="answer-text">
-        {{ reponse }}
+    <div class="logo">
+        <div class="logo-icon">✝</div>
+        <span>BibleProIA</span>
     </div>
-</div>
-{% endif %}
 
+    <button type="button" class="new-chat" id="newChatButton">
+        ＋ <span id="newChatText">Nouvelle conversation</span>
+    </button>
 
-<!-- =========================
-     MODAL CONNEXION
-========================== -->
+    <div class="history-title" id="historyTitle">
+        Historique
+    </div>
 
-<div
-    class="modal-overlay"
-    id="loginModal"
->
-
-    <div class="modal">
-
-        <div class="modal-header">
-
-            <h2 id="loginTitle">
-                Connexion
-            </h2>
-
-            <button
-                type="button"
-                class="close-modal"
-                data-close="loginModal"
-            >
-                ×
-            </button>
-
-        </div>
-
-        <div
-            class="modal-info"
-            id="loginInfo"
-        >
+    <div class="history" id="history">
+        <div class="history-empty" id="historyEmpty">
             Connecte-toi pour enregistrer et retrouver tes conversations.
         </div>
-
-        <input
-            type="email"
-            id="loginEmail"
-            placeholder="Adresse e-mail"
-            autocomplete="email"
-        >
-
-        <input
-            type="password"
-            id="loginPassword"
-            placeholder="Mot de passe"
-            autocomplete="current-password"
-        >
-
-        <button
-            type="button"
-            class="modal-primary"
-            id="submitLogin"
-        >
-            Se connecter
-        </button>
-
-        <button
-            type="button"
-            class="modal-secondary"
-            id="openSignupFromLogin"
-        >
-            Créer un compte
-        </button>
-
-        <div
-            class="modal-status"
-            id="loginStatus"
-        ></div>
-
     </div>
 
-</div>
+    <div class="sidebar-bottom">
 
+        <button type="button" class="sidebar-button" id="settingsButton">
+            ⚙️ <span id="settingsButtonText">Paramètres</span>
+        </button>
 
-<!-- =========================
-     MODAL INSCRIPTION
-========================== -->
+        <div class="account-connected" id="accountConnected">
 
-<div
-    class="modal-overlay"
-    id="signupModal"
->
+            <button type="button" class="sidebar-button" id="accountButton">
+                👤 <span id="accountText">Mon compte</span>
 
-    <div class="modal">
-
-        <div class="modal-header">
-
-            <h2 id="signupTitle">
-                Créer un compte
-            </h2>
-
-            <button
-                type="button"
-                class="close-modal"
-                data-close="signupModal"
-            >
-                ×
+                <div class="account-email" id="accountEmail"></div>
             </button>
 
         </div>
 
-        <div
-            class="modal-info"
-            id="signupInfo"
-        >
-            Crée un compte pour conserver ton historique de conversations.
-        </div>
+        <div id="accountDisconnected">
 
-        <input
-            type="email"
-            id="signupEmail"
-            placeholder="Adresse e-mail"
-            autocomplete="email"
-        >
-
-        <input
-            type="password"
-            id="signupPassword"
-            placeholder="Mot de passe"
-            autocomplete="new-password"
-        >
-
-        <input
-            type="password"
-            id="signupPasswordConfirm"
-            placeholder="Confirmer le mot de passe"
-            autocomplete="new-password"
-        >
-
-        <button
-            type="button"
-            class="modal-primary"
-            id="submitSignup"
-        >
-            Créer mon compte
-        </button>
-
-        <button
-            type="button"
-            class="modal-secondary"
-            id="openLoginFromSignup"
-        >
-            J'ai déjà un compte
-        </button>
-
-        <div
-            class="modal-status"
-            id="signupStatus"
-        ></div>
-
-    </div>
-
-</div>
-
-
-<!-- =========================
-     PANNEAU PARAMETRES
-========================== -->
-
-<div
-    class="settings-overlay"
-    id="settingsOverlay"
-></div>
-
-<aside
-    class="settings-panel"
-    id="settingsPanel"
->
-
-    <div class="settings-header">
-
-        <h2 id="settingsTitle">
-            Paramètres
-        </h2>
-
-        <button
-            type="button"
-            class="settings-close"
-            id="settingsClose"
-        >
-            ×
-        </button>
-
-    </div>
-
-
-    <!-- LANGUE -->
-
-    <div class="settings-section">
-
-        <span
-            class="settings-label"
-            id="languageLabel"
-        >
-            🌐 Langue
-        </span>
-
-        <div
-            class="settings-description"
-            id="languageDescription"
-        >
-            Choisis la langue de l'interface.
-        </div>
-
-        <div class="settings-options">
-
-            <button
-                type="button"
-                class="settings-option"
-                id="languageFrench"
-            >
-                🇫🇷 Français
+            <button type="button" class="sidebar-button" id="loginButton">
+                🔐 <span id="loginButtonText">Se connecter</span>
             </button>
 
-            <button
-                type="button"
-                class="settings-option"
-                id="languageEnglish"
-            >
-                🇬🇧 English
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <!-- THEME -->
-
-    <div class="settings-section">
-
-        <span
-            class="settings-label"
-            id="themeLabel"
-        >
-            🎨 Thème
-        </span>
-
-        <div
-            class="settings-description"
-            id="themeDescription"
-        >
-            Choisis l'apparence de BibleProIA.
-        </div>
-
-        <div class="settings-options">
-
-            <button
-                type="button"
-                class="settings-option"
-                id="themeDark"
-            >
-                🌙 Sombre
-            </button>
-
-            <button
-                type="button"
-                class="settings-option"
-                id="themeLight"
-            >
-                ☀️ Clair
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <!-- COMPTE -->
-
-    <div class="settings-section">
-
-        <span
-            class="settings-label"
-            id="accountSettingsLabel"
-        >
-            🔐 Compte
-        </span>
-
-        <div
-            class="settings-description"
-            id="accountDescription"
-        >
-            Gestion de ton compte BibleProIA.
-        </div>
-
-        <button
-            type="button"
-            class="logout-button"
-            id="settingsLogout"
-        >
-            Se déconnecter
-        </button>
-
-        <div
-            class="not-connected"
-            id="notConnectedText"
-            style="display:none;"
-        >
-            Tu n'es pas connecté.
-            Tu peux utiliser BibleProIA sans compte.
         </div>
 
     </div>
 
 </aside>
 
+
+<main class="main">
+
+    <div class="topbar">
+        BibleProIA
+    </div>
+
+    <div class="chat" id="chat">
+
+        <div class="welcome" id="welcome">
+
+            <div class="welcome-icon">
+                ✝
+            </div>
+
+            <h1 id="welcomeTitle">
+                Bienvenue sur BibleProIA
+            </h1>
+
+            <p id="welcomeText">
+                Pose ta question sur la Bible, le christianisme ou l'adventisme du septième jour.
+            </p>
+
+            <p>
+                <small id="welcomeAccountText">
+                    Tu peux discuter sans créer de compte. La connexion sert uniquement à sauvegarder ton historique.
+                </small>
+            </p>
+
+        </div>
+
+    </div>
+
+</main>
+```
+
+</div>
+
+<!-- ZONE DE SAISIE -->
+
+<div class="input-area">
+
+```
+<form id="chatForm">
+
+    <div class="input-wrapper">
+
+        <textarea
+            id="messageInput"
+            name="question"
+            placeholder="Pose ta question..."
+            rows="1"
+            autocomplete="off"
+        ></textarea>
+
+        <button type="submit" class="send-button" id="sendButton">
+            ↑
+        </button>
+
+    </div>
+
+</form>
+```
+
+</div>
+
+<!-- REPONSE SERVEUR -->
+
+{% if reponse %}
+
+<div id="server-answer" style="display:none;">
+    <div class="answer-text">{{ reponse }}</div>
+</div>
+{% endif %}
+
+<!-- CONNEXION -->
+
+<div class="modal-overlay" id="loginModal">
+
+```
+<div class="modal">
+
+    <div class="modal-header">
+
+        <h2 id="loginTitle">
+            Connexion
+        </h2>
+
+        <button type="button" class="close-modal" data-close="loginModal">
+            ×
+        </button>
+
+    </div>
+
+    <div class="modal-info" id="loginInfo">
+        Connecte-toi pour enregistrer et retrouver tes conversations.
+    </div>
+
+    <input
+        type="email"
+        id="loginEmail"
+        placeholder="Adresse e-mail"
+        autocomplete="email"
+    >
+
+    <input
+        type="password"
+        id="loginPassword"
+        placeholder="Mot de passe"
+        autocomplete="current-password"
+    >
+
+    <button type="button" class="modal-primary" id="submitLogin">
+        Se connecter
+    </button>
+
+    <button type="button" class="modal-secondary" id="openSignupFromLogin">
+        Créer un compte
+    </button>
+
+    <div class="modal-status" id="loginStatus"></div>
+
+</div>
+```
+
+</div>
+
+<!-- INSCRIPTION -->
+
+<div class="modal-overlay" id="signupModal">
+
+```
+<div class="modal">
+
+    <div class="modal-header">
+
+        <h2 id="signupTitle">
+            Créer un compte
+        </h2>
+
+        <button type="button" class="close-modal" data-close="signupModal">
+            ×
+        </button>
+
+    </div>
+
+    <div class="modal-info" id="signupInfo">
+        Crée un compte pour conserver ton historique de conversations.
+    </div>
+
+    <input
+        type="email"
+        id="signupEmail"
+        placeholder="Adresse e-mail"
+        autocomplete="email"
+    >
+
+    <input
+        type="password"
+        id="signupPassword"
+        placeholder="Mot de passe"
+        autocomplete="new-password"
+    >
+
+    <input
+        type="password"
+        id="signupPasswordConfirm"
+        placeholder="Confirmer le mot de passe"
+        autocomplete="new-password"
+    >
+
+    <button type="button" class="modal-primary" id="submitSignup">
+        Créer mon compte
+    </button>
+
+    <button type="button" class="modal-secondary" id="openLoginFromSignup">
+        J'ai déjà un compte
+    </button>
+
+    <div class="modal-status" id="signupStatus"></div>
+
+</div>
+```
+
+</div>
+
+<!-- COMPTE -->
+
+<div class="modal-overlay" id="accountModal">
+
+```
+<div class="modal">
+
+    <div class="modal-header">
+
+        <h2 id="accountModalTitle">
+            Mon compte
+        </h2>
+
+        <button type="button" class="close-modal" id="accountModalClose">
+            ×
+        </button>
+
+    </div>
+
+    <div class="modal-info" id="accountModalEmail"></div>
+
+    <button
+        type="button"
+        class="modal-primary"
+        id="changePasswordButton"
+    >
+        🔑 Changer le mot de passe
+    </button>
+
+    <div class="modal-status" id="passwordStatus"></div>
+
+</div>
+```
+
+</div>
+
+<!-- NOUVEAU MOT DE PASSE -->
+
+<div class="modal-overlay" id="newPasswordModal">
+
+```
+<div class="modal">
+
+    <div class="modal-header">
+
+        <h2 id="newPasswordTitle">
+            Nouveau mot de passe
+        </h2>
+
+    </div>
+
+    <div class="modal-info" id="newPasswordInfo">
+        Choisis ton nouveau mot de passe.
+    </div>
+
+    <input
+        type="password"
+        id="newPassword"
+        placeholder="Nouveau mot de passe"
+        autocomplete="new-password"
+    >
+
+    <input
+        type="password"
+        id="newPasswordConfirm"
+        placeholder="Confirmer le mot de passe"
+        autocomplete="new-password"
+    >
+
+    <button
+        type="button"
+        class="modal-primary"
+        id="saveNewPassword"
+    >
+        Modifier le mot de passe
+    </button>
+
+    <div class="modal-status" id="newPasswordStatus"></div>
+
+</div>
+```
+
+</div>
+
+<!-- PARAMETRES -->
+
+<div class="settings-overlay" id="settingsOverlay"></div>
+
+<aside class="settings-panel" id="settingsPanel">
+
+```
+<div class="settings-header">
+
+    <h2 id="settingsTitle">
+        Paramètres
+    </h2>
+
+    <button type="button" class="settings-close" id="settingsClose">
+        ×
+    </button>
+
+</div>
+
+
+<div class="settings-section">
+
+    <span class="settings-label" id="languageLabel">
+        🌐 Langue
+    </span>
+
+    <div class="settings-description" id="languageDescription">
+        Choisis la langue de l'interface.
+    </div>
+
+    <div class="settings-options">
+
+        <button
+            type="button"
+            class="settings-option"
+            id="languageFrench"
+        >
+            🇫🇷 Français
+        </button>
+
+        <button
+            type="button"
+            class="settings-option"
+            id="languageEnglish"
+        >
+            🇬🇧 English
+        </button>
+
+    </div>
+
+</div>
+
+
+<div class="settings-section">
+
+    <span class="settings-label" id="themeLabel">
+        🎨 Thème
+    </span>
+
+    <div class="settings-description" id="themeDescription">
+        Choisis l'apparence de BibleProIA.
+    </div>
+
+    <div class="settings-options">
+
+        <button
+            type="button"
+            class="settings-option"
+            id="themeDark"
+        >
+            🌙 Sombre
+        </button>
+
+        <button
+            type="button"
+            class="settings-option"
+            id="themeLight"
+        >
+            ☀️ Clair
+        </button>
+
+    </div>
+
+</div>
+
+
+<div class="settings-section">
+
+    <span class="settings-label" id="accountSettingsLabel">
+        🔐 Compte
+    </span>
+
+    <div class="settings-description" id="accountDescription">
+        Gestion de ton compte BibleProIA.
+    </div>
+
+    <button
+        type="button"
+        class="logout-button"
+        id="settingsLogout"
+    >
+        Se déconnecter
+    </button>
+
+    <div
+        class="not-connected"
+        id="notConnectedText"
+        style="display:none;"
+    >
+        Tu n'es pas connecté. Tu peux utiliser BibleProIA sans compte.
+    </div>
+
+</div>
+```
+
+</aside>
 
 <script>
 
@@ -1291,7 +1185,7 @@
         "https://mcsigvlnaghtijgbxeqn.supabase.co";
 
     const SUPABASE_KEY =
-        "sb_publishable_IIKiSAjRQJCGHUSGVidnQ_vUsq8Epv";
+        "sb_publishable_IIKiSAjRQJCGHUSGVidnqQ_vUsq8Epv";
 
     const supabaseClient =
         window.supabase.createClient(
@@ -1307,6 +1201,7 @@
     let currentUser = null;
     let currentConversationId = null;
     let isSending = false;
+
 
     let currentLanguage =
         localStorage.getItem("bibleproia-language") || "fr";
@@ -1340,11 +1235,23 @@
     const signupModal =
         document.getElementById("signupModal");
 
+    const accountModal =
+        document.getElementById("accountModal");
+
+    const newPasswordModal =
+        document.getElementById("newPasswordModal");
+
     const loginStatus =
         document.getElementById("loginStatus");
 
     const signupStatus =
         document.getElementById("signupStatus");
+
+    const passwordStatus =
+        document.getElementById("passwordStatus");
+
+    const newPasswordStatus =
+        document.getElementById("newPasswordStatus");
 
     const accountConnected =
         document.getElementById("accountConnected");
@@ -1363,7 +1270,7 @@
 
 
     /* =====================================================
-       TRADUCTION
+       TRADUCTIONS
     ===================================================== */
 
     const translations = {
@@ -1452,6 +1359,30 @@
 
             passwordLength:
                 "Le mot de passe doit contenir au moins 6 caractères.",
+
+            passwordSent:
+                "Un lien pour changer ton mot de passe vient d'être envoyé à ton adresse e-mail.",
+
+            sendingLink:
+                "Envoi du lien...",
+
+            newPassword:
+                "Nouveau mot de passe",
+
+            newPasswordInfo:
+                "Choisis ton nouveau mot de passe.",
+
+            savePassword:
+                "Modifier le mot de passe",
+
+            passwordChanged:
+                "Ton mot de passe a été modifié avec succès.",
+
+            changingPassword:
+                "Modification...",
+
+            passwordError:
+                "Impossible de modifier le mot de passe.",
 
             serverError:
                 "La réponse de BibleProIA n'a pas pu être récupérée."
@@ -1542,6 +1473,30 @@
             passwordLength:
                 "The password must contain at least 6 characters.",
 
+            passwordSent:
+                "A password reset link has been sent to your email address.",
+
+            sendingLink:
+                "Sending link...",
+
+            newPassword:
+                "New password",
+
+            newPasswordInfo:
+                "Choose your new password.",
+
+            savePassword:
+                "Change password",
+
+            changingPassword:
+                "Changing...",
+
+            passwordChanged:
+                "Your password has been changed successfully.",
+
+            passwordError:
+                "Unable to change the password.",
+
             serverError:
                 "BibleProIA's response could not be retrieved."
         }
@@ -1562,152 +1517,108 @@
         document.documentElement.lang =
             currentLanguage;
 
-        document.getElementById(
-            "newChatText"
-        ).textContent =
+        document.getElementById("newChatText").textContent =
             t("newChat");
 
-        document.getElementById(
-            "historyTitle"
-        ).textContent =
+        document.getElementById("historyTitle").textContent =
             t("history");
 
-        document.getElementById(
-            "loginButtonText"
-        ).textContent =
+        document.getElementById("loginButtonText").textContent =
             t("connect");
 
-        document.getElementById(
-            "accountText"
-        ).textContent =
+        document.getElementById("accountText").textContent =
             t("account");
 
-        document.getElementById(
-            "settingsButtonText"
-        ).textContent =
+        document.getElementById("settingsButtonText").textContent =
             t("settings");
 
-        document.getElementById(
-            "welcomeTitle"
-        ).textContent =
+        document.getElementById("welcomeTitle").textContent =
             t("welcomeTitle");
 
-        document.getElementById(
-            "welcomeText"
-        ).textContent =
+        document.getElementById("welcomeText").textContent =
             t("welcomeText");
 
-        document.getElementById(
-            "welcomeAccountText"
-        ).textContent =
+        document.getElementById("welcomeAccountText").textContent =
             t("welcomeAccount");
 
         messageInput.placeholder =
             t("placeholder");
 
-        document.getElementById(
-            "settingsTitle"
-        ).textContent =
+        document.getElementById("settingsTitle").textContent =
             t("settings");
 
-        document.getElementById(
-            "languageLabel"
-        ).textContent =
+        document.getElementById("languageLabel").textContent =
             t("language");
 
-        document.getElementById(
-            "languageDescription"
-        ).textContent =
+        document.getElementById("languageDescription").textContent =
             t("languageDescription");
 
-        document.getElementById(
-            "themeLabel"
-        ).textContent =
+        document.getElementById("themeLabel").textContent =
             t("theme");
 
-        document.getElementById(
-            "themeDescription"
-        ).textContent =
+        document.getElementById("themeDescription").textContent =
             t("themeDescription");
 
-        document.getElementById(
-            "accountSettingsLabel"
-        ).textContent =
+        document.getElementById("accountSettingsLabel").textContent =
             t("accountSettings");
 
-        document.getElementById(
-            "accountDescription"
-        ).textContent =
+        document.getElementById("accountDescription").textContent =
             t("accountDescription");
 
-        document.getElementById(
-            "settingsLogout"
-        ).textContent =
+        document.getElementById("settingsLogout").textContent =
             t("logout");
 
-        document.getElementById(
-            "notConnectedText"
-        ).textContent =
+        document.getElementById("notConnectedText").textContent =
             t("notConnected");
 
-        document.getElementById(
-            "themeDark"
-        ).textContent =
+        document.getElementById("themeDark").textContent =
             t("dark");
 
-        document.getElementById(
-            "themeLight"
-        ).textContent =
+        document.getElementById("themeLight").textContent =
             t("light");
 
-        document.getElementById(
-            "loginTitle"
-        ).textContent =
+        document.getElementById("loginTitle").textContent =
             t("login");
 
-        document.getElementById(
-            "loginInfo"
-        ).textContent =
+        document.getElementById("loginInfo").textContent =
             t("loginInfo");
 
-        document.getElementById(
-            "submitLogin"
-        ).textContent =
+        document.getElementById("submitLogin").textContent =
             t("connect");
 
-        document.getElementById(
-            "openSignupFromLogin"
-        ).textContent =
+        document.getElementById("openSignupFromLogin").textContent =
             t("signup");
 
-        document.getElementById(
-            "signupTitle"
-        ).textContent =
+        document.getElementById("signupTitle").textContent =
             t("signup");
 
-        document.getElementById(
-            "signupInfo"
-        ).textContent =
+        document.getElementById("signupInfo").textContent =
             t("signupInfo");
 
-        document.getElementById(
-            "submitSignup"
-        ).textContent =
+        document.getElementById("submitSignup").textContent =
             t("createAccount");
 
-        document.getElementById(
-            "openLoginFromSignup"
-        ).textContent =
+        document.getElementById("openLoginFromSignup").textContent =
             t("alreadyAccount");
+
+        document.getElementById("accountModalTitle").textContent =
+            t("account");
+
+        document.getElementById("newPasswordTitle").textContent =
+            t("newPassword");
+
+        document.getElementById("newPasswordInfo").textContent =
+            t("newPasswordInfo");
+
+        document.getElementById("saveNewPassword").textContent =
+            t("savePassword");
 
         updateLanguageButtons();
 
         if (!currentUser) {
 
             const empty =
-                document.getElementById(
-                    "historyEmpty"
-                );
+                document.getElementById("historyEmpty");
 
             if (empty) {
                 empty.textContent =
@@ -1719,15 +1630,13 @@
 
     function updateLanguageButtons() {
 
-        document
-            .getElementById("languageFrench")
+        document.getElementById("languageFrench")
             .classList.toggle(
                 "active",
                 currentLanguage === "fr"
             );
 
-        document
-            .getElementById("languageEnglish")
+        document.getElementById("languageEnglish")
             .classList.toggle(
                 "active",
                 currentLanguage === "en"
@@ -1746,15 +1655,13 @@
             currentTheme === "light"
         );
 
-        document
-            .getElementById("themeDark")
+        document.getElementById("themeDark")
             .classList.toggle(
                 "active",
                 currentTheme === "dark"
             );
 
-        document
-            .getElementById("themeLight")
+        document.getElementById("themeLight")
             .classList.toggle(
                 "active",
                 currentTheme === "light"
@@ -1763,123 +1670,95 @@
 
 
     /* =====================================================
-       BOUTONS LANGUE
+       LANGUE BUTTONS
     ===================================================== */
 
-    document
-        .getElementById("languageFrench")
-        .addEventListener(
-            "click",
-            function () {
+    document.getElementById("languageFrench")
+        .addEventListener("click", function () {
 
-                currentLanguage = "fr";
+            currentLanguage = "fr";
 
-                localStorage.setItem(
-                    "bibleproia-language",
-                    "fr"
-                );
+            localStorage.setItem(
+                "bibleproia-language",
+                "fr"
+            );
 
-                applyLanguage();
-            }
-        );
+            applyLanguage();
+        });
 
 
-    document
-        .getElementById("languageEnglish")
-        .addEventListener(
-            "click",
-            function () {
+    document.getElementById("languageEnglish")
+        .addEventListener("click", function () {
 
-                currentLanguage = "en";
+            currentLanguage = "en";
 
-                localStorage.setItem(
-                    "bibleproia-language",
-                    "en"
-                );
+            localStorage.setItem(
+                "bibleproia-language",
+                "en"
+            );
 
-                applyLanguage();
-            }
-        );
+            applyLanguage();
+        });
 
 
     /* =====================================================
-       BOUTONS THEME
+       THEME BUTTONS
     ===================================================== */
 
-    document
-        .getElementById("themeDark")
-        .addEventListener(
-            "click",
-            function () {
+    document.getElementById("themeDark")
+        .addEventListener("click", function () {
 
-                currentTheme = "dark";
+            currentTheme = "dark";
 
-                localStorage.setItem(
-                    "bibleproia-theme",
-                    "dark"
-                );
+            localStorage.setItem(
+                "bibleproia-theme",
+                "dark"
+            );
 
-                applyTheme();
-            }
-        );
+            applyTheme();
+        });
 
 
-    document
-        .getElementById("themeLight")
-        .addEventListener(
-            "click",
-            function () {
+    document.getElementById("themeLight")
+        .addEventListener("click", function () {
 
-                currentTheme = "light";
+            currentTheme = "light";
 
-                localStorage.setItem(
-                    "bibleproia-theme",
-                    "light"
-                );
+            localStorage.setItem(
+                "bibleproia-theme",
+                "light"
+            );
 
-                applyTheme();
-            }
-        );
+            applyTheme();
+        });
 
 
     /* =====================================================
-       PARAMETRES
+       SETTINGS
     ===================================================== */
 
     function openSettings() {
 
-        settingsPanel.classList.add(
-            "active"
-        );
-
-        settingsOverlay.classList.add(
-            "active"
-        );
+        settingsPanel.classList.add("active");
+        settingsOverlay.classList.add("active");
     }
 
 
     function closeSettings() {
 
-        settingsPanel.classList.remove(
-            "active"
-        );
-
-        settingsOverlay.classList.remove(
-            "active"
-        );
+        settingsPanel.classList.remove("active");
+        settingsOverlay.classList.remove("active");
     }
 
 
-    document
-        .getElementById("settingsButton")
+    document.getElementById("settingsButton")
         .addEventListener(
             "click",
             openSettings
         );
 
 
-    document
-        .getElementById("settingsClose")
+    document.getElementById("settingsClose")
         .addEventListener(
             "click",
             closeSettings
@@ -1893,7 +1772,7 @@
 
 
     /* =====================================================
-       MODALES
+       MODALS
     ===================================================== */
 
     function openModal(modal) {
@@ -1906,24 +1785,21 @@
     }
 
 
-    document
-        .querySelectorAll(".close-modal")
-        .forEach(
-            function (button) {
+    document.querySelectorAll(".close-modal")
+        .forEach(function (button) {
 
-                button.addEventListener(
-                    "click",
-                    function () {
+            button.addEventListener(
+                "click",
+                function () {
 
-                        closeModal(
-                            document.getElementById(
-                                button.dataset.close
-                            )
-                        );
-                    }
-                );
-            }
-        );
+                    closeModal(
+                        document.getElementById(
+                            button.dataset.close
+                        )
+                    );
+                }
+            );
+        });
 
 
     loginModal.addEventListener(
@@ -1948,6 +1824,17 @@
     );
 
 
+    accountModal.addEventListener(
+        "click",
+        function (event) {
+
+            if (event.target === accountModal) {
+                closeModal(accountModal);
+            }
+        }
+    );
+
+
     /* =====================================================
        AUTH UI
     ===================================================== */
@@ -1958,54 +1845,35 @@
 
         if (user) {
 
-            accountConnected.classList.add(
-                "active"
-            );
-
-            accountDisconnected.style.display =
-                "none";
+            accountConnected.classList.add("active");
+            accountDisconnected.style.display = "none";
 
             accountEmail.textContent =
                 user.email || "";
 
-            document.getElementById(
-                "settingsLogout"
-            ).style.display =
-                "block";
+            document.getElementById("settingsLogout")
+                .style.display = "block";
 
-            document.getElementById(
-                "notConnectedText"
-            ).style.display =
-                "none";
+            document.getElementById("notConnectedText")
+                .style.display = "none";
 
             loadConversations();
 
         } else {
 
-            accountConnected.classList.remove(
-                "active"
-            );
-
-            accountDisconnected.style.display =
-                "block";
+            accountConnected.classList.remove("active");
+            accountDisconnected.style.display = "block";
 
             accountEmail.textContent = "";
 
-            document.getElementById(
-                "settingsLogout"
-            ).style.display =
-                "none";
+            document.getElementById("settingsLogout")
+                .style.display = "none";
 
-            document.getElementById(
-                "notConnectedText"
-            ).style.display =
-                "block";
+            document.getElementById("notConnectedText")
+                .style.display = "block";
 
             history.innerHTML = `
-                <div
-                    class="history-empty"
-                    id="historyEmpty"
-                >
+                <div class="history-empty" id="historyEmpty">
                     ${t("historyLogin")}
                 </div>
             `;
@@ -2014,20 +1882,17 @@
 
 
     /* =====================================================
-       AUTH INITIAL
+       INITIAL AUTH
     ===================================================== */
 
     async function initializeAuth() {
 
         const {
             data: { session }
-        } =
-            await supabaseClient.auth.getSession();
+        } = await supabaseClient.auth.getSession();
 
         updateAuthUI(
-            session
-                ? session.user
-                : null
+            session ? session.user : null
         );
     }
 
@@ -2035,21 +1900,25 @@
     supabaseClient.auth.onAuthStateChange(
         function (event, session) {
 
+            if (event === "PASSWORD_RECOVERY") {
+
+                openModal(newPasswordModal);
+
+                return;
+            }
+
             updateAuthUI(
-                session
-                    ? session.user
-                    : null
+                session ? session.user : null
             );
         }
     );
 
 
     /* =====================================================
-       OUVRIR CONNEXION
+       LOGIN
     ===================================================== */
 
-    document
-        .getElementById("loginButton")
+    document.getElementById("loginButton")
         .addEventListener(
             "click",
             function () {
@@ -2061,25 +1930,17 @@
         );
 
 
-    /* =====================================================
-       CONNEXION
-    ===================================================== */
-
-    document
-        .getElementById("submitLogin")
+    document.getElementById("submitLogin")
         .addEventListener(
             "click",
             async function () {
 
                 const email =
-                    document
-                        .getElementById("loginEmail")
-                        .value
-                        .trim();
+                    document.getElementById("loginEmail")
+                        .value.trim();
 
                 const password =
-                    document
-                        .getElementById("loginPassword")
+                    document.getElementById("loginPassword")
                         .value;
 
                 loginStatus.textContent = "";
@@ -2093,9 +1954,7 @@
                 }
 
                 const button =
-                    document.getElementById(
-                        "submitLogin"
-                    );
+                    document.getElementById("submitLogin");
 
                 button.disabled = true;
 
@@ -2104,9 +1963,7 @@
                         ? "Connexion..."
                         : "Signing in...";
 
-                const {
-                    error
-                } =
+                const { error } =
                     await supabaseClient.auth
                         .signInWithPassword({
                             email: email,
@@ -2114,9 +1971,7 @@
                         });
 
                 button.disabled = false;
-
-                button.textContent =
-                    t("connect");
+                button.textContent = t("connect");
 
                 if (error) {
 
@@ -2128,23 +1983,17 @@
 
                 closeModal(loginModal);
 
-                document.getElementById(
-                    "loginEmail"
-                ).value = "";
-
-                document.getElementById(
-                    "loginPassword"
-                ).value = "";
+                document.getElementById("loginEmail").value = "";
+                document.getElementById("loginPassword").value = "";
             }
         );
 
 
     /* =====================================================
-       INSCRIPTION OUVERTURE
+       SIGNUP
     ===================================================== */
 
-    document
-        .getElementById("openSignupFromLogin")
+    document.getElementById("openSignupFromLogin")
         .addEventListener(
             "click",
             function () {
@@ -2158,41 +2007,26 @@
         );
 
 
-    /* =====================================================
-       INSCRIPTION
-    ===================================================== */
-
-    document
-        .getElementById("submitSignup")
+    document.getElementById("submitSignup")
         .addEventListener(
             "click",
             async function () {
 
                 const email =
-                    document
-                        .getElementById("signupEmail")
-                        .value
-                        .trim();
+                    document.getElementById("signupEmail")
+                        .value.trim();
 
                 const password =
-                    document
-                        .getElementById("signupPassword")
+                    document.getElementById("signupPassword")
                         .value;
 
                 const confirmPassword =
-                    document
-                        .getElementById(
-                            "signupPasswordConfirm"
-                        )
+                    document.getElementById("signupPasswordConfirm")
                         .value;
 
                 signupStatus.textContent = "";
 
-                if (
-                    !email ||
-                    !password ||
-                    !confirmPassword
-                ) {
+                if (!email || !password || !confirmPassword) {
 
                     signupStatus.textContent =
                         t("fillFields");
@@ -2200,10 +2034,7 @@
                     return;
                 }
 
-                if (
-                    password !==
-                    confirmPassword
-                ) {
+                if (password !== confirmPassword) {
 
                     signupStatus.textContent =
                         t("passwordDifferent");
@@ -2220,9 +2051,7 @@
                 }
 
                 const button =
-                    document.getElementById(
-                        "submitSignup"
-                    );
+                    document.getElementById("submitSignup");
 
                 button.disabled = true;
 
@@ -2231,10 +2060,7 @@
                         ? "Création..."
                         : "Creating...";
 
-                const {
-                    data,
-                    error
-                } =
+                const { data, error } =
                     await supabaseClient.auth
                         .signUp({
                             email: email,
@@ -2242,9 +2068,7 @@
                         });
 
                 button.disabled = false;
-
-                button.textContent =
-                    t("createAccount");
+                button.textContent = t("createAccount");
 
                 if (error) {
 
@@ -2272,12 +2096,7 @@
         );
 
 
-    /* =====================================================
-       RETOUR CONNEXION
-    ===================================================== */
-
-    document
-        .getElementById("openLoginFromSignup")
+    document.getElementById("openLoginFromSignup")
         .addEventListener(
             "click",
             function () {
@@ -2292,7 +2111,204 @@
 
 
     /* =====================================================
-       DECONNEXION
+       MON COMPTE
+       UNIQUEMENT CHANGEMENT MOT DE PASSE
+    ===================================================== */
+
+    document.getElementById("accountButton")
+        .addEventListener(
+            "click",
+            function () {
+
+                if (!currentUser) {
+                    return;
+                }
+
+                document.getElementById(
+                    "accountModalEmail"
+                ).textContent =
+                    currentUser.email || "";
+
+                passwordStatus.textContent = "";
+
+                openModal(accountModal);
+            }
+        );
+
+
+    document.getElementById("accountModalClose")
+        .addEventListener(
+            "click",
+            function () {
+
+                closeModal(accountModal);
+            }
+        );
+
+
+    /* =====================================================
+       ENVOYER LIEN CHANGEMENT MOT DE PASSE
+    ===================================================== */
+
+    document.getElementById("changePasswordButton")
+        .addEventListener(
+            "click",
+            async function () {
+
+                if (!currentUser) {
+                    return;
+                }
+
+                const button =
+                    document.getElementById(
+                        "changePasswordButton"
+                    );
+
+                passwordStatus.style.color =
+                    "#9da3ae";
+
+                passwordStatus.textContent =
+                    t("sendingLink");
+
+                button.disabled = true;
+
+                const { error } =
+                    await supabaseClient.auth
+                        .resetPasswordForEmail(
+                            currentUser.email,
+                            {
+                                redirectTo:
+                                    window.location.origin
+                            }
+                        );
+
+                button.disabled = false;
+
+                if (error) {
+
+                    passwordStatus.style.color =
+                        "#ff9c9c";
+
+                    passwordStatus.textContent =
+                        error.message;
+
+                    return;
+                }
+
+                passwordStatus.style.color =
+                    "#9ee6a8";
+
+                passwordStatus.textContent =
+                    t("passwordSent");
+            }
+        );
+
+
+    /* =====================================================
+       NOUVEAU MOT DE PASSE
+    ===================================================== */
+
+    document.getElementById("saveNewPassword")
+        .addEventListener(
+            "click",
+            async function () {
+
+                const password =
+                    document.getElementById(
+                        "newPassword"
+                    ).value;
+
+                const confirmPassword =
+                    document.getElementById(
+                        "newPasswordConfirm"
+                    ).value;
+
+                newPasswordStatus.textContent = "";
+
+                if (!password || !confirmPassword) {
+
+                    newPasswordStatus.textContent =
+                        t("fillFields");
+
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+
+                    newPasswordStatus.textContent =
+                        t("passwordDifferent");
+
+                    return;
+                }
+
+                if (password.length < 6) {
+
+                    newPasswordStatus.textContent =
+                        t("passwordLength");
+
+                    return;
+                }
+
+                const button =
+                    document.getElementById(
+                        "saveNewPassword"
+                    );
+
+                button.disabled = true;
+
+                button.textContent =
+                    t("changingPassword");
+
+                const { error } =
+                    await supabaseClient.auth
+                        .updateUser({
+                            password: password
+                        });
+
+                button.disabled = false;
+
+                button.textContent =
+                    t("savePassword");
+
+                if (error) {
+
+                    newPasswordStatus.style.color =
+                        "#ff9c9c";
+
+                    newPasswordStatus.textContent =
+                        t("passwordError") +
+                        " " +
+                        error.message;
+
+                    return;
+                }
+
+                newPasswordStatus.style.color =
+                    "#9ee6a8";
+
+                newPasswordStatus.textContent =
+                    t("passwordChanged");
+
+                document.getElementById(
+                    "newPassword"
+                ).value = "";
+
+                document.getElementById(
+                    "newPasswordConfirm"
+                ).value = "";
+
+                setTimeout(
+                    function () {
+                        closeModal(newPasswordModal);
+                    },
+                    1800
+                );
+            }
+        );
+
+
+    /* =====================================================
+       LOGOUT
     ===================================================== */
 
     async function logout() {
@@ -2308,16 +2324,7 @@
     }
 
 
-    document
-        .getElementById("logoutAccountButton")
-        .addEventListener(
-            "click",
-            logout
-        );
-
-
-    document
-        .getElementById("settingsLogout")
+    document.getElementById("settingsLogout")
         .addEventListener(
             "click",
             logout
@@ -2328,8 +2335,7 @@
        NOUVELLE CONVERSATION
     ===================================================== */
 
-    document
-        .getElementById("newChatButton")
+    document.getElementById("newChatButton")
         .addEventListener(
             "click",
             function () {
@@ -2366,13 +2372,10 @@
 
 
     /* =====================================================
-       CREER CONVERSATION
-       UNIQUEMENT SI CONNECTE
+       CREATE CONVERSATION
     ===================================================== */
 
-    async function createConversation(
-        firstMessage
-    ) {
+    async function createConversation(firstMessage) {
 
         if (!currentUser) {
             return null;
@@ -2383,10 +2386,7 @@
                 ? firstMessage.substring(0, 60) + "..."
                 : firstMessage;
 
-        const {
-            data,
-            error
-        } =
+        const { data, error } =
             await supabaseClient
                 .from("conversations")
                 .insert({
@@ -2414,24 +2414,16 @@
 
 
     /* =====================================================
-       SAUVEGARDER MESSAGE
+       SAVE MESSAGE
     ===================================================== */
 
-    async function saveMessage(
-        role,
-        content
-    ) {
+    async function saveMessage(role, content) {
 
-        if (
-            !currentUser ||
-            !currentConversationId
-        ) {
+        if (!currentUser || !currentConversationId) {
             return;
         }
 
-        const {
-            error
-        } =
+        const { error } =
             await supabaseClient
                 .from("messages")
                 .insert({
@@ -2458,16 +2450,9 @@
     }
 
 
-    /* =====================================================
-       DATE CONVERSATION
-    ===================================================== */
-
     async function updateConversationDate() {
 
-        if (
-            !currentUser ||
-            !currentConversationId
-        ) {
+        if (!currentUser || !currentConversationId) {
             return;
         }
 
@@ -2494,10 +2479,7 @@
             return;
         }
 
-        const {
-            data,
-            error
-        } =
+        const { data, error } =
             await supabaseClient
                 .from("conversations")
                 .select("*")
@@ -2524,10 +2506,7 @@
 
         history.innerHTML = "";
 
-        if (
-            !data ||
-            data.length === 0
-        ) {
+        if (!data || data.length === 0) {
 
             history.innerHTML = `
                 <div class="history-empty">
@@ -2538,35 +2517,29 @@
             return;
         }
 
-        data.forEach(
-            function (conversation) {
+        data.forEach(function (conversation) {
 
-                const element =
-                    document.createElement(
-                        "div"
+            const element =
+                document.createElement("div");
+
+            element.className =
+                "conversation";
+
+            element.textContent =
+                conversation.title;
+
+            element.addEventListener(
+                "click",
+                function () {
+
+                    loadConversation(
+                        conversation.id
                     );
+                }
+            );
 
-                element.className =
-                    "conversation";
-
-                element.textContent =
-                    conversation.title;
-
-                element.addEventListener(
-                    "click",
-                    function () {
-
-                        loadConversation(
-                            conversation.id
-                        );
-                    }
-                );
-
-                history.appendChild(
-                    element
-                );
-            }
-        );
+            history.appendChild(element);
+        });
     }
 
 
@@ -2580,10 +2553,7 @@
             return;
         }
 
-        const {
-            data,
-            error
-        } =
+        const { data, error } =
             await supabaseClient
                 .from("messages")
                 .select("*")
@@ -2617,40 +2587,30 @@
 
         chat.innerHTML = "";
 
-        if (
-            !data ||
-            data.length === 0
-        ) {
+        if (!data || data.length === 0) {
             return;
         }
 
-        data.forEach(
-            function (message) {
+        data.forEach(function (message) {
 
-                addMessageToChat(
-                    message.role,
-                    message.content
-                );
-            }
-        );
+            addMessageToChat(
+                message.role,
+                message.content
+            );
+        });
 
         scrollToBottom();
     }
 
 
     /* =====================================================
-       AFFICHER MESSAGE
+       MESSAGE
     ===================================================== */
 
-    function addMessageToChat(
-        role,
-        content
-    ) {
+    function addMessageToChat(role, content) {
 
         const message =
-            document.createElement(
-                "div"
-            );
+            document.createElement("div");
 
         message.className =
             "message " +
@@ -2663,9 +2623,7 @@
         if (role === "user") {
 
             const bubble =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
 
             bubble.className =
                 "user-bubble";
@@ -2673,16 +2631,12 @@
             bubble.textContent =
                 content;
 
-            message.appendChild(
-                bubble
-            );
+            message.appendChild(bubble);
 
         } else {
 
             const avatar =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
 
             avatar.className =
                 "avatar";
@@ -2691,9 +2645,7 @@
                 "✝";
 
             const text =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
 
             text.className =
                 "ai-text";
@@ -2701,31 +2653,22 @@
             text.textContent =
                 content;
 
-            message.appendChild(
-                avatar
-            );
-
-            message.appendChild(
-                text
-            );
+            message.appendChild(avatar);
+            message.appendChild(text);
         }
 
-        chat.appendChild(
-            message
-        );
+        chat.appendChild(message);
     }
 
 
     /* =====================================================
-       REFLEXION
+       THINKING
     ===================================================== */
 
     function addThinking() {
 
         const message =
-            document.createElement(
-                "div"
-            );
+            document.createElement("div");
 
         message.className =
             "message ai";
@@ -2741,9 +2684,7 @@
             </div>
         `;
 
-        chat.appendChild(
-            message
-        );
+        chat.appendChild(message);
 
         scrollToBottom();
     }
@@ -2761,10 +2702,6 @@
         }
     }
 
-
-    /* =====================================================
-       SCROLL
-    ===================================================== */
 
     function scrollToBottom() {
 
@@ -2794,8 +2731,7 @@
 
 
     /* =====================================================
-       ENTREE = ENVOYER
-       SHIFT + ENTREE = NOUVELLE LIGNE
+       ENTER / SHIFT ENTER
     ===================================================== */
 
     messageInput.addEventListener(
@@ -2811,13 +2747,12 @@
 
                 chatForm.requestSubmit();
             }
-
         }
     );
 
 
     /* =====================================================
-       ENVOI MESSAGE
+       ENVOI QUESTION
     ===================================================== */
 
     chatForm.addEventListener(
@@ -2841,9 +2776,7 @@
             sendButton.disabled = true;
 
             const welcome =
-                document.getElementById(
-                    "welcome"
-                );
+                document.getElementById("welcome");
 
             if (welcome) {
                 welcome.remove();
@@ -2857,15 +2790,7 @@
             scrollToBottom();
 
             messageInput.value = "";
-
-            messageInput.style.height =
-                "auto";
-
-            /*
-             * IMPORTANT :
-             * aucun compte n'est nécessaire
-             * pour discuter.
-             */
+            messageInput.style.height = "auto";
 
             if (
                 currentUser &&
@@ -2901,11 +2826,6 @@
                     "question",
                     question
                 );
-
-                /*
-                 * Envoie la langue choisie
-                 * au backend.
-                 */
 
                 formData.append(
                     "language",
@@ -2954,9 +2874,7 @@
                 }
 
                 const answer =
-                    answerElement
-                        .textContent
-                        .trim();
+                    answerElement.textContent.trim();
 
                 if (!answer) {
 
@@ -2973,11 +2891,6 @@
                 );
 
                 scrollToBottom();
-
-                /*
-                 * Sauvegarde uniquement
-                 * si l'utilisateur est connecté.
-                 */
 
                 if (
                     currentUser &&
@@ -3026,13 +2939,10 @@
     ===================================================== */
 
     applyLanguage();
-
     applyTheme();
-
     initializeAuth();
 
 </script>
 
 </body>
 </html>
-```
