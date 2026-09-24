@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -22,12 +23,20 @@
             overflow: hidden;
         }
 
+        button,
+        textarea,
+        input {
+            font-family: inherit;
+        }
+
         .app {
             display: flex;
             height: 100vh;
         }
 
-        /* SIDEBAR */
+        /* =========================
+           SIDEBAR
+        ========================= */
 
         .sidebar {
             width: 280px;
@@ -114,7 +123,13 @@
             color: white;
         }
 
-        /* MAIN */
+        .auth-button:hover {
+            background: #343b4a;
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
 
         .main {
             flex: 1;
@@ -217,7 +232,9 @@
             }
         }
 
-        /* INPUT */
+        /* =========================
+           INPUT
+        ========================= */
 
         .input-area {
             padding: 15px 15%;
@@ -246,6 +263,10 @@
             max-height: 150px;
         }
 
+        textarea::placeholder {
+            color: #777e8d;
+        }
+
         .send {
             width: 45px;
             border: none;
@@ -271,7 +292,9 @@
             white-space: pre-wrap;
         }
 
-        /* AUTH */
+        /* =========================
+           AUTH BUTTONS
+        ========================= */
 
         .auth-panel {
             display: flex;
@@ -288,1590 +311,166 @@
             color: white;
         }
 
-        /* MOBILE */
-
-        @media (max-width: 800px) {
-            .sidebar {
-                width: 220px;
-            }
-
-            .chat,
-            .input-area {
-                padding-left: 5%;
-                padding-right: 5%;
-            }
+        .auth-panel button:hover {
+            background: #343b4a;
         }
 
-        @media (max-width: 600px) {
-            .sidebar {
-                width: 200px;
-            }
-
-            .message.user .bubble {
-                max-width: 90%;
-            }
-
-            .ai-content {
-                max-width: 90%;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-<div class="app">
-
-    <!-- SIDEBAR -->
-
-    <aside class="sidebar">
-
-        <div class="logo">
-            ✝ BibleProIA
-        </div>
-
-        <button class="new-chat" id="new-chat">
-            ＋ Nouvelle conversation
-        </button>
-
-        <div class="history-title">
-            Historique
-        </div>
-
-        <div class="history" id="history">
-            <div style="color:#777;font-size:13px;">
-                Chargement...
-            </div>
-        </div>
-
-        <div class="account" id="account">
-
-            <div class="account-email" id="account-email">
-                Non connecté
-            </div>
-
-            <div class="auth-panel" id="auth-panel">
-
-                <button id="login-button">
-                    Se connecter
-                </button>
-
-                <button id="signup-button">
-                    Créer un compte
-                </button>
-
-            </div>
-
-            <button
-                class="auth-button"
-                id="logout-button"
-                style="display:none;"
-            >
-                Se déconnecter
-            </button>
-
-        </div>
-
-    </aside>
-
-
-    <!-- MAIN -->
-
-    <main class="main">
-{% if reponse %}
-<div id="server-answer" style="display:none;">
-    <div class="answer-text">{{ reponse }}</div>
-</div>
-{% endif %}
-
-<div class="chat" id="chat">
-        <div class="chat" id="chat">
-
-            <div class="welcome" id="welcome">
-
-                <h1>BibleProIA</h1>
-
-                <p>
-                    Posez vos questions sur la Bible,
-                    le christianisme et l'adventisme.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="input-area">
-
-            <form id="chat-form">
-
-                <div class="input-wrapper">
-
-                    <textarea
-                        id="question"
-                        placeholder="Posez votre question..."
-                        rows="1"
-                    ></textarea>
-
-                    <button
-                        class="send"
-                        id="send"
-                        type="submit"
-                    >
-                        ➤
-                    </button>
-
-                </div>
-
-            </form>
-
-        </div>
-
-    </main>
-
-</div>
-
-
-<script>
-
-const SUPABASE_URL =
-    "https://mcsigvlnaghtijgbxeqn.supabase.co";
-
-const SUPABASE_KEY =
-    "sb_publishable_IIKiSAjRQJCGHUSGVidnqQ_vUsq8Epv";
-
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
-
-
-let currentUser = null;
-let currentConversationId = null;
-let loadingMessage = false;
-
-
-/* =========================
-   UTILITAIRES
-========================= */
-
-function escapeHtml(text) {
-
-    const div = document.createElement("div");
-
-    div.textContent = text;
-
-    return div.innerHTML;
-}
-
-
-/* =========================
-   AUTHENTIFICATION
-========================= */
-
-async function updateAuthUI() {
-
-    const {
-        data: {
-            session
-        },
-        error
-    } = await supabaseClient.auth.getSession();
-
-    if (error) {
-
-        console.error(
-            "Erreur récupération session :",
-            error
-        );
-
-        return;
-    }
-
-    currentUser = session?.user || null;
-
-    const email =
-        document.getElementById("account-email");
-
-    const authPanel =
-        document.getElementById("auth-panel");
-
-    const logoutButton =
-        document.getElementById("logout-button");
-
-
-    if (currentUser) {
-
-        email.textContent =
-            currentUser.email || "Compte connecté";
-
-        authPanel.style.display = "none";
-
-        logoutButton.style.display = "block";
-
-        console.log(
-            "Utilisateur connecté :",
-            currentUser.id
-        );
-
-    } else {
-
-        email.textContent = "Non connecté";
-
-        authPanel.style.display = "flex";
-
-        logoutButton.style.display = "none";
-
-        console.log("Aucun utilisateur connecté.");
-    }
-
-    await loadConversations();
-}
-
-
-/* =========================
-   CREATION CONVERSATION
-========================= */
-
-async function createConversation(title) {
-
-    console.log(
-        "Tentative de création de conversation..."
-    );
-
-    const {
-        data: {
-            session
-        },
-        error: sessionError
-    } = await supabaseClient.auth.getSession();
-
-
-    if (sessionError) {
-
-        console.error(
-            "Erreur session Supabase :",
-            sessionError
-        );
-
-        throw new Error(
-            "Erreur Supabase lors de la récupération de la session : " +
-            sessionError.message
-        );
-    }
-
-
-    if (!session || !session.user) {
-
-        throw new Error(
-            "Aucun utilisateur connecté. Connectez-vous avant de créer une conversation."
-        );
-    }
-
-
-    const userId =
-        session.user.id;
-
-
-    console.log(
-        "Création pour user_id :",
-        userId
-    );
-
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("conversations")
-        .insert({
-
-            user_id: userId,
-
-            title:
-                title ||
-                "Nouvelle conversation"
-
-        })
-        .select()
-        .single();
-
-
-    if (error) {
-
-        console.error(
-            "ERREUR SUPABASE CREATION CONVERSATION :",
-            error
-        );
-
-        throw new Error(
-            "Supabase : " +
-            error.message +
-            (error.details
-                ? "\nDétails : " + error.details
-                : "") +
-            (error.hint
-                ? "\nIndice : " + error.hint
-                : "")
-        );
-    }
-
-
-    console.log(
-        "Conversation créée :",
-        data
-    );
-
-
-    return data;
-}
-
-
-/* =========================
-   HISTORIQUE
-========================= */
-
-async function loadConversations() {
-
-    const history =
-        document.getElementById("history");
-
-
-    if (!currentUser) {
-
-        history.innerHTML = `
-            <div style="color:#777;font-size:13px;">
-                Connectez-vous pour voir votre historique.
-            </div>
-        `;
-
-        return;
-    }
-
-
-    console.log(
-        "Chargement des conversations..."
-    );
-
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("conversations")
-        .select("*")
-        .eq("user_id", currentUser.id)
-        .order("updated_at", {
-            ascending: false
-        });
-
-
-    if (error) {
-
-        console.error(
-            "Erreur chargement historique :",
-            error
-        );
-
-        history.innerHTML = `
-            <div style="color:#ff7777;font-size:13px;">
-                Erreur historique :<br>
-                ${escapeHtml(error.message)}
-            </div>
-        `;
-
-        return;
-    }
-
-
-    history.innerHTML = "";
-
-
-    if (!data || data.length === 0) {
-
-        history.innerHTML = `
-            <div style="color:#777;font-size:13px;">
-                Aucune conversation.
-            </div>
-        `;
-
-        return;
-    }
-
-
-    data.forEach(conversation => {
-
-        const element =
-            document.createElement("div");
-
-        element.className =
-            "conversation";
-
-
-        if (
-            conversation.id ===
-            currentConversationId
-        ) {
-
-            element.classList.add("active");
+        /* =========================
+           AUTH MODAL
+        ========================= */
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.72);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
         }
 
-
-        element.textContent =
-            conversation.title;
-
-
-        element.onclick = () => {
-
-            loadConversation(
-                conversation.id
-            );
-
-        };
-
-
-        history.appendChild(element);
-
-    });
-}
-
-
-/* =========================
-   SAUVEGARDE MESSAGE
-========================= */
-
-async function saveMessage(
-    conversationId,
-    role,
-    content
-) {
-
-    if (!currentUser) {
-
-        console.warn(
-            "Impossible de sauvegarder : utilisateur non connecté."
-        );
-
-        return;
-    }
-
-
-    const {
-        error
-    } = await supabaseClient
-        .from("messages")
-        .insert({
-
-            conversation_id:
-                conversationId,
-
-            user_id:
-                currentUser.id,
-
-            role:
-                role,
-
-            content:
-                content
-
-        });
-
-
-    if (error) {
-
-        console.error(
-            "Erreur sauvegarde message :",
-            error
-        );
-
-        throw new Error(
-            "Erreur sauvegarde message : " +
-            error.message
-        );
-    }
-}
-
-
-/* =========================
-   DATE CONVERSATION
-========================= */
-
-async function updateConversationTime(
-    conversationId
-) {
-
-    const {
-        error
-    } = await supabaseClient
-        .from("conversations")
-        .update({
-
-            updated_at:
-                new Date().toISOString()
-
-        })
-        .eq("id", conversationId)
-        .eq("user_id", currentUser.id);
-
-
-    if (error) {
-
-        console.error(
-            "Erreur mise à jour conversation :",
-            error
-        );
-    }
-}
-
-
-/* =========================
-   CHARGER CONVERSATION
-========================= */
-
-async function loadConversation(
-    conversationId
-) {
-
-    if (!currentUser) {
-        return;
-    }
-
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("messages")
-        .select("*")
-        .eq(
-            "conversation_id",
-            conversationId
-        )
-        .eq(
-            "user_id",
-            currentUser.id
-        )
-        .order("created_at", {
-            ascending: true
-        });
-
-
-    if (error) {
-
-        console.error(
-            "Erreur chargement messages :",
-            error
-        );
-
-        return;
-    }
-
-
-    currentConversationId =
-        conversationId;
-
-
-    const chat =
-        document.getElementById("chat");
-
-
-    chat.innerHTML = "";
-
-
-    if (!data || data.length === 0) {
-
-        showWelcome();
-
-    } else {
-
-        data.forEach(message => {
-
-            if (message.role === "user") {
-
-                addUserMessage(
-                    message.content
-                );
-
-            } else {
-
-                addAIMessageText(
-                    message.content
-                );
-
-            }
-
-        });
-
-    }
-
-
-    await loadConversations();
-
-    scrollToBottom();
-}
-
-
-/* =========================
-   NOUVELLE CONVERSATION
-========================= */
-
-function startNewConversation() {
-
-    currentConversationId = null;
-
-    showWelcome();
-
-    document
-        .getElementById("question")
-        .focus();
-
-    loadConversations();
-}
-
-
-/* =========================
-   WELCOME
-========================= */
-
-function showWelcome() {
-
-    document.getElementById("chat").innerHTML = `
-
-        <div class="welcome" id="welcome">
-
-            <h1>BibleProIA</h1>
-
-            <p>
-                Posez vos questions sur la Bible,
-                le christianisme et l'adventisme.
-            </p>
-
-        </div>
-
-    `;
-}
-
-
-/* =========================
-   MESSAGE UTILISATEUR
-========================= */
-
-function addUserMessage(text) {
-
-    const welcome =
-        document.getElementById("welcome");
-
-    if (welcome) {
-        welcome.remove();
-    }
-
-
-    const chat =
-        document.getElementById("chat");
-
-
-    const message =
-        document.createElement("div");
-
-    message.className =
-        "message user";
-
-
-    message.innerHTML = `
-
-        <div class="bubble">
-            ${escapeHtml(text)}
-        </div>
-
-    `;
-
-
-    chat.appendChild(message);
-
-    scrollToBottom();
-}
-
-
-/* =========================
-   MESSAGE IA
-========================= */
-
-function addAIMessageText(text) {
-
-    const chat =
-        document.getElementById("chat");
-
-
-    const message =
-        document.createElement("div");
-
-    message.className =
-        "message ai";
-
-
-    message.innerHTML = `
-
-        <div class="ai-icon">
-            ✝
-        </div>
-
-        <div class="ai-content">
-            ${escapeHtml(text)}
-        </div>
-
-    `;
-
-
-    chat.appendChild(message);
-
-    scrollToBottom();
-}
-
-
-/* =========================
-   THINKING
-========================= */
-
-function showThinking() {
-
-    removeThinking();
-
-
-    const chat =
-        document.getElementById("chat");
-
-
-    const thinking =
-        document.createElement("div");
-
-    thinking.className =
-        "thinking";
-
-    thinking.id =
-        "thinking";
-
-
-    thinking.innerHTML = `
-
-        <div class="ai-icon">
-            ✝
-        </div>
-
-        <div>
-            BibleProIA réfléchit
-            <span class="dots">
-                <span>.</span>
-                <span>.</span>
-                <span>.</span>
-            </span>
-        </div>
-
-    `;
-
-
-    chat.appendChild(thinking);
-
-    scrollToBottom();
-}
-
-
-function removeThinking() {
-
-    const thinking =
-        document.getElementById("thinking");
-
-    if (thinking) {
-        thinking.remove();
-    }
-}
-
-
-/* =========================
-   SCROLL
-========================= */
-
-function scrollToBottom() {
-
-    const chat =
-        document.getElementById("chat");
-
-    chat.scrollTop =
-        chat.scrollHeight;
-}
-
-
-/* =========================
-   FORMULAIRE CHAT
-========================= */
-
-document
-    .getElementById("chat-form")
-    .addEventListener(
-        "submit",
-        async function(event) {
-
-            event.preventDefault();
-
-
-            if (loadingMessage) {
-                return;
-            }
-
-
-            const input =
-                document.getElementById("question");
-
-            const send =
-                document.getElementById("send");
-
-
-            const question =
-                input.value.trim();
-
-
-            if (!question) {
-                return;
-            }
-
-
-            loadingMessage = true;
-
-            send.disabled = true;
-
-
-            try {
-
-                /* Vérification session */
-
-                const {
-                    data: {
-                        session
-                    },
-                    error: sessionError
-                } =
-                    await supabaseClient.auth.getSession();
-
-
-                if (sessionError) {
-
-                    throw new Error(
-                        "Impossible de récupérer la session Supabase : " +
-                        sessionError.message
-                    );
-                }
-
-
-                /*
-                 * Pour sauvegarder l'historique,
-                 * un compte est nécessaire.
-                 */
-
-                if (!session || !session.user) {
-
-                    throw new Error(
-                        "Vous devez être connecté pour utiliser l'historique des conversations."
-                    );
-                }
-
-
-                currentUser =
-                    session.user;
-
-
-                /* Création conversation */
-
-                if (!currentConversationId) {
-
-                    const conversation =
-                        await createConversation(
-                            question.substring(
-                                0,
-                                60
-                            )
-                        );
-
-
-                    currentConversationId =
-                        conversation.id;
-
-
-                    console.log(
-                        "currentConversationId =",
-                        currentConversationId
-                    );
-
-
-                    await loadConversations();
-                }
-
-
-                /* Afficher message */
-
-                addUserMessage(question);
-
-
-                input.value = "";
-
-
-                /* Sauvegarder */
-
-                await saveMessage(
-                    currentConversationId,
-                    "user",
-                    question
-                );
-
-
-                await updateConversationTime(
-                    currentConversationId
-                );
-
-
-                /* IA */
-
-                showThinking();
-
-
-                const response =
-                    await fetch(
-                        "/",
-                        {
-
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/x-www-form-urlencoded"
-                            },
-
-                            body:
-                                new URLSearchParams({
-                                    question:
-                                        question
-                                })
-
-                        }
-                    );
-
-
-                const html =
-                    await response.text();
-
-
-                removeThinking();
-
-
-                const parser =
-                    new DOMParser();
-
-
-                const documentResponse =
-                    parser.parseFromString(
-                        html,
-                        "text/html"
-                    );
-
-
-                const answer =
-                    documentResponse.querySelector(
-                        "#server-answer .answer-text"
-                    );
-
-
-                if (!answer) {
-
-                    throw new Error(
-                        "La réponse de BibleProIA n'a pas pu être récupérée."
-                    );
-                }
-
-
-                const answerText =
-                    answer.innerText.trim();
-
-
-                addAIMessageText(
-                    answerText
-                );
-
-
-                await saveMessage(
-                    currentConversationId,
-                    "assistant",
-                    answerText
-                );
-
-
-                await updateConversationTime(
-                    currentConversationId
-                );
-
-
-                await loadConversations();
-
-
-            } catch (error) {
-
-                removeThinking();
-
-
-                console.error(
-                    "ERREUR CHAT COMPLÈTE :",
-                    error
-                );
-
-
-                const chat =
-                    document.getElementById("chat");
-
-
-                const errorBox =
-                    document.createElement("div");
-
-                errorBox.className =
-                    "error";
-
-
-                errorBox.textContent =
-                    "Erreur : " +
-                    error.message;
-
-
-                chat.appendChild(
-                    errorBox
-                );
-
-
-                scrollToBottom();
-
-            } finally {
-
-                loadingMessage = false;
-
-                send.disabled = false;
-
-            }
-
-        }
-    );
-
-
-/* =========================
-   NOUVELLE CONVERSATION
-========================= */
-
-document
-    .getElementById("new-chat")
-    .addEventListener(
-        "click",
-        startNewConversation
-    );
-
-
-/* =========================
-   LOG IN
-========================= */
-
-document
-    .getElementById("login-button")
-    .addEventListener(
-        "click",
-        async function() {
-
-            const email =
-                prompt(
-                    "Adresse e-mail :"
-                );
-
-            if (!email) {
-                return;
-            }
-
-
-            const password =
-                prompt(
-                    "Mot de passe :"
-                );
-
-            if (!password) {
-                return;
-            }
-
-
-            const {
-                error
-            } =
-                await supabaseClient.auth.signInWithPassword({
-
-                    email:
-                        email,
-
-                    password:
-                        password
-
-                });
-
-
-            if (error) {
-
-                alert(
-                    "Erreur de connexion : " +
-                    error.message
-                );
-
-                return;
-            }
-
-
-            await updateAuthUI();
-
-        }
-    );
-
-
-/* =========================
-   SIGN UP
-========================= */
-
-document
-    .getElementById("signup-button")
-    .addEventListener(
-        "click",
-        async function() {
-
-            const email =
-                prompt(
-                    "Adresse e-mail :"
-                );
-
-            if (!email) {
-                return;
-            }
-
-
-            const password =
-                prompt(
-                    "Mot de passe :"
-                );
-
-            if (!password) {
-                return;
-            }
-
-
-            const {
-                error
-            } =
-                await supabaseClient.auth.signUp({
-
-                    email:
-                        email,
-
-                    password:
-                        password
-
-                });
-
-
-            if (error) {
-
-                alert(
-                    "Erreur création compte : " +
-                    error.message
-                );
-
-                return;
-            }
-
-
-            alert(
-                "Compte créé avec succès."
-            );
-
-
-            await updateAuthUI();
-
-        }
-    );
-
-
-/* =========================
-   LOG OUT
-========================= */
-
-document
-    .getElementById("logout-button")
-    .addEventListener(
-        "click",
-        async function() {
-
-            const {
-                error
-            } =
-                await supabaseClient.auth.signOut();
-
-
-            if (error) {
-
-                alert(
-                    "Erreur déconnexion : " +
-                    error.message
-                );
-
-                return;
-            }
-
-
-            currentUser = null;
-
-            currentConversationId = null;
-
-            showWelcome();
-
-            await updateAuthUI();
-
-        }
-    );
-
-
-/* =========================
-   CHANGEMENT AUTH
-========================= */
-
-supabaseClient.auth.onAuthStateChange(
-    async function(event, session) {
-
-        console.log(
-            "Auth event :",
-            event
-        );
-
-
-        currentUser =
-            session?.user || null;
-
-
-        await updateAuthUI();
-
-    }
-);
-
-
-/* =========================
-   INITIALISATION
-========================= */
-
-(async function() {
-
-    console.log(
-        "Initialisation BibleProIA..."
-    );
-
-
-    await updateAuthUI();
-
-
-    console.log(
-        "BibleProIA initialisé."
-    );
-
-})();
-
-</script>
-
-</body>
-</html><!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>BibleProIA</title>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #0f1117;
-            color: #fff;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .app {
+        .modal-overlay.show {
             display: flex;
-            height: 100vh;
         }
 
-        /* SIDEBAR */
-
-        .sidebar {
-            width: 280px;
-            background: #171a22;
-            border-right: 1px solid #292d38;
-            display: flex;
-            flex-direction: column;
-            padding: 18px;
-        }
-
-        .logo {
-            font-size: 23px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .new-chat {
+        .auth-modal {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #343945;
-            background: #222631;
-            color: white;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 15px;
+            max-width: 420px;
+            background: #191c24;
+            border: 1px solid #303541;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 22px;
         }
 
-        .new-chat:hover {
-            background: #2b303c;
+        .modal-title {
+            font-size: 23px;
+            font-weight: bold;
         }
 
-        .history-title {
-            font-size: 13px;
-            color: #8e94a3;
-            margin-bottom: 10px;
-        }
-
-        .history {
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .conversation {
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            color: #d9dce4;
-            font-size: 14px;
-            margin-bottom: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .conversation:hover {
-            background: #252a35;
-        }
-
-        .conversation.active {
-            background: #292f3c;
-        }
-
-        .account {
-            border-top: 1px solid #292d38;
-            padding-top: 15px;
-            margin-top: 10px;
-        }
-
-        .account-email {
-            font-size: 13px;
-            color: #aeb3bf;
-            margin-bottom: 10px;
-            word-break: break-word;
-        }
-
-        .auth-button {
-            width: 100%;
-            padding: 10px;
+        .close-modal {
+            width: 34px;
+            height: 34px;
             border: none;
             border-radius: 8px;
-            cursor: pointer;
-            background: #292f3c;
-            color: white;
-        }
-
-        /* MAIN */
-
-        .main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-        }
-
-        .chat {
-            flex: 1;
-            overflow-y: auto;
-            padding: 35px 15%;
-        }
-
-        .welcome {
-            text-align: center;
-            margin-top: 15vh;
-        }
-
-        .welcome h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-
-        .welcome p {
-            color: #969cab;
-        }
-
-        .message {
-            display: flex;
-            margin-bottom: 25px;
-            max-width: 900px;
-        }
-
-        .message.user {
-            justify-content: flex-end;
-        }
-
-        .message.user .bubble {
-            background: #292f3c;
-            padding: 12px 16px;
-            border-radius: 16px;
-            max-width: 75%;
-            white-space: pre-wrap;
-        }
-
-        .message.ai {
-            align-items: flex-start;
-        }
-
-        .ai-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #252a35;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 10px;
-            flex-shrink: 0;
-            font-size: 15px;
-        }
-
-        .ai-content {
-            max-width: 80%;
-            line-height: 1.6;
-            white-space: pre-wrap;
-        }
-
-        .thinking {
-            display: flex;
-            align-items: center;
-            color: #9da3b1;
-            margin-bottom: 25px;
-        }
-
-        .thinking .ai-icon {
-            margin-right: 10px;
-        }
-
-        .dots span {
-            animation: blink 1.4s infinite;
-        }
-
-        .dots span:nth-child(2) {
-            animation-delay: .2s;
-        }
-
-        .dots span:nth-child(3) {
-            animation-delay: .4s;
-        }
-
-        @keyframes blink {
-            0%, 80%, 100% {
-                opacity: .2;
-            }
-
-            40% {
-                opacity: 1;
-            }
-        }
-
-        /* INPUT */
-
-        .input-area {
-            padding: 15px 15%;
-            border-top: 1px solid #292d38;
-            background: #0f1117;
-        }
-
-        .input-wrapper {
-            display: flex;
-            background: #191c24;
-            border: 1px solid #303541;
-            border-radius: 14px;
-            padding: 6px;
-        }
-
-        textarea {
-            flex: 1;
-            resize: none;
-            border: none;
-            outline: none;
             background: transparent;
-            color: white;
-            padding: 12px;
-            font-size: 15px;
-            min-height: 45px;
-            max-height: 150px;
+            color: #aeb3bf;
+            cursor: pointer;
+            font-size: 22px;
         }
 
-        .send {
-            width: 45px;
-            border: none;
+        .close-modal:hover {
+            background: #292f3c;
+            color: white;
+        }
+
+        .auth-tabs {
+            display: flex;
+            background: #11141b;
             border-radius: 10px;
-            background: #fff;
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: #8e94a3;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .auth-tab.active {
+            background: #292f3c;
+            color: white;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #c7cbd4;
+            font-size: 14px;
+            margin-bottom: 7px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #343945;
+            border-radius: 9px;
+            background: #10131a;
+            color: white;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #697386;
+        }
+
+        .auth-submit {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 9px;
+            background: white;
             color: #111;
             cursor: pointer;
-            font-size: 18px;
+            font-weight: bold;
+            margin-top: 5px;
         }
 
-        .send:disabled {
-            opacity: .4;
+        .auth-submit:disabled {
+            opacity: .5;
             cursor: default;
         }
 
-        .error {
-            color: #ff7777;
-            background: #2b1717;
-            border: 1px solid #633333;
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+        .auth-message {
+            display: none;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
             white-space: pre-wrap;
         }
 
-        /* AUTH */
-
-        .auth-panel {
-            display: flex;
-            gap: 8px;
-            flex-direction: column;
+        .auth-message.error-message {
+            display: block;
+            color: #ff8585;
+            background: #2b1717;
+            border: 1px solid #633333;
         }
 
-        .auth-panel button {
-            padding: 9px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            background: #292f3c;
-            color: white;
+        .auth-message.success-message {
+            display: block;
+            color: #8ee6a3;
+            background: #172b1d;
+            border: 1px solid #35633f;
         }
 
-        /* MOBILE */
+        /* =========================
+           MOBILE
+        ========================= */
 
         @media (max-width: 800px) {
             .sidebar {
@@ -1897,6 +496,10 @@ supabaseClient.auth.onAuthStateChange(
             .ai-content {
                 max-width: 90%;
             }
+
+            .auth-modal {
+                padding: 22px;
+            }
         }
     </style>
 </head>
@@ -1905,7 +508,9 @@ supabaseClient.auth.onAuthStateChange(
 
 <div class="app">
 
-    <!-- SIDEBAR -->
+    <!-- =========================
+         SIDEBAR
+    ========================= -->
 
     <aside class="sidebar">
 
@@ -1958,9 +563,17 @@ supabaseClient.auth.onAuthStateChange(
     </aside>
 
 
-    <!-- MAIN -->
+    <!-- =========================
+         MAIN
+    ========================= -->
 
     <main class="main">
+
+        {% if reponse %}
+        <div id="server-answer" style="display:none;">
+            <div class="answer-text">{{ reponse }}</div>
+        </div>
+        {% endif %}
 
         <div class="chat" id="chat">
 
@@ -1976,7 +589,6 @@ supabaseClient.auth.onAuthStateChange(
             </div>
 
         </div>
-
 
         <div class="input-area">
 
@@ -2009,7 +621,190 @@ supabaseClient.auth.onAuthStateChange(
 </div>
 
 
+<!-- =========================
+     AUTH MODAL
+========================= -->
+
+<div class="modal-overlay" id="auth-modal">
+
+    <div class="auth-modal">
+
+        <div class="modal-header">
+
+            <div class="modal-title">
+                BibleProIA
+            </div>
+
+            <button
+                class="close-modal"
+                id="close-auth-modal"
+                type="button"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="auth-tabs">
+
+            <button
+                class="auth-tab active"
+                id="login-tab"
+                type="button"
+            >
+                Se connecter
+            </button>
+
+            <button
+                class="auth-tab"
+                id="signup-tab"
+                type="button"
+            >
+                Créer un compte
+            </button>
+
+        </div>
+
+
+        <!-- CONNEXION -->
+
+        <form
+            class="auth-form active"
+            id="login-form"
+        >
+
+            <div class="form-group">
+
+                <label for="login-email">
+                    Adresse e-mail
+                </label>
+
+                <input
+                    id="login-email"
+                    type="email"
+                    placeholder="vous@exemple.com"
+                    autocomplete="email"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="login-password">
+                    Mot de passe
+                </label>
+
+                <input
+                    id="login-password"
+                    type="password"
+                    placeholder="Votre mot de passe"
+                    autocomplete="current-password"
+                    required
+                >
+
+            </div>
+
+
+            <button
+                class="auth-submit"
+                id="login-submit"
+                type="submit"
+            >
+                Se connecter
+            </button>
+
+        </form>
+
+
+        <!-- INSCRIPTION -->
+
+        <form
+            class="auth-form"
+            id="signup-form"
+        >
+
+            <div class="form-group">
+
+                <label for="signup-email">
+                    Adresse e-mail
+                </label>
+
+                <input
+                    id="signup-email"
+                    type="email"
+                    placeholder="vous@exemple.com"
+                    autocomplete="email"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="signup-password">
+                    Mot de passe
+                </label>
+
+                <input
+                    id="signup-password"
+                    type="password"
+                    placeholder="Choisissez un mot de passe"
+                    autocomplete="new-password"
+                    minlength="6"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="signup-password-confirm">
+                    Confirmer le mot de passe
+                </label>
+
+                <input
+                    id="signup-password-confirm"
+                    type="password"
+                    placeholder="Répétez votre mot de passe"
+                    autocomplete="new-password"
+                    minlength="6"
+                    required
+                >
+
+            </div>
+
+
+            <button
+                class="auth-submit"
+                id="signup-submit"
+                type="submit"
+            >
+                Créer mon compte
+            </button>
+
+        </form>
+
+
+        <div
+            class="auth-message"
+            id="auth-message"
+        ></div>
+
+    </div>
+
+</div>
+
+
 <script>
+
+/* =========================
+   SUPABASE
+========================= */
 
 const SUPABASE_URL =
     "https://mcsigvlnaghtijgbxeqn.supabase.co";
@@ -2024,6 +819,10 @@ const supabaseClient =
     );
 
 
+/* =========================
+   VARIABLES
+========================= */
+
 let currentUser = null;
 let currentConversationId = null;
 let loadingMessage = false;
@@ -2035,7 +834,8 @@ let loadingMessage = false;
 
 function escapeHtml(text) {
 
-    const div = document.createElement("div");
+    const div =
+        document.createElement("div");
 
     div.textContent = text;
 
@@ -2043,8 +843,440 @@ function escapeHtml(text) {
 }
 
 
+function scrollToBottom() {
+
+    const chat =
+        document.getElementById("chat");
+
+    chat.scrollTop =
+        chat.scrollHeight;
+}
+
+
 /* =========================
-   AUTHENTIFICATION
+   AUTH MODAL
+========================= */
+
+const authModal =
+    document.getElementById("auth-modal");
+
+const loginTab =
+    document.getElementById("login-tab");
+
+const signupTab =
+    document.getElementById("signup-tab");
+
+const loginForm =
+    document.getElementById("login-form");
+
+const signupForm =
+    document.getElementById("signup-form");
+
+const authMessage =
+    document.getElementById("auth-message");
+
+
+function openAuthModal(mode = "login") {
+
+    authModal.classList.add("show");
+
+    clearAuthMessage();
+
+    if (mode === "signup") {
+
+        showSignupForm();
+
+    } else {
+
+        showLoginForm();
+
+    }
+
+    setTimeout(() => {
+
+        if (mode === "signup") {
+
+            document
+                .getElementById("signup-email")
+                .focus();
+
+        } else {
+
+            document
+                .getElementById("login-email")
+                .focus();
+
+        }
+
+    }, 100);
+}
+
+
+function closeAuthModal() {
+
+    authModal.classList.remove("show");
+
+    clearAuthMessage();
+
+    loginForm.reset();
+
+    signupForm.reset();
+}
+
+
+function showLoginForm() {
+
+    loginTab.classList.add("active");
+    signupTab.classList.remove("active");
+
+    loginForm.classList.add("active");
+    signupForm.classList.remove("active");
+
+    clearAuthMessage();
+}
+
+
+function showSignupForm() {
+
+    signupTab.classList.add("active");
+    loginTab.classList.remove("active");
+
+    signupForm.classList.add("active");
+    loginForm.classList.remove("active");
+
+    clearAuthMessage();
+}
+
+
+function clearAuthMessage() {
+
+    authMessage.textContent = "";
+
+    authMessage.className =
+        "auth-message";
+}
+
+
+function showAuthError(message) {
+
+    authMessage.textContent =
+        message;
+
+    authMessage.className =
+        "auth-message error-message";
+}
+
+
+function showAuthSuccess(message) {
+
+    authMessage.textContent =
+        message;
+
+    authMessage.className =
+        "auth-message success-message";
+}
+
+
+document
+    .getElementById("login-button")
+    .addEventListener(
+        "click",
+        () => openAuthModal("login")
+    );
+
+
+document
+    .getElementById("signup-button")
+    .addEventListener(
+        "click",
+        () => openAuthModal("signup")
+    );
+
+
+document
+    .getElementById("close-auth-modal")
+    .addEventListener(
+        "click",
+        closeAuthModal
+    );
+
+
+authModal.addEventListener(
+    "click",
+    function(event) {
+
+        if (event.target === authModal) {
+
+            closeAuthModal();
+
+        }
+
+    }
+);
+
+
+loginTab.addEventListener(
+    "click",
+    showLoginForm
+);
+
+
+signupTab.addEventListener(
+    "click",
+    showSignupForm
+);
+
+
+/* =========================
+   CONNEXION
+========================= */
+
+loginForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        clearAuthMessage();
+
+
+        const email =
+            document
+                .getElementById("login-email")
+                .value
+                .trim();
+
+        const password =
+            document
+                .getElementById("login-password")
+                .value;
+
+
+        const button =
+            document.getElementById(
+                "login-submit"
+            );
+
+
+        button.disabled = true;
+
+        button.textContent =
+            "Connexion...";
+
+
+        try {
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient.auth
+                    .signInWithPassword({
+
+                        email:
+                            email,
+
+                        password:
+                            password
+
+                    });
+
+
+            if (error) {
+
+                showAuthError(
+                    "Connexion impossible :\n" +
+                    error.message
+                );
+
+                return;
+            }
+
+
+            currentUser =
+                data.user;
+
+
+            showAuthSuccess(
+                "Connexion réussie."
+            );
+
+
+            setTimeout(
+                closeAuthModal,
+                600
+            );
+
+
+            await updateAuthUI();
+
+
+        } catch (error) {
+
+            console.error(
+                "Erreur connexion :",
+                error
+            );
+
+            showAuthError(
+                "Une erreur est survenue :\n" +
+                error.message
+            );
+
+        } finally {
+
+            button.disabled = false;
+
+            button.textContent =
+                "Se connecter";
+
+        }
+
+    }
+);
+
+
+/* =========================
+   INSCRIPTION
+========================= */
+
+signupForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        clearAuthMessage();
+
+
+        const email =
+            document
+                .getElementById("signup-email")
+                .value
+                .trim();
+
+        const password =
+            document
+                .getElementById("signup-password")
+                .value;
+
+        const confirmation =
+            document
+                .getElementById("signup-password-confirm")
+                .value;
+
+
+        if (password !== confirmation) {
+
+            showAuthError(
+                "Les deux mots de passe ne correspondent pas."
+            );
+
+            return;
+        }
+
+
+        const button =
+            document.getElementById(
+                "signup-submit"
+            );
+
+
+        button.disabled = true;
+
+        button.textContent =
+            "Création du compte...";
+
+
+        try {
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient.auth
+                    .signUp({
+
+                        email:
+                            email,
+
+                        password:
+                            password
+
+                    });
+
+
+            if (error) {
+
+                showAuthError(
+                    "Création impossible :\n" +
+                    error.message
+                );
+
+                return;
+            }
+
+
+            if (data.session) {
+
+                currentUser =
+                    data.user;
+
+
+                showAuthSuccess(
+                    "Compte créé avec succès."
+                );
+
+
+                setTimeout(
+                    closeAuthModal,
+                    700
+                );
+
+
+                await updateAuthUI();
+
+            } else {
+
+                showAuthSuccess(
+                    "Compte créé. Vous pouvez maintenant vous connecter."
+                );
+
+                setTimeout(
+                    showLoginForm,
+                    1000
+                );
+
+            }
+
+
+        } catch (error) {
+
+            console.error(
+                "Erreur inscription :",
+                error
+            );
+
+            showAuthError(
+                "Une erreur est survenue :\n" +
+                error.message
+            );
+
+        } finally {
+
+            button.disabled = false;
+
+            button.textContent =
+                "Créer mon compte";
+
+        }
+
+    }
+);
+
+
+/* =========================
+   AUTH UI
 ========================= */
 
 async function updateAuthUI() {
@@ -2054,7 +1286,10 @@ async function updateAuthUI() {
             session
         },
         error
-    } = await supabaseClient.auth.getSession();
+    } =
+        await supabaseClient.auth
+            .getSession();
+
 
     if (error) {
 
@@ -2066,26 +1301,38 @@ async function updateAuthUI() {
         return;
     }
 
-    currentUser = session?.user || null;
+
+    currentUser =
+        session?.user || null;
+
 
     const email =
-        document.getElementById("account-email");
+        document.getElementById(
+            "account-email"
+        );
 
     const authPanel =
-        document.getElementById("auth-panel");
+        document.getElementById(
+            "auth-panel"
+        );
 
     const logoutButton =
-        document.getElementById("logout-button");
+        document.getElementById(
+            "logout-button"
+        );
 
 
     if (currentUser) {
 
         email.textContent =
-            currentUser.email || "Compte connecté";
+            currentUser.email ||
+            "Compte connecté";
 
-        authPanel.style.display = "none";
+        authPanel.style.display =
+            "none";
 
-        logoutButton.style.display = "block";
+        logoutButton.style.display =
+            "block";
 
         console.log(
             "Utilisateur connecté :",
@@ -2094,14 +1341,20 @@ async function updateAuthUI() {
 
     } else {
 
-        email.textContent = "Non connecté";
+        email.textContent =
+            "Non connecté";
 
-        authPanel.style.display = "flex";
+        authPanel.style.display =
+            "flex";
 
-        logoutButton.style.display = "none";
+        logoutButton.style.display =
+            "none";
 
-        console.log("Aucun utilisateur connecté.");
+        console.log(
+            "Aucun utilisateur connecté."
+        );
     }
+
 
     await loadConversations();
 }
@@ -2117,20 +1370,18 @@ async function createConversation(title) {
         "Tentative de création de conversation..."
     );
 
+
     const {
         data: {
             session
         },
         error: sessionError
-    } = await supabaseClient.auth.getSession();
+    } =
+        await supabaseClient.auth
+            .getSession();
 
 
     if (sessionError) {
-
-        console.error(
-            "Erreur session Supabase :",
-            sessionError
-        );
 
         throw new Error(
             "Erreur Supabase lors de la récupération de la session : " +
@@ -2142,7 +1393,7 @@ async function createConversation(title) {
     if (!session || !session.user) {
 
         throw new Error(
-            "Aucun utilisateur connecté. Connectez-vous avant de créer une conversation."
+            "Vous devez être connecté pour créer une conversation."
         );
     }
 
@@ -2151,46 +1402,48 @@ async function createConversation(title) {
         session.user.id;
 
 
-    console.log(
-        "Création pour user_id :",
-        userId
-    );
-
-
     const {
         data,
         error
-    } = await supabaseClient
-        .from("conversations")
-        .insert({
+    } =
+        await supabaseClient
+            .from("conversations")
+            .insert({
 
-            user_id: userId,
+                user_id:
+                    userId,
 
-            title:
-                title ||
-                "Nouvelle conversation"
+                title:
+                    title ||
+                    "Nouvelle conversation"
 
-        })
-        .select()
-        .single();
+            })
+            .select()
+            .single();
 
 
     if (error) {
 
         console.error(
-            "ERREUR SUPABASE CREATION CONVERSATION :",
+            "Erreur création conversation :",
             error
         );
 
         throw new Error(
             "Supabase : " +
             error.message +
-            (error.details
-                ? "\nDétails : " + error.details
-                : "") +
-            (error.hint
-                ? "\nIndice : " + error.hint
-                : "")
+            (
+                error.details
+                    ? "\nDétails : " +
+                      error.details
+                    : ""
+            ) +
+            (
+                error.hint
+                    ? "\nIndice : " +
+                      error.hint
+                    : ""
+            )
         );
     }
 
@@ -2212,7 +1465,9 @@ async function createConversation(title) {
 async function loadConversations() {
 
     const history =
-        document.getElementById("history");
+        document.getElementById(
+            "history"
+        );
 
 
     if (!currentUser) {
@@ -2227,27 +1482,29 @@ async function loadConversations() {
     }
 
 
-    console.log(
-        "Chargement des conversations..."
-    );
-
-
     const {
         data,
         error
-    } = await supabaseClient
-        .from("conversations")
-        .select("*")
-        .eq("user_id", currentUser.id)
-        .order("updated_at", {
-            ascending: false
-        });
+    } =
+        await supabaseClient
+            .from("conversations")
+            .select("*")
+            .eq(
+                "user_id",
+                currentUser.id
+            )
+            .order(
+                "updated_at",
+                {
+                    ascending: false
+                }
+            );
 
 
     if (error) {
 
         console.error(
-            "Erreur chargement historique :",
+            "Erreur historique :",
             error
         );
 
@@ -2277,40 +1534,51 @@ async function loadConversations() {
     }
 
 
-    data.forEach(conversation => {
+    data.forEach(
+        conversation => {
 
-        const element =
-            document.createElement("div");
-
-        element.className =
-            "conversation";
-
-
-        if (
-            conversation.id ===
-            currentConversationId
-        ) {
-
-            element.classList.add("active");
-        }
+            const element =
+                document.createElement(
+                    "div"
+                );
 
 
-        element.textContent =
-            conversation.title;
+            element.className =
+                "conversation";
 
 
-        element.onclick = () => {
+            if (
+                conversation.id ===
+                currentConversationId
+            ) {
 
-            loadConversation(
-                conversation.id
+                element.classList.add(
+                    "active"
+                );
+
+            }
+
+
+            element.textContent =
+                conversation.title;
+
+
+            element.onclick =
+                () => {
+
+                    loadConversation(
+                        conversation.id
+                    );
+
+                };
+
+
+            history.appendChild(
+                element
             );
 
-        };
-
-
-        history.appendChild(element);
-
-    });
+        }
+    );
 }
 
 
@@ -2326,33 +1594,32 @@ async function saveMessage(
 
     if (!currentUser) {
 
-        console.warn(
-            "Impossible de sauvegarder : utilisateur non connecté."
+        throw new Error(
+            "Utilisateur non connecté."
         );
-
-        return;
     }
 
 
     const {
         error
-    } = await supabaseClient
-        .from("messages")
-        .insert({
+    } =
+        await supabaseClient
+            .from("messages")
+            .insert({
 
-            conversation_id:
-                conversationId,
+                conversation_id:
+                    conversationId,
 
-            user_id:
-                currentUser.id,
+                user_id:
+                    currentUser.id,
 
-            role:
-                role,
+                role:
+                    role,
 
-            content:
-                content
+                content:
+                    content
 
-        });
+            });
 
 
     if (error) {
@@ -2378,18 +1645,30 @@ async function updateConversationTime(
     conversationId
 ) {
 
+    if (!currentUser) {
+        return;
+    }
+
+
     const {
         error
-    } = await supabaseClient
-        .from("conversations")
-        .update({
+    } =
+        await supabaseClient
+            .from("conversations")
+            .update({
 
-            updated_at:
-                new Date().toISOString()
+                updated_at:
+                    new Date().toISOString()
 
-        })
-        .eq("id", conversationId)
-        .eq("user_id", currentUser.id);
+            })
+            .eq(
+                "id",
+                conversationId
+            )
+            .eq(
+                "user_id",
+                currentUser.id
+            );
 
 
     if (error) {
@@ -2418,20 +1697,24 @@ async function loadConversation(
     const {
         data,
         error
-    } = await supabaseClient
-        .from("messages")
-        .select("*")
-        .eq(
-            "conversation_id",
-            conversationId
-        )
-        .eq(
-            "user_id",
-            currentUser.id
-        )
-        .order("created_at", {
-            ascending: true
-        });
+    } =
+        await supabaseClient
+            .from("messages")
+            .select("*")
+            .eq(
+                "conversation_id",
+                conversationId
+            )
+            .eq(
+                "user_id",
+                currentUser.id
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: true
+                }
+            );
 
 
     if (error) {
@@ -2450,7 +1733,9 @@ async function loadConversation(
 
 
     const chat =
-        document.getElementById("chat");
+        document.getElementById(
+            "chat"
+        );
 
 
     chat.innerHTML = "";
@@ -2462,23 +1747,28 @@ async function loadConversation(
 
     } else {
 
-        data.forEach(message => {
+        data.forEach(
+            message => {
 
-            if (message.role === "user") {
+                if (
+                    message.role ===
+                    "user"
+                ) {
 
-                addUserMessage(
-                    message.content
-                );
+                    addUserMessage(
+                        message.content
+                    );
 
-            } else {
+                } else {
 
-                addAIMessageText(
-                    message.content
-                );
+                    addAIMessageText(
+                        message.content
+                    );
+
+                }
 
             }
-
-        });
+        );
 
     }
 
@@ -2495,12 +1785,15 @@ async function loadConversation(
 
 function startNewConversation() {
 
-    currentConversationId = null;
+    currentConversationId =
+        null;
 
     showWelcome();
 
     document
-        .getElementById("question")
+        .getElementById(
+            "question"
+        )
         .focus();
 
     loadConversations();
@@ -2513,11 +1806,18 @@ function startNewConversation() {
 
 function showWelcome() {
 
-    document.getElementById("chat").innerHTML = `
+    document.getElementById(
+        "chat"
+    ).innerHTML = `
 
-        <div class="welcome" id="welcome">
+        <div
+            class="welcome"
+            id="welcome"
+        >
 
-            <h1>BibleProIA</h1>
+            <h1>
+                BibleProIA
+            </h1>
 
             <p>
                 Posez vos questions sur la Bible,
@@ -2537,7 +1837,10 @@ function showWelcome() {
 function addUserMessage(text) {
 
     const welcome =
-        document.getElementById("welcome");
+        document.getElementById(
+            "welcome"
+        );
+
 
     if (welcome) {
         welcome.remove();
@@ -2545,11 +1848,16 @@ function addUserMessage(text) {
 
 
     const chat =
-        document.getElementById("chat");
+        document.getElementById(
+            "chat"
+        );
 
 
     const message =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     message.className =
         "message user";
@@ -2564,7 +1872,10 @@ function addUserMessage(text) {
     `;
 
 
-    chat.appendChild(message);
+    chat.appendChild(
+        message
+    );
+
 
     scrollToBottom();
 }
@@ -2577,11 +1888,16 @@ function addUserMessage(text) {
 function addAIMessageText(text) {
 
     const chat =
-        document.getElementById("chat");
+        document.getElementById(
+            "chat"
+        );
 
 
     const message =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     message.className =
         "message ai";
@@ -2600,7 +1916,10 @@ function addAIMessageText(text) {
     `;
 
 
-    chat.appendChild(message);
+    chat.appendChild(
+        message
+    );
+
 
     scrollToBottom();
 }
@@ -2616,11 +1935,16 @@ function showThinking() {
 
 
     const chat =
-        document.getElementById("chat");
+        document.getElementById(
+            "chat"
+        );
 
 
     const thinking =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     thinking.className =
         "thinking";
@@ -2647,7 +1971,10 @@ function showThinking() {
     `;
 
 
-    chat.appendChild(thinking);
+    chat.appendChild(
+        thinking
+    );
+
 
     scrollToBottom();
 }
@@ -2656,7 +1983,10 @@ function showThinking() {
 function removeThinking() {
 
     const thinking =
-        document.getElementById("thinking");
+        document.getElementById(
+            "thinking"
+        );
+
 
     if (thinking) {
         thinking.remove();
@@ -2665,25 +1995,13 @@ function removeThinking() {
 
 
 /* =========================
-   SCROLL
-========================= */
-
-function scrollToBottom() {
-
-    const chat =
-        document.getElementById("chat");
-
-    chat.scrollTop =
-        chat.scrollHeight;
-}
-
-
-/* =========================
-   FORMULAIRE CHAT
+   CHAT
 ========================= */
 
 document
-    .getElementById("chat-form")
+    .getElementById(
+        "chat-form"
+    )
     .addEventListener(
         "submit",
         async function(event) {
@@ -2697,10 +2015,15 @@ document
 
 
             const input =
-                document.getElementById("question");
+                document.getElementById(
+                    "question"
+                );
+
 
             const send =
-                document.getElementById("send");
+                document.getElementById(
+                    "send"
+                );
 
 
             const question =
@@ -2712,14 +2035,18 @@ document
             }
 
 
-            loadingMessage = true;
+            loadingMessage =
+                true;
 
-            send.disabled = true;
+            send.disabled =
+                true;
 
 
             try {
 
-                /* Vérification session */
+                /*
+                 * Vérification session
+                 */
 
                 const {
                     data: {
@@ -2727,7 +2054,8 @@ document
                     },
                     error: sessionError
                 } =
-                    await supabaseClient.auth.getSession();
+                    await supabaseClient.auth
+                        .getSession();
 
 
                 if (sessionError) {
@@ -2739,15 +2067,17 @@ document
                 }
 
 
-                /*
-                 * Pour sauvegarder l'historique,
-                 * un compte est nécessaire.
-                 */
+                if (
+                    !session ||
+                    !session.user
+                ) {
 
-                if (!session || !session.user) {
+                    openAuthModal(
+                        "login"
+                    );
 
                     throw new Error(
-                        "Vous devez être connecté pour utiliser l'historique des conversations."
+                        "Connectez-vous pour enregistrer vos conversations."
                     );
                 }
 
@@ -2756,9 +2086,14 @@ document
                     session.user;
 
 
-                /* Création conversation */
+                /*
+                 * Créer une conversation
+                 * si nécessaire
+                 */
 
-                if (!currentConversationId) {
+                if (
+                    !currentConversationId
+                ) {
 
                     const conversation =
                         await createConversation(
@@ -2773,25 +2108,27 @@ document
                         conversation.id;
 
 
-                    console.log(
-                        "currentConversationId =",
-                        currentConversationId
-                    );
-
-
                     await loadConversations();
+
                 }
 
 
-                /* Afficher message */
+                /*
+                 * Afficher le message
+                 */
 
-                addUserMessage(question);
+                addUserMessage(
+                    question
+                );
 
 
-                input.value = "";
+                input.value =
+                    "";
 
 
-                /* Sauvegarder */
+                /*
+                 * Sauvegarder
+                 */
 
                 await saveMessage(
                     currentConversationId,
@@ -2805,7 +2142,9 @@ document
                 );
 
 
-                /* IA */
+                /*
+                 * Demander la réponse à Flask
+                 */
 
                 showThinking();
 
@@ -2814,8 +2153,8 @@ document
                     await fetch(
                         "/",
                         {
-
-                            method: "POST",
+                            method:
+                                "POST",
 
                             headers: {
                                 "Content-Type":
@@ -2827,9 +2166,17 @@ document
                                     question:
                                         question
                                 })
-
                         }
                     );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Le serveur a retourné une erreur HTTP " +
+                        response.status
+                    );
+                }
 
 
                 const html =
@@ -2838,6 +2185,11 @@ document
 
                 removeThinking();
 
+
+                /*
+                 * Lire la réponse générée
+                 * par Flask
+                 */
 
                 const parser =
                     new DOMParser();
@@ -2858,6 +2210,11 @@ document
 
                 if (!answer) {
 
+                    console.error(
+                        "Réponse HTML reçue :",
+                        html
+                    );
+
                     throw new Error(
                         "La réponse de BibleProIA n'a pas pu être récupérée."
                     );
@@ -2865,13 +2222,29 @@ document
 
 
                 const answerText =
-                    answer.innerText.trim();
+                    answer.textContent.trim();
 
+
+                if (!answerText) {
+
+                    throw new Error(
+                        "BibleProIA a retourné une réponse vide."
+                    );
+                }
+
+
+                /*
+                 * Afficher réponse IA
+                 */
 
                 addAIMessageText(
                     answerText
                 );
 
+
+                /*
+                 * Sauvegarder réponse IA
+                 */
 
                 await saveMessage(
                     currentConversationId,
@@ -2894,17 +2267,22 @@ document
 
 
                 console.error(
-                    "ERREUR CHAT COMPLÈTE :",
+                    "ERREUR CHAT :",
                     error
                 );
 
 
                 const chat =
-                    document.getElementById("chat");
+                    document.getElementById(
+                        "chat"
+                    );
 
 
                 const errorBox =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
+
 
                 errorBox.className =
                     "error";
@@ -2924,9 +2302,11 @@ document
 
             } finally {
 
-                loadingMessage = false;
+                loadingMessage =
+                    false;
 
-                send.disabled = false;
+                send.disabled =
+                    false;
 
             }
 
@@ -2939,7 +2319,9 @@ document
 ========================= */
 
 document
-    .getElementById("new-chat")
+    .getElementById(
+        "new-chat"
+    )
     .addEventListener(
         "click",
         startNewConversation
@@ -2947,138 +2329,13 @@ document
 
 
 /* =========================
-   LOG IN
+   DECONNEXION
 ========================= */
 
 document
-    .getElementById("login-button")
-    .addEventListener(
-        "click",
-        async function() {
-
-            const email =
-                prompt(
-                    "Adresse e-mail :"
-                );
-
-            if (!email) {
-                return;
-            }
-
-
-            const password =
-                prompt(
-                    "Mot de passe :"
-                );
-
-            if (!password) {
-                return;
-            }
-
-
-            const {
-                error
-            } =
-                await supabaseClient.auth.signInWithPassword({
-
-                    email:
-                        email,
-
-                    password:
-                        password
-
-                });
-
-
-            if (error) {
-
-                alert(
-                    "Erreur de connexion : " +
-                    error.message
-                );
-
-                return;
-            }
-
-
-            await updateAuthUI();
-
-        }
-    );
-
-
-/* =========================
-   SIGN UP
-========================= */
-
-document
-    .getElementById("signup-button")
-    .addEventListener(
-        "click",
-        async function() {
-
-            const email =
-                prompt(
-                    "Adresse e-mail :"
-                );
-
-            if (!email) {
-                return;
-            }
-
-
-            const password =
-                prompt(
-                    "Mot de passe :"
-                );
-
-            if (!password) {
-                return;
-            }
-
-
-            const {
-                error
-            } =
-                await supabaseClient.auth.signUp({
-
-                    email:
-                        email,
-
-                    password:
-                        password
-
-                });
-
-
-            if (error) {
-
-                alert(
-                    "Erreur création compte : " +
-                    error.message
-                );
-
-                return;
-            }
-
-
-            alert(
-                "Compte créé avec succès."
-            );
-
-
-            await updateAuthUI();
-
-        }
-    );
-
-
-/* =========================
-   LOG OUT
-========================= */
-
-document
-    .getElementById("logout-button")
+    .getElementById(
+        "logout-button"
+    )
     .addEventListener(
         "click",
         async function() {
@@ -3086,7 +2343,8 @@ document
             const {
                 error
             } =
-                await supabaseClient.auth.signOut();
+                await supabaseClient.auth
+                    .signOut();
 
 
             if (error) {
@@ -3100,9 +2358,12 @@ document
             }
 
 
-            currentUser = null;
+            currentUser =
+                null;
 
-            currentConversationId = null;
+            currentConversationId =
+                null;
+
 
             showWelcome();
 
@@ -3117,7 +2378,7 @@ document
 ========================= */
 
 supabaseClient.auth.onAuthStateChange(
-    async function(event, session) {
+    function(event, session) {
 
         console.log(
             "Auth event :",
@@ -3129,7 +2390,53 @@ supabaseClient.auth.onAuthStateChange(
             session?.user || null;
 
 
-        await updateAuthUI();
+        /*
+         * On ne fait pas d'appel Supabase
+         * supplémentaire ici.
+         * updateAuthUI est appelée après
+         * l'initialisation et les connexions.
+         */
+
+        const email =
+            document.getElementById(
+                "account-email"
+            );
+
+        const authPanel =
+            document.getElementById(
+                "auth-panel"
+            );
+
+        const logoutButton =
+            document.getElementById(
+                "logout-button"
+            );
+
+
+        if (currentUser) {
+
+            email.textContent =
+                currentUser.email ||
+                "Compte connecté";
+
+            authPanel.style.display =
+                "none";
+
+            logoutButton.style.display =
+                "block";
+
+        } else {
+
+            email.textContent =
+                "Non connecté";
+
+            authPanel.style.display =
+                "flex";
+
+            logoutButton.style.display =
+                "none";
+
+        }
 
     }
 );
@@ -3154,8 +2461,8 @@ supabaseClient.auth.onAuthStateChange(
     );
 
 })();
-
 </script>
 
 </body>
 </html>
+```
