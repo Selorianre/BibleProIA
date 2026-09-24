@@ -24,6 +24,7 @@
         overflow: hidden;
     }
 
+
     /* =========================
        SIDEBAR
     ========================= */
@@ -34,9 +35,12 @@
         top: 0;
         bottom: 0;
         width: 260px;
+
         background: #f7f7f8;
         border-right: 1px solid #e5e5e5;
+
         padding: 14px;
+
         display: flex;
         flex-direction: column;
     }
@@ -45,33 +49,45 @@
         display: flex;
         align-items: center;
         gap: 10px;
+
         font-size: 20px;
         font-weight: 700;
+
         padding: 10px 8px 20px;
     }
 
     .logo-icon {
         width: 34px;
         height: 34px;
+
         display: flex;
         align-items: center;
         justify-content: center;
+
         background: #202123;
         color: white;
+
         border-radius: 9px;
+
         font-size: 18px;
     }
 
     .new-chat {
         width: 100%;
+
         padding: 12px;
+
         border: 1px solid #d9d9d9;
         border-radius: 9px;
+
         background: white;
+
         font-size: 14px;
         font-weight: 500;
+
         cursor: pointer;
         text-align: left;
+
         transition: 0.15s;
     }
 
@@ -82,16 +98,22 @@
     .sidebar-title {
         font-size: 11px;
         color: #8a8a8a;
+
         margin: 25px 8px 8px;
+
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
 
     .menu-item {
         padding: 10px;
+
         border-radius: 7px;
+
         font-size: 14px;
+
         cursor: pointer;
+
         color: #444;
     }
 
@@ -101,8 +123,11 @@
 
     .sidebar-bottom {
         margin-top: auto;
+
         border-top: 1px solid #e5e5e5;
+
         padding: 15px 8px 5px;
+
         font-size: 12px;
         color: #888;
     }
@@ -114,7 +139,9 @@
 
     .main {
         margin-left: 260px;
+
         height: 100vh;
+
         display: flex;
         flex-direction: column;
     }
@@ -126,19 +153,27 @@
 
     .header {
         height: 60px;
+
         border-bottom: 1px solid #eeeeee;
+
         display: flex;
         align-items: center;
+
         padding: 0 25px;
+
         font-size: 15px;
         font-weight: 600;
+
         background: white;
     }
 
     .header-subtitle {
         margin-left: 10px;
+
         font-size: 12px;
+
         color: #999;
+
         font-weight: normal;
     }
 
@@ -149,38 +184,57 @@
 
     .chat {
         flex: 1;
+
         overflow-y: auto;
-        padding: 40px 20px 180px;
+
+        padding: 35px 20px 180px;
     }
+
+
+    /* =========================
+       WELCOME
+    ========================= */
 
     .welcome {
         max-width: 700px;
+
         margin: 100px auto 0;
+
         text-align: center;
     }
 
     .welcome-icon {
         width: 70px;
         height: 70px;
+
         margin: auto auto 25px;
+
         display: flex;
         align-items: center;
         justify-content: center;
+
         border-radius: 18px;
+
         background: #202123;
+
         color: white;
+
         font-size: 32px;
     }
 
     .welcome h1 {
         margin: 0 0 12px;
+
         font-size: 30px;
     }
 
     .welcome p {
         margin: 0;
+
         color: #777;
+
         font-size: 15px;
+
         line-height: 1.6;
     }
 
@@ -191,90 +245,125 @@
 
     .user-message {
         max-width: 850px;
-        margin: 20px auto;
+
+        margin: 22px auto 10px;
+
         display: flex;
+
         justify-content: flex-end;
     }
 
     .user-message-content {
         max-width: 70%;
-        padding: 13px 17px;
-        border-radius: 16px;
+
+        padding: 12px 16px;
+
         background: #202123;
+
         color: white;
-        line-height: 1.5;
+
+        border-radius: 18px 18px 4px 18px;
+
         font-size: 15px;
+
+        line-height: 1.5;
+
         white-space: pre-wrap;
+
         overflow-wrap: anywhere;
     }
 
 
     /* =========================
-       ANSWER
+       RÉPONSE IA
     ========================= */
 
     .answer {
         max-width: 850px;
-        margin: 20px auto;
-        padding: 25px;
-        border-radius: 12px;
-        background: #f7f7f8;
+
+        margin: 10px auto 25px;
+
+        padding: 5px 0;
+
         line-height: 1.7;
-        white-space: pre-wrap;
+
         font-size: 15px;
+
+        white-space: pre-wrap;
+
         overflow-wrap: anywhere;
     }
 
     .answer-header {
         display: flex;
+
         align-items: center;
+
         gap: 10px;
-        margin-bottom: 15px;
+
+        margin-bottom: 10px;
+
         font-weight: 600;
     }
 
     .ai-icon {
         width: 30px;
         height: 30px;
+
         border-radius: 8px;
+
         background: #202123;
+
         color: white;
+
         display: flex;
+
         align-items: center;
         justify-content: center;
+
         font-size: 15px;
+
         flex-shrink: 0;
+    }
+
+    .answer-text {
+        padding-left: 40px;
+
+        color: #202123;
     }
 
 
     /* =========================
-       INDICATEUR ACTIVITÉ
+       INDICATEUR
     ========================= */
 
     .thinking {
         max-width: 850px;
-        margin: 20px auto;
-        padding: 25px;
-        border-radius: 12px;
-        background: #f7f7f8;
-        line-height: 1.7;
-        font-size: 15px;
+
+        margin: 10px auto 20px;
+
+        padding: 5px 0;
     }
 
     .thinking-header {
         display: flex;
+
         align-items: center;
+
         gap: 10px;
+
         font-weight: 600;
     }
 
     .thinking-text {
         color: #777;
+
         font-weight: normal;
     }
 
     .thinking-dots span {
         opacity: 0.2;
+
         animation: thinkingDots 1.4s infinite;
     }
 
@@ -305,10 +394,13 @@
 
     .input-container {
         position: fixed;
+
         left: 260px;
         right: 0;
         bottom: 0;
+
         padding: 25px 20px 18px;
+
         background: linear-gradient(
             transparent,
             white 30%
@@ -317,57 +409,85 @@
 
     .input-wrapper {
         max-width: 850px;
+
         margin: auto;
+
         display: flex;
+
         align-items: center;
+
         background: white;
+
         border: 1px solid #d9d9d9;
+
         border-radius: 14px;
+
         padding: 7px;
+
         box-shadow:
             0 4px 15px rgba(0,0,0,0.08);
     }
 
     .input-wrapper input {
         flex: 1;
+
         border: none;
         outline: none;
+
         padding: 13px;
+
         font-size: 15px;
+
         background: transparent;
     }
 
     .send-button {
         width: 42px;
         height: 42px;
+
         border: none;
+
         border-radius: 10px;
+
         background: #202123;
+
         color: white;
+
         font-size: 18px;
+
         cursor: pointer;
+
         display: flex;
+
         align-items: center;
         justify-content: center;
+
         transition: 0.15s;
     }
 
     .send-button:hover {
         background: #000000;
+
         transform: scale(1.03);
     }
 
     .send-button:disabled {
         opacity: 0.6;
+
         cursor: wait;
+
         transform: none;
     }
 
     .disclaimer {
         max-width: 850px;
+
         margin: 8px auto 0;
+
         text-align: center;
+
         font-size: 11px;
+
         color: #999;
     }
 
@@ -417,13 +537,15 @@
         .answer {
             margin-left: 5px;
             margin-right: 5px;
-            padding: 20px;
+        }
+
+        .answer-text {
+            padding-left: 40px;
         }
 
         .thinking {
             margin-left: 5px;
             margin-right: 5px;
-            padding: 20px;
         }
 
     }
@@ -455,7 +577,7 @@
 
 <button
     class="new-chat"
-    onclick="window.location.href='/'"
+    onclick="startNewConversation()"
 >
     ＋ Nouvelle conversation
 </button>
@@ -513,14 +635,16 @@
 
 
 
-<!-- CHAT -->
+<!-- =========================
+     CHAT
+========================= -->
 
 <section class="chat" id="chat">
 
 
     {% if not reponse %}
 
-    <div class="welcome">
+    <div class="welcome" id="welcome">
 
         <div class="welcome-icon">
             ✝
@@ -554,14 +678,18 @@
 
         </div>
 
-        {{ reponse }}
+        <div class="answer-text">
+            {{ reponse }}
+        </div>
 
     </div>
 
     {% endif %}
 
 
-    <!-- INDICATEUR -->
+    <!-- =========================
+         INDICATEUR
+    ========================= -->
 
     <div
         class="thinking"
@@ -598,7 +726,9 @@
 
 
 
-<!-- INPUT -->
+<!-- =========================
+     INPUT
+========================= -->
 
 <div class="input-container">
 
@@ -646,204 +776,300 @@
 
 <script>
 
-    const form = document.getElementById("question-form");
-    const thinking = document.getElementById("thinking");
-    const sendButton = document.getElementById("send-button");
-    const input = document.getElementById("question-input");
-    const chat = document.getElementById("chat");
+    const form =
+        document.getElementById("question-form");
+
+    const thinking =
+        document.getElementById("thinking");
+
+    const sendButton =
+        document.getElementById("send-button");
+
+    const input =
+        document.getElementById("question-input");
+
+    const chat =
+        document.getElementById("chat");
 
 
-    form.addEventListener("submit", async function(event) {
+    /* =========================
+       NOUVELLE CONVERSATION
+    ========================= */
 
-        event.preventDefault();
+    function startNewConversation() {
 
-        const question = input.value.trim();
+        window.location.href = "/";
 
-        if (!question) {
-            return;
-        }
-
-
-        /* =========================
-           RETIRE L'ACCUEIL
-        ========================= */
-
-        const welcome = document.querySelector(".welcome");
-
-        if (welcome) {
-            welcome.remove();
-        }
+    }
 
 
-        /* =========================
-           MESSAGE UTILISATEUR
-        ========================= */
+    /* =========================
+       AJOUTER MESSAGE UTILISATEUR
+    ========================= */
 
-        const userMessage = document.createElement("div");
+    function addUserMessage(question) {
 
-        userMessage.className = "user-message";
+        const message =
+            document.createElement("div");
 
-        const userContent = document.createElement("div");
-
-        userContent.className = "user-message-content";
-
-        userContent.textContent = question;
-
-        userMessage.appendChild(userContent);
-
-        chat.appendChild(userMessage);
+        message.className =
+            "user-message";
 
 
-        /* =========================
-           NETTOIE LE CHAMP
-        ========================= */
+        const content =
+            document.createElement("div");
 
-        input.value = "";
-
-
-        /* =========================
-           AFFICHAGE INDICATEUR
-        ========================= */
-
-        thinking.style.display = "block";
-
-        chat.scrollTop = chat.scrollHeight;
+        content.className =
+            "user-message-content";
 
 
-        /* =========================
-           BLOQUE LE BOUTON
-        ========================= */
-
-        sendButton.disabled = true;
-
-        sendButton.innerHTML = "…";
+        content.textContent =
+            question;
 
 
-        try {
+        message.appendChild(content);
 
-            const formData = new FormData();
+        chat.appendChild(message);
 
-            formData.append("question", question);
-
-
-            /* =========================
-               ENVOI À FLASK
-            ========================= */
-
-            const response = await fetch("/", {
-                method: "POST",
-                body: formData
-            });
+    }
 
 
-            const html = await response.text();
+    /* =========================
+       AJOUTER RÉPONSE IA
+    ========================= */
+
+    function addAIMessage(answerElement) {
+
+        const answer =
+            document.createElement("div");
+
+        answer.className =
+            "answer";
 
 
-            /* =========================
-               LECTURE DE LA RÉPONSE
-            ========================= */
+        const header =
+            document.createElement("div");
 
-            const parser = new DOMParser();
-
-            const responseDocument =
-                parser.parseFromString(html, "text/html");
+        header.className =
+            "answer-header";
 
 
-            const answer =
-                responseDocument.querySelector(".answer");
+        const icon =
+            document.createElement("div");
+
+        icon.className =
+            "ai-icon";
+
+        icon.textContent =
+            "✝";
 
 
-            /* =========================
-               CACHE L'INDICATEUR
-            ========================= */
+        const name =
+            document.createElement("span");
 
-            thinking.style.display = "none";
+        name.textContent =
+            "BibleProIA";
 
 
-            if (answer) {
+        header.appendChild(icon);
 
-                const newAnswer =
-                    answer.cloneNode(true);
+        header.appendChild(name);
 
-                chat.appendChild(newAnswer);
 
-            } else {
+        const text =
+            document.createElement("div");
 
-                const errorMessage =
-                    document.createElement("div");
+        text.className =
+            "answer-text";
 
-                errorMessage.className = "answer";
 
-                errorMessage.innerHTML = `
+        text.innerHTML =
+            answerElement.innerHTML;
 
-                    <div class="answer-header">
 
-                        <div class="ai-icon">
-                            ✝
-                        </div>
+        answer.appendChild(header);
 
-                        BibleProIA
+        answer.appendChild(text);
 
-                    </div>
 
-                    Une erreur est survenue
-                    lors de la génération de la réponse.
+        chat.appendChild(answer);
 
-                `;
+    }
 
-                chat.appendChild(errorMessage);
+
+    /* =========================
+       ENVOI DU MESSAGE
+    ========================= */
+
+    form.addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            const question =
+                input.value.trim();
+
+
+            if (!question) {
+                return;
+            }
+
+
+            /* Retire le message de bienvenue */
+
+            const welcome =
+                document.getElementById("welcome");
+
+            if (welcome) {
+                welcome.remove();
+            }
+
+
+            /* Affiche immédiatement la question */
+
+            addUserMessage(question);
+
+
+            /* Vide le champ */
+
+            input.value = "";
+
+
+            /* Affiche l'indicateur */
+
+            thinking.style.display =
+                "block";
+
+
+            /* Désactive le bouton */
+
+            sendButton.disabled =
+                true;
+
+            sendButton.innerHTML =
+                "…";
+
+
+            /* Descend en bas */
+
+            chat.scrollTop =
+                chat.scrollHeight;
+
+
+            try {
+
+                const formData =
+                    new FormData();
+
+                formData.append(
+                    "question",
+                    question
+                );
+
+
+                /* Envoi à Flask */
+
+                const response =
+                    await fetch(
+                        "/",
+                        {
+                            method: "POST",
+                            body: formData
+                        }
+                    );
+
+
+                const html =
+                    await response.text();
+
+
+                /* Analyse de la réponse */
+
+                const parser =
+                    new DOMParser();
+
+
+                const responseDocument =
+                    parser.parseFromString(
+                        html,
+                        "text/html"
+                    );
+
+
+                const answer =
+                    responseDocument.querySelector(
+                        ".answer"
+                    );
+
+
+                /* Cache l'indicateur */
+
+                thinking.style.display =
+                    "none";
+
+
+                if (answer) {
+
+                    addAIMessage(answer);
+
+                } else {
+
+                    addAIMessage({
+
+                        innerHTML:
+                            "Une erreur est survenue lors de la génération de la réponse."
+
+                    });
+
+                }
+
+
+            } catch (error) {
+
+                thinking.style.display =
+                    "none";
+
+
+                addAIMessage({
+
+                    innerHTML:
+                        "Impossible de contacter BibleProIA."
+
+                });
 
             }
 
-        } catch (error) {
 
-            thinking.style.display = "none";
+            /* Réactive le bouton */
+
+            sendButton.disabled =
+                false;
+
+            sendButton.innerHTML =
+                "↑";
 
 
-            const errorMessage =
-                document.createElement("div");
+            /* Remet le curseur */
 
-            errorMessage.className = "answer";
+            input.focus();
 
-            errorMessage.innerHTML = `
 
-                <div class="answer-header">
+            /* Descend automatiquement */
 
-                    <div class="ai-icon">
-                        ✝
-                    </div>
+            setTimeout(
+                function() {
 
-                    BibleProIA
+                    chat.scrollTop =
+                        chat.scrollHeight;
 
-                </div>
-
-                Impossible de contacter BibleProIA.
-
-            `;
-
-            chat.appendChild(errorMessage);
+                },
+                50
+            );
 
         }
-
-
-        /* =========================
-           RÉACTIVE LE BOUTON
-        ========================= */
-
-        sendButton.disabled = false;
-
-        sendButton.innerHTML = "↑";
-
-        input.focus();
-
-
-        /* =========================
-           DESCEND EN BAS
-        ========================= */
-
-        chat.scrollTop = chat.scrollHeight;
-
-    });
+    );
 
 </script>
 
