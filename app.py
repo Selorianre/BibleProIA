@@ -1,4 +1,3 @@
-```python
 from flask import Flask, render_template, request, send_from_directory
 from google import genai
 from ddgs import DDGS
