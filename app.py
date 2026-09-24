@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request
+```python
+from flask import Flask, render_template, request, send_from_directory
 from google import genai
 from ddgs import DDGS
 from pathlib import Path
@@ -173,6 +174,23 @@ def rechercher_internet(question, nombre=4):
     return resultats
 
 
+# =====================================================
+# MANIFEST ANDROID / PWA
+# =====================================================
+
+@app.route("/manifest.json")
+def manifest():
+
+    return send_from_directory(
+        ".",
+        "manifest.json"
+    )
+
+
+# =====================================================
+# PAGE PRINCIPALE
+# =====================================================
+
 @app.route("/", methods=["GET", "POST"])
 def index():
 
@@ -213,7 +231,7 @@ Résumé : {resultat['description']}
                     sources.append(resultat)
 
 
-                # Recherche dans tes connaissances
+                # Recherche dans la base de connaissances
                 resultats_locaux = rechercher_connaissances(
                     question
                 )
@@ -295,3 +313,4 @@ if __name__ == "__main__":
     app.run(
         debug=True
     )
+```
