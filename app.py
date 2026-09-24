@@ -9,7 +9,7 @@ import re
 app = Flask(__name__)
 
 MODEL = "gemini-3.5-flash-lite"
-KNOWLEDGE_DIR = Path("knowledge")
+KNOWLEDGE_DIR = Path(__file__).resolve().parent / "knowledge"
 
 API_KEY = os.environ.get("GEMINI_API_KEY")
 
@@ -20,6 +20,10 @@ if not API_KEY:
 
 client = genai.Client(api_key=API_KEY)
 
+
+# ============================================================
+# INSTRUCTIONS DE L'IA
+# ============================================================
 
 SYSTEM_PROMPT = """
 Tu es BibleProIA, une intelligence artificielle chrétienne
@@ -43,9 +47,20 @@ Règles :
 """
 
 
+# ============================================================
+# CHARGEMENT DE LA BASE DE CONNAISSANCES
+# ============================================================
+
 def charger_connaissances():
 
     documents = []
+
+    if not KNOWLEDGE_DIR.exists():
+        print(
+            f"Attention : dossier de connaissances introuvable : "
+            f"{KNOWLEDGE_DIR}"
+        )
+        return documents
 
     for fichier in KNOWLEDGE_DIR.rglob("*.txt"):
 
@@ -90,6 +105,10 @@ def charger_connaissances():
 CONNAISSANCES = charger_connaissances()
 
 
+# ============================================================
+# RECHERCHE DANS LA BASE LOCALE
+# ============================================================
+
 def rechercher_connaissances(question, nombre=3):
 
     mots = {
@@ -129,6 +148,10 @@ def rechercher_connaissances(question, nombre=3):
         for score, document in resultats[:nombre]
     ]
 
+
+# ============================================================
+# RECHERCHE INTERNET
+# ============================================================
 
 def rechercher_internet(question, nombre=4):
 
@@ -174,22 +197,35 @@ def rechercher_internet(question, nombre=4):
     return resultats
 
 
-# =====================================================
-# MANIFEST ANDROID / PWA
-# =====================================================
+# ============================================================
+# MANIFEST POUR L'APPLICATION ANDROID / PWA
+# ============================================================
 
 @app.route("/manifest.json")
 def manifest():
 
+    manifest_path = (
+        Path(__file__).resolve().parent
+        / "manifest.json"
+    )
+
+    if not manifest_path.exists():
+
+        return (
+            "Erreur : manifest.json introuvable.",
+            404
+        )
+
     return send_from_directory(
-        ".",
-        "manifest.json"
+        manifest_path.parent,
+        manifest_path.name,
+        mimetype="application/manifest+json"
     )
 
 
-# =====================================================
+# ============================================================
 # PAGE PRINCIPALE
-# =====================================================
+# ============================================================
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -208,7 +244,10 @@ def index():
 
             try:
 
-                # Recherche Internet
+                # ------------------------------------------------
+                # RECHERCHE INTERNET
+                # ------------------------------------------------
+
                 resultats_web = rechercher_internet(
                     question
                 )
@@ -231,7 +270,10 @@ Résumé : {resultat['description']}
                     sources.append(resultat)
 
 
-                # Recherche dans la base de connaissances
+                # ------------------------------------------------
+                # RECHERCHE BASE DE CONNAISSANCES
+                # ------------------------------------------------
+
                 resultats_locaux = rechercher_connaissances(
                     question
                 )
@@ -248,6 +290,10 @@ Fichier : {document['fichier']}
 {document['texte']}
 """
 
+
+                # ------------------------------------------------
+                # MESSAGE ENVOYÉ À GEMINI
+                # ------------------------------------------------
 
                 message = f"""
 QUESTION :
@@ -277,6 +323,10 @@ dans le contexte.
 """
 
 
+                # ------------------------------------------------
+                # APPEL GEMINI
+                # ------------------------------------------------
+
                 resultat = client.models.generate_content(
 
                     model=MODEL,
@@ -295,6 +345,10 @@ dans le contexte.
 
             except Exception as e:
 
+                print(
+                    f"Erreur pendant la génération : {e}"
+                )
+
                 reponse = (
                     "Erreur : "
                     + str(e)
@@ -307,6 +361,10 @@ dans le contexte.
         sources=sources
     )
 
+
+# ============================================================
+# LANCEMENT LOCAL
+# ============================================================
 
 if __name__ == "__main__":
 
