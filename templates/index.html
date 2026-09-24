@@ -329,6 +329,7 @@
         }
 
         @keyframes blink {
+
             0%, 80%, 100% {
                 opacity: .2;
             }
@@ -336,6 +337,7 @@
             40% {
                 opacity: 1;
             }
+
         }
 
         /* =========================
@@ -516,9 +518,7 @@
 
 <div class="app">
 
-    <!-- =========================
-         SIDEBAR
-    ========================= -->
+    <!-- SIDEBAR -->
 
     <aside class="sidebar">
 
@@ -532,6 +532,7 @@
 
         </div>
 
+
         <button
             class="new-chat"
             id="new-chat"
@@ -539,15 +540,18 @@
             ＋ Nouvelle conversation
         </button>
 
+
         <div class="history-title">
             Historique
         </div>
+
 
         <div
             class="history"
             id="history"
         >
         </div>
+
 
         <div class="account">
 
@@ -558,6 +562,7 @@
                 Non connecté
             </div>
 
+
             <button
                 class="account-button"
                 id="login-button"
@@ -565,12 +570,14 @@
                 Se connecter
             </button>
 
+
             <button
                 class="account-button"
                 id="signup-button"
             >
                 Créer un compte
             </button>
+
 
             <button
                 class="account-button"
@@ -585,9 +592,7 @@
     </aside>
 
 
-    <!-- =========================
-         MAIN
-    ========================= -->
+    <!-- MAIN -->
 
     <main class="main">
 
@@ -615,12 +620,6 @@
                 class="chat-inner"
                 id="chat-inner"
             >
-
-                <!--
-                    IMPORTANT :
-                    Ce bloc permet au JavaScript de récupérer
-                    la réponse générée par Flask.
-                -->
 
                 {% if reponse %}
 
@@ -699,9 +698,7 @@
 </div>
 
 
-<!-- =========================
-     INPUT
-========================= -->
+<!-- INPUT -->
 
 <div class="input-area">
 
@@ -718,6 +715,7 @@
             required
         ></textarea>
 
+
         <button
             type="submit"
             class="send-button"
@@ -731,9 +729,7 @@
 </div>
 
 
-<!-- =========================
-     AUTH PANEL
-========================= -->
+<!-- AUTH -->
 
 <div
     class="auth-panel"
@@ -746,6 +742,7 @@
             Connexion
         </h2>
 
+
         <input
             class="auth-input"
             id="auth-email"
@@ -753,12 +750,14 @@
             placeholder="Adresse e-mail"
         >
 
+
         <input
             class="auth-input"
             id="auth-password"
             type="password"
             placeholder="Mot de passe"
         >
+
 
         <input
             class="auth-input"
@@ -768,12 +767,14 @@
             style="display:none;"
         >
 
+
         <button
             class="auth-button"
             id="auth-submit"
         >
             Se connecter
         </button>
+
 
         <button
             class="auth-secondary"
@@ -782,12 +783,14 @@
             Créer un compte
         </button>
 
+
         <button
             class="auth-secondary"
             id="auth-close"
         >
             Fermer
         </button>
+
 
         <div
             class="auth-message"
@@ -810,6 +813,7 @@
 
     const SUPABASE_KEY =
         "sb_publishable_IIKiSAjRQJCGHUSGVidnqQ_vUsq8Epv";
+
 
     const supabaseClient =
         window.supabase.createClient(
@@ -849,12 +853,6 @@
     const history =
         document.getElementById("history");
 
-    const welcome =
-        document.getElementById("welcome");
-
-    let thinking =
-        document.getElementById("thinking");
-
     const newChatButton =
         document.getElementById("new-chat");
 
@@ -883,7 +881,9 @@
         document.getElementById("auth-password");
 
     const authPasswordConfirm =
-        document.getElementById("auth-password-confirm");
+        document.getElementById(
+            "auth-password-confirm"
+        );
 
     const authSubmit =
         document.getElementById("auth-submit");
@@ -896,6 +896,9 @@
 
     const authMessage =
         document.getElementById("auth-message");
+
+    let thinking =
+        document.getElementById("thinking");
 
 
     /* =========================
@@ -910,9 +913,14 @@
 
         authMessage.textContent = "";
 
+        authMessage.style.color = "#c00";
+
         authEmail.value = "";
+
         authPassword.value = "";
+
         authPasswordConfirm.value = "";
+
 
         if (mode === "login") {
 
@@ -941,7 +949,9 @@
 
             authPasswordConfirm.style.display =
                 "block";
+
         }
+
     }
 
 
@@ -952,6 +962,7 @@
 
         authMessage.textContent =
             "";
+
     }
 
 
@@ -992,7 +1003,7 @@
 
 
     /* =========================
-       SIGN UP / LOGIN
+       LOGIN / SIGNUP
     ========================= */
 
     authSubmit.addEventListener(
@@ -1005,16 +1016,19 @@
             const password =
                 authPassword.value;
 
+
             if (!email || !password) {
 
                 authMessage.textContent =
                     "Veuillez remplir tous les champs.";
 
                 return;
+
             }
 
 
-            authSubmit.disabled = true;
+            authSubmit.disabled =
+                true;
 
 
             try {
@@ -1024,12 +1038,14 @@
                     const confirm =
                         authPasswordConfirm.value;
 
+
                     if (password !== confirm) {
 
                         authMessage.textContent =
                             "Les mots de passe ne correspondent pas.";
 
                         return;
+
                     }
 
 
@@ -1037,8 +1053,8 @@
                         error
                     } =
                         await supabaseClient.auth.signUp({
-                            email,
-                            password
+                            email: email,
+                            password: password
                         });
 
 
@@ -1048,6 +1064,7 @@
                             error.message;
 
                         return;
+
                     }
 
 
@@ -1056,6 +1073,7 @@
 
                     authMessage.textContent =
                         "Compte créé avec succès.";
+
 
                     setTimeout(
                         closeAuth,
@@ -1069,8 +1087,8 @@
                         error
                     } =
                         await supabaseClient.auth.signInWithPassword({
-                            email,
-                            password
+                            email: email,
+                            password: password
                         });
 
 
@@ -1080,6 +1098,7 @@
                             error.message;
 
                         return;
+
                     }
 
 
@@ -1114,9 +1133,20 @@
     async function updateAccountUI() {
 
         const {
-            data
+            data,
+            error
         } =
             await supabaseClient.auth.getUser();
+
+
+        if (error) {
+
+            console.error(
+                "Erreur utilisateur:",
+                error
+            );
+
+        }
 
 
         const user =
@@ -1165,9 +1195,9 @@
             currentConversationId =
                 null;
 
-            await updateAccountUI();
-
             startNewConversation();
+
+            await updateAccountUI();
 
             await loadConversations();
 
@@ -1176,15 +1206,28 @@
 
 
     /* =========================
-       CONVERSATIONS
+       CREATE CONVERSATION
     ========================= */
 
     async function createConversation(title) {
 
         const {
-            data
+            data,
+            error: userError
         } =
             await supabaseClient.auth.getUser();
+
+
+        if (userError) {
+
+            console.error(
+                "Erreur utilisateur:",
+                userError
+            );
+
+            return null;
+
+        }
 
 
         const user =
@@ -1192,6 +1235,10 @@
 
 
         if (!user) {
+
+            console.log(
+                "Utilisateur non connecté."
+            );
 
             return null;
 
@@ -1226,10 +1273,20 @@
         }
 
 
+        console.log(
+            "Conversation créée:",
+            conversation
+        );
+
+
         return conversation;
 
     }
 
+
+    /* =========================
+       LOAD CONVERSATIONS
+    ========================= */
 
     async function loadConversations() {
 
@@ -1237,9 +1294,22 @@
 
 
         const {
-            data
+            data,
+            error: userError
         } =
             await supabaseClient.auth.getUser();
+
+
+        if (userError) {
+
+            console.error(
+                "Erreur utilisateur:",
+                userError
+            );
+
+            return;
+
+        }
 
 
         const user =
@@ -1260,7 +1330,10 @@
             await supabaseClient
                 .from("conversations")
                 .select("*")
-                .eq("user_id", user.id)
+                .eq(
+                    "user_id",
+                    user.id
+                )
                 .order(
                     "updated_at",
                     {
@@ -1281,11 +1354,24 @@
         }
 
 
+        if (
+            !conversations ||
+            conversations.length === 0
+        ) {
+
+            return;
+
+        }
+
+
         conversations.forEach(
             conversation => {
 
                 const item =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
+
 
                 item.className =
                     "history-item";
@@ -1304,6 +1390,10 @@
 
 
                 item.textContent =
+                    conversation.title;
+
+
+                item.title =
                     conversation.title;
 
 
@@ -1329,6 +1419,10 @@
     }
 
 
+    /* =========================
+       SAVE MESSAGE
+    ========================= */
+
     async function saveMessage(
         conversationId,
         role,
@@ -1336,9 +1430,22 @@
     ) {
 
         const {
-            data
+            data,
+            error: userError
         } =
             await supabaseClient.auth.getUser();
+
+
+        if (userError) {
+
+            console.error(
+                "Erreur utilisateur:",
+                userError
+            );
+
+            return false;
+
+        }
 
 
         const user =
@@ -1347,7 +1454,7 @@
 
         if (!user) {
 
-            return;
+            return false;
 
         }
 
@@ -1362,8 +1469,10 @@
                         conversationId,
                     user_id:
                         user.id,
-                    role,
-                    content
+                    role:
+                        role,
+                    content:
+                        content
                 });
 
 
@@ -1374,10 +1483,59 @@
                 error
             );
 
+            return false;
+
+        }
+
+
+        return true;
+
+    }
+
+
+    /* =========================
+       UPDATE CONVERSATION
+    ========================= */
+
+    async function updateConversationTime(
+        conversationId
+    ) {
+
+        if (!conversationId) {
+            return;
+        }
+
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("conversations")
+                .update({
+                    updated_at:
+                        new Date().toISOString()
+                })
+                .eq(
+                    "id",
+                    conversationId
+                );
+
+
+        if (error) {
+
+            console.error(
+                "Erreur mise à jour conversation:",
+                error
+            );
+
         }
 
     }
 
+
+    /* =========================
+       LOAD ONE CONVERSATION
+    ========================= */
 
     async function loadConversation(
         conversationId
@@ -1415,6 +1573,8 @@
                 "Erreur chargement conversation:",
                 error
             );
+
+            showWelcome();
 
             return;
 
@@ -1472,13 +1632,21 @@
         currentConversationId =
             null;
 
+
         chatInner.innerHTML = "";
+
 
         showWelcome();
 
-        questionInput.value = "";
+
+        questionInput.value =
+            "";
+
 
         questionInput.focus();
+
+
+        loadConversations();
 
     }
 
@@ -1517,6 +1685,7 @@
 
             </div>
 
+
             <div
                 class="thinking"
                 id="thinking"
@@ -1540,6 +1709,7 @@
 
         `;
 
+
         thinking =
             document.getElementById(
                 "thinking"
@@ -1549,7 +1719,7 @@
 
 
     /* =========================
-       ADD USER MESSAGE
+       USER MESSAGE
     ========================= */
 
     function addUserMessage(
@@ -1557,17 +1727,24 @@
     ) {
 
         const message =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         message.className =
             "message user";
 
 
         const bubble =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         bubble.className =
             "user-bubble";
+
 
         bubble.textContent =
             text;
@@ -1578,12 +1755,27 @@
         );
 
 
-        chatInner.insertBefore(
-            message,
+        const thinkingElement =
             document.getElementById(
                 "thinking"
-            )
-        );
+            );
+
+
+        if (thinkingElement) {
+
+            chatInner.insertBefore(
+                message,
+                thinkingElement
+            );
+
+        } else {
+
+            chatInner.appendChild(
+                message
+            );
+
+        }
+
 
         scrollToBottom();
 
@@ -1591,7 +1783,7 @@
 
 
     /* =========================
-       ADD AI MESSAGE
+       AI MESSAGE
     ========================= */
 
     function addAIMessageText(
@@ -1599,24 +1791,34 @@
     ) {
 
         const answer =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         answer.className =
             "answer";
 
 
         const header =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         header.className =
             "answer-header";
 
 
         const icon =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         icon.className =
             "ai-icon";
+
 
         icon.textContent =
             "✝";
@@ -1627,22 +1829,22 @@
         );
 
 
-        const name =
+        header.appendChild(
             document.createTextNode(
                 "BibleProIA"
-            );
-
-
-        header.appendChild(
-            name
+            )
         );
 
 
         const textElement =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         textElement.className =
             "answer-text";
+
 
         textElement.textContent =
             text;
@@ -1652,17 +1854,32 @@
             header
         );
 
+
         answer.appendChild(
             textElement
         );
 
 
-        chatInner.insertBefore(
-            answer,
+        const thinkingElement =
             document.getElementById(
                 "thinking"
-            )
-        );
+            );
+
+
+        if (thinkingElement) {
+
+            chatInner.insertBefore(
+                answer,
+                thinkingElement
+            );
+
+        } else {
+
+            chatInner.appendChild(
+                answer
+            );
+
+        }
 
 
         scrollToBottom();
@@ -1714,8 +1931,15 @@
 
     function scrollToBottom() {
 
-        chat.scrollTop =
-            chat.scrollHeight;
+        setTimeout(
+            () => {
+
+                chat.scrollTop =
+                    chat.scrollHeight;
+
+            },
+            10
+        );
 
     }
 
@@ -1745,55 +1969,87 @@
             sendButton.disabled =
                 true;
 
-
             questionInput.disabled =
                 true;
 
 
-            if (
-                !currentConversationId
-            ) {
+            try {
 
-                const conversation =
-                    await createConversation(
-                        question.substring(
-                            0,
-                            50
-                        )
-                    );
+                /*
+                 * 1.
+                 * Si aucune conversation n'existe,
+                 * on la crée immédiatement.
+                 */
+
+                if (!currentConversationId) {
+
+                    const conversation =
+                        await createConversation(
+                            question.substring(
+                                0,
+                                60
+                            )
+                        );
 
 
-                if (conversation) {
+                    if (!conversation) {
+
+                        addAIMessageText(
+                            "Impossible de créer la conversation. Vérifiez que vous êtes connecté."
+                        );
+
+                        return;
+
+                    }
+
 
                     currentConversationId =
                         conversation.id;
 
+
+                    /*
+                     * 2.
+                     * Elle apparaît immédiatement
+                     * dans la colonne de gauche.
+                     */
+
+                    await loadConversations();
+
                 }
 
-            }
+
+                /*
+                 * 3.
+                 * Retirer l'écran d'accueil.
+                 */
+
+                const oldWelcome =
+                    document.getElementById(
+                        "welcome"
+                    );
 
 
-            const oldWelcome =
-                document.getElementById(
-                    "welcome"
+                if (oldWelcome) {
+
+                    oldWelcome.remove();
+
+                }
+
+
+                /*
+                 * 4.
+                 * Afficher le message utilisateur.
+                 */
+
+                addUserMessage(
+                    question
                 );
 
 
-            if (oldWelcome) {
-
-                oldWelcome.remove();
-
-            }
-
-
-            addUserMessage(
-                question
-            );
-
-
-            if (
-                currentConversationId
-            ) {
+                /*
+                 * 5.
+                 * Enregistrer le message.
+                 */
 
                 await saveMessage(
                     currentConversationId,
@@ -1801,66 +2057,89 @@
                     question
                 );
 
-            }
 
+                /*
+                 * 6.
+                 * Mettre à jour la date
+                 * de la conversation.
+                 */
 
-            questionInput.value = "";
-
-
-            thinking =
-                document.getElementById(
-                    "thinking"
+                await updateConversationTime(
+                    currentConversationId
                 );
 
 
-            if (!thinking) {
+                questionInput.value =
+                    "";
+
+
+                /*
+                 * 7.
+                 * Afficher "BibleProIA réfléchit..."
+                 */
 
                 thinking =
-                    document.createElement(
-                        "div"
+                    document.getElementById(
+                        "thinking"
                     );
 
-                thinking.className =
-                    "thinking";
 
-                thinking.id =
-                    "thinking";
+                if (!thinking) {
 
-                thinking.innerHTML = `
-
-                    <div class="thinking-icon">
-                        ✝
-                    </div>
-
-                    <div>
-                        BibleProIA réfléchit
-                        <span class="dots">
-                            <span>.</span>
-                            <span>.</span>
-                            <span>.</span>
-                        </span>
-                    </div>
-
-                `;
-
-                chatInner.appendChild(
-                    thinking
-                );
-
-            }
+                    thinking =
+                        document.createElement(
+                            "div"
+                        );
 
 
-            thinking.style.display =
-                "flex";
+                    thinking.className =
+                        "thinking";
 
 
-            scrollToBottom();
+                    thinking.id =
+                        "thinking";
 
 
-            try {
+                    thinking.innerHTML = `
+
+                        <div class="thinking-icon">
+                            ✝
+                        </div>
+
+                        <div>
+                            BibleProIA réfléchit
+                            <span class="dots">
+                                <span>.</span>
+                                <span>.</span>
+                                <span>.</span>
+                            </span>
+                        </div>
+
+                    `;
+
+
+                    chatInner.appendChild(
+                        thinking
+                    );
+
+                }
+
+
+                thinking.style.display =
+                    "flex";
+
+
+                scrollToBottom();
+
+
+                /*
+                 * 8.
+                 * Envoyer la question à Flask.
+                 */
 
                 const formData =
                     new FormData();
+
 
                 formData.append(
                     "question",
@@ -1882,6 +2161,12 @@
                     await response.text();
 
 
+                /*
+                 * 9.
+                 * Lire la réponse générée
+                 * par Flask.
+                 */
+
                 const parser =
                     new DOMParser();
 
@@ -1899,8 +2184,12 @@
                     );
 
 
-                thinking.style.display =
-                    "none";
+                if (thinking) {
+
+                    thinking.style.display =
+                        "none";
+
+                }
 
 
                 if (!answer) {
@@ -1909,11 +2198,18 @@
                         "Réponse serveur introuvable."
                     );
 
+
                     addAIMessageText(
                         "Une erreur est survenue lors de la génération de la réponse."
                     );
 
+
                 } else {
+
+                    /*
+                     * 10.
+                     * Afficher la réponse.
+                     */
 
                     addAIMessage(
                         answer
@@ -1926,9 +2222,15 @@
                         );
 
 
+                    /*
+                     * 11.
+                     * Enregistrer la réponse
+                     * dans Supabase.
+                     */
+
                     if (
-                        currentConversationId &&
-                        answerText
+                        answerText &&
+                        currentConversationId
                     ) {
 
                         await saveMessage(
@@ -1937,22 +2239,40 @@
                             answerText.textContent
                         );
 
+
+                        await updateConversationTime(
+                            currentConversationId
+                        );
+
                     }
 
                 }
 
 
+                /*
+                 * 12.
+                 * Actualiser l'historique.
+                 */
+
                 await loadConversations();
+
+
+                scrollToBottom();
 
             } catch (error) {
 
                 console.error(
+                    "Erreur:",
                     error
                 );
 
 
-                thinking.style.display =
-                    "none";
+                if (thinking) {
+
+                    thinking.style.display =
+                        "none";
+
+                }
 
 
                 addAIMessageText(
@@ -1987,6 +2307,7 @@
 
             questionInput.style.height =
                 "auto";
+
 
             questionInput.style.height =
                 Math.min(
