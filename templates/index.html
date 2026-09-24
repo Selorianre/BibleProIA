@@ -378,7 +378,13 @@
     <!-- MAIN -->
 
     <main class="main">
+{% if reponse %}
+<div id="server-answer" style="display:none;">
+    <div class="answer-text">{{ reponse }}</div>
+</div>
+{% endif %}
 
+<div class="chat" id="chat">
         <div class="chat" id="chat">
 
             <div class="welcome" id="welcome">
