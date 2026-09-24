@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>BibleProIA</title>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -13,29 +14,50 @@
             box-sizing: border-box;
         }
 
+        html,
         body {
             margin: 0;
+            width: 100%;
+            height: 100%;
             font-family: Arial, sans-serif;
             background: #0f1117;
-            color: #fff;
-            height: 100vh;
+            color: #ffffff;
+        }
+
+        body {
             overflow: hidden;
         }
 
+        button,
+        textarea,
+        input,
+        select {
+            font-family: inherit;
+        }
+
+        /* =========================
+           APPLICATION
+        ========================= */
+
         .app {
             display: flex;
+            width: 100%;
             height: 100vh;
         }
 
-        /* SIDEBAR */
+        /* =========================
+           SIDEBAR
+        ========================= */
 
         .sidebar {
             width: 260px;
+            height: 100vh;
             background: #171a21;
             border-right: 1px solid #292d36;
             display: flex;
             flex-direction: column;
             padding: 18px;
+            flex-shrink: 0;
         }
 
         .logo {
@@ -57,6 +79,7 @@
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            flex-shrink: 0;
         }
 
         .new-chat {
@@ -85,6 +108,7 @@
         .history {
             flex: 1;
             overflow-y: auto;
+            min-height: 0;
         }
 
         .history-empty {
@@ -109,24 +133,37 @@
             background: #242934;
         }
 
-        .account {
+        /* =========================
+           BAS SIDEBAR
+        ========================= */
+
+        .sidebar-bottom {
             border-top: 1px solid #292d36;
-            padding-top: 15px;
+            padding-top: 12px;
         }
 
-        .account-button {
+        .sidebar-button {
             width: 100%;
             border: none;
             background: transparent;
-            color: white;
+            color: #ffffff;
             text-align: left;
-            padding: 10px;
+            padding: 11px 10px;
             border-radius: 8px;
             cursor: pointer;
+            font-size: 14px;
         }
 
-        .account-button:hover {
+        .sidebar-button:hover {
             background: #242934;
+        }
+
+        .account-connected {
+            display: none;
+        }
+
+        .account-connected.active {
+            display: block;
         }
 
         .account-email {
@@ -135,19 +172,24 @@
             margin-top: 3px;
             overflow: hidden;
             text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        /* MAIN */
+        /* =========================
+           MAIN
+        ========================= */
 
         .main {
             flex: 1;
+            min-width: 0;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            min-width: 0;
         }
 
         .topbar {
             height: 60px;
+            min-height: 60px;
             border-bottom: 1px solid #292d36;
             display: flex;
             align-items: center;
@@ -158,8 +200,12 @@
         .chat {
             flex: 1;
             overflow-y: auto;
-            padding: 30px 20px 130px;
+            padding: 30px 20px 140px;
         }
+
+        /* =========================
+           ACCUEIL
+        ========================= */
 
         .welcome {
             max-width: 760px;
@@ -173,7 +219,7 @@
             margin: auto auto 20px;
             border-radius: 18px;
             background: white;
-            color: #111;
+            color: #111111;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -187,7 +233,12 @@
 
         .welcome p {
             color: #9da3ae;
+            line-height: 1.5;
         }
+
+        /* =========================
+           MESSAGES
+        ========================= */
 
         .message {
             max-width: 850px;
@@ -206,11 +257,12 @@
         }
 
         .avatar {
+            width: 32px;
             min-width: 32px;
             height: 32px;
             border-radius: 9px;
             background: white;
-            color: #111;
+            color: #111111;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -233,11 +285,17 @@
             line-height: 1.65;
             white-space: pre-wrap;
             color: #e5e7eb;
+            word-wrap: break-word;
         }
+
+        /* =========================
+           REFLEXION
+        ========================= */
 
         .thinking {
             color: #9da3ae;
             font-size: 14px;
+            padding-top: 7px;
         }
 
         .dots::after {
@@ -246,14 +304,30 @@
         }
 
         @keyframes dots {
-            0% { content: ""; }
-            25% { content: "."; }
-            50% { content: ".."; }
-            75% { content: "..."; }
-            100% { content: ""; }
+            0% {
+                content: "";
+            }
+
+            25% {
+                content: ".";
+            }
+
+            50% {
+                content: "..";
+            }
+
+            75% {
+                content: "...";
+            }
+
+            100% {
+                content: "";
+            }
         }
 
-        /* INPUT */
+        /* =========================
+           ZONE DE SAISIE
+        ========================= */
 
         .input-area {
             position: fixed;
@@ -265,6 +339,7 @@
                 transparent,
                 #0f1117 25%
             );
+            z-index: 20;
         }
 
         .input-wrapper {
@@ -291,6 +366,7 @@
             min-height: 42px;
             max-height: 180px;
             padding: 10px;
+            line-height: 1.5;
         }
 
         textarea::placeholder {
@@ -303,10 +379,11 @@
             border: none;
             border-radius: 11px;
             background: white;
-            color: #111;
+            color: #111111;
             cursor: pointer;
             font-size: 18px;
             font-weight: bold;
+            flex-shrink: 0;
         }
 
         .send-button:disabled {
@@ -314,13 +391,15 @@
             cursor: default;
         }
 
-        /* MODALS */
+        /* =========================
+           MODALES CONNEXION
+        ========================= */
 
         .modal-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.72);
             z-index: 1000;
             align-items: center;
             justify-content: center;
@@ -338,7 +417,7 @@
             border: 1px solid #303540;
             border-radius: 15px;
             padding: 25px;
-            box-shadow: 0 20px 60px rgba(0,0,0,.4);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .4);
         }
 
         .modal-header {
@@ -377,10 +456,15 @@
             border: none;
             border-radius: 8px;
             background: white;
-            color: #111;
+            color: #111111;
             cursor: pointer;
             font-weight: bold;
             margin-top: 5px;
+        }
+
+        .modal-primary:disabled {
+            opacity: .5;
+            cursor: default;
         }
 
         .modal-secondary {
@@ -409,25 +493,266 @@
             margin-bottom: 15px;
         }
 
-        .account-connected {
+        /* =========================
+           PANNEAU PARAMETRES
+        ========================= */
+
+        .settings-overlay {
             display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            z-index: 900;
         }
 
-        .account-connected.active {
+        .settings-overlay.active {
             display: block;
         }
 
-        .account-disconnected {
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            right: -390px;
+            width: 360px;
+            max-width: 90vw;
+            height: 100vh;
+            background: #191c23;
+            border-left: 1px solid #303540;
+            z-index: 950;
+            padding: 25px;
+            transition: right .25s ease;
+            overflow-y: auto;
+        }
+
+        .settings-panel.active {
+            right: 0;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .settings-header h2 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .settings-close {
+            border: none;
+            background: transparent;
+            color: #aaaaaa;
+            font-size: 25px;
+            cursor: pointer;
+        }
+
+        .settings-section {
+            margin-bottom: 28px;
+        }
+
+        .settings-label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
             display: block;
         }
 
-        .account-connected.active + .account-disconnected {
-            display: none;
+        .settings-description {
+            color: #8f96a2;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 12px;
         }
 
-        /* MOBILE */
+        .settings-options {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .settings-option {
+            flex: 1;
+            min-width: 130px;
+            border: 1px solid #363b46;
+            background: #101218;
+            color: #ffffff;
+            padding: 12px;
+            border-radius: 9px;
+            cursor: pointer;
+        }
+
+        .settings-option:hover {
+            background: #242934;
+        }
+
+        .settings-option.active {
+            border-color: #ffffff;
+            background: #303642;
+        }
+
+        .logout-button {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #493333;
+            border-radius: 9px;
+            background: #24191b;
+            color: #ffb1b1;
+            cursor: pointer;
+        }
+
+        .logout-button:hover {
+            background: #302024;
+        }
+
+        .not-connected {
+            color: #8f96a2;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* =========================
+           THEME CLAIR
+        ========================= */
+
+        body.light-theme {
+            background: #f5f6f8;
+            color: #17191d;
+        }
+
+        body.light-theme .sidebar {
+            background: #ffffff;
+            border-color: #e0e2e6;
+        }
+
+        body.light-theme .logo-icon {
+            background: #17191d;
+            color: white;
+        }
+
+        body.light-theme .new-chat {
+            background: #eeeeF1;
+            color: #17191d;
+        }
+
+        body.light-theme .new-chat:hover {
+            background: #e2e4e8;
+        }
+
+        body.light-theme .history-title {
+            color: #777d88;
+        }
+
+        body.light-theme .conversation {
+            color: #30343b;
+        }
+
+        body.light-theme .conversation:hover {
+            background: #eeeeF1;
+        }
+
+        body.light-theme .sidebar-bottom {
+            border-color: #e0e2e6;
+        }
+
+        body.light-theme .sidebar-button {
+            color: #17191d;
+        }
+
+        body.light-theme .sidebar-button:hover {
+            background: #eeeeF1;
+        }
+
+        body.light-theme .topbar {
+            border-color: #e0e2e6;
+        }
+
+        body.light-theme .welcome p {
+            color: #707680;
+        }
+
+        body.light-theme .user-bubble {
+            background: #e4e6eb;
+            color: #17191d;
+        }
+
+        body.light-theme .ai-text {
+            color: #30343b;
+        }
+
+        body.light-theme .thinking {
+            color: #707680;
+        }
+
+        body.light-theme .input-area {
+            background: linear-gradient(
+                transparent,
+                #f5f6f8 25%
+            );
+        }
+
+        body.light-theme .input-wrapper {
+            background: #ffffff;
+            border-color: #d8dbe0;
+        }
+
+        body.light-theme textarea {
+            color: #17191d;
+        }
+
+        body.light-theme textarea::placeholder {
+            color: #8a9099;
+        }
+
+        body.light-theme .settings-panel {
+            background: #ffffff;
+            border-color: #e0e2e6;
+            color: #17191d;
+        }
+
+        body.light-theme .settings-description {
+            color: #707680;
+        }
+
+        body.light-theme .settings-option {
+            background: #f4f5f7;
+            color: #17191d;
+            border-color: #d8dbe0;
+        }
+
+        body.light-theme .settings-option:hover {
+            background: #e7e9ed;
+        }
+
+        body.light-theme .settings-option.active {
+            background: #dedfe3;
+            border-color: #17191d;
+        }
+
+        body.light-theme .modal {
+            background: #ffffff;
+            color: #17191d;
+            border-color: #d8dbe0;
+        }
+
+        body.light-theme .modal input {
+            background: #f5f6f8;
+            color: #17191d;
+            border-color: #d8dbe0;
+        }
+
+        body.light-theme .modal-secondary {
+            color: #17191d;
+            border-color: #d8dbe0;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
 
         @media (max-width: 700px) {
+
             .sidebar {
                 width: 70px;
                 padding: 12px 8px;
@@ -446,8 +771,9 @@
                 padding: 10px 5px;
             }
 
-            .account-button {
+            .sidebar-button {
                 text-align: center;
+                font-size: 18px;
             }
 
             .input-area {
@@ -467,6 +793,10 @@
             .ai-text {
                 max-width: 85%;
             }
+
+            .settings-panel {
+                width: 340px;
+            }
         }
     </style>
 </head>
@@ -474,6 +804,10 @@
 <body>
 
 <div class="app">
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
 
     <aside class="sidebar">
 
@@ -486,32 +820,65 @@
             ＋ <span>Nouvelle conversation</span>
         </button>
 
-        <div class="history-title">Historique</div>
-
-        <div class="history" id="history">
-            <div class="history-empty">
-                Connecte-toi pour enregistrer et retrouver tes conversations.
-            </div>
+        <div class="history-title" id="historyTitle">
+            Historique
         </div>
 
-        <div class="account">
+        <div class="history" id="history">
 
-            <div class="account-connected" id="accountConnected">
-                <button class="account-button" id="logoutButton">
-                    👤 <span>Mon compte</span>
-                    <div class="account-email" id="accountEmail"></div>
-                </button>
+            <div class="history-empty" id="historyEmpty">
+                Connecte-toi pour enregistrer et retrouver
+                tes conversations.
             </div>
 
-            <div class="account-disconnected" id="accountDisconnected">
-                <button class="account-button" id="loginButton">
-                    🔐 <span>Se connecter</span>
+        </div>
+
+        <div class="sidebar-bottom">
+
+            <button
+                class="sidebar-button"
+                id="settingsButton"
+            >
+                ⚙️ <span id="settingsButtonText">Paramètres</span>
+            </button>
+
+            <div class="account-connected" id="accountConnected">
+
+                <button
+                    class="sidebar-button"
+                    id="logoutAccountButton"
+                >
+                    👤 <span>Mon compte</span>
+
+                    <div
+                        class="account-email"
+                        id="accountEmail"
+                    ></div>
                 </button>
+
+            </div>
+
+            <div id="accountDisconnected">
+
+                <button
+                    class="sidebar-button"
+                    id="loginButton"
+                >
+                    🔐 <span id="loginButtonText">
+                        Se connecter
+                    </span>
+                </button>
+
             </div>
 
         </div>
 
     </aside>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
 
     <main class="main">
 
@@ -525,17 +892,21 @@
 
                 <div class="welcome-icon">✝</div>
 
-                <h1>Bienvenue sur BibleProIA</h1>
+                <h1 id="welcomeTitle">
+                    Bienvenue sur BibleProIA
+                </h1>
 
-                <p>
-                    Pose ta question sur la Bible, le christianisme
-                    ou l'adventisme du septième jour.
+                <p id="welcomeText">
+                    Pose ta question sur la Bible,
+                    le christianisme ou l'adventisme
+                    du septième jour.
                 </p>
 
                 <p>
-                    <small>
+                    <small id="welcomeAccountText">
                         Tu peux discuter sans créer de compte.
-                        La connexion sert uniquement à sauvegarder ton historique.
+                        La connexion sert uniquement à sauvegarder
+                        ton historique.
                     </small>
                 </p>
 
@@ -548,7 +919,9 @@
 </div>
 
 
-<!-- ZONE DE SAISIE -->
+<!-- =========================
+     ZONE DE SAISIE
+========================== -->
 
 <div class="input-area">
 
@@ -579,7 +952,9 @@
 </div>
 
 
-<!-- REPONSE SERVEUR -->
+<!-- =========================
+     REPONSE SERVEUR
+========================== -->
 
 {% if reponse %}
 <div id="server-answer" style="display:none;">
@@ -588,19 +963,38 @@
 {% endif %}
 
 
-<!-- MODAL CONNEXION -->
+<!-- =========================
+     MODAL CONNEXION
+========================== -->
 
-<div class="modal-overlay" id="loginModal">
+<div
+    class="modal-overlay"
+    id="loginModal"
+>
 
     <div class="modal">
 
         <div class="modal-header">
-            <h2>Connexion</h2>
-            <button class="close-modal" data-close="loginModal">×</button>
+
+            <h2 id="loginTitle">
+                Connexion
+            </h2>
+
+            <button
+                class="close-modal"
+                data-close="loginModal"
+            >
+                ×
+            </button>
+
         </div>
 
-        <div class="modal-info">
-            Connecte-toi pour enregistrer et retrouver tes conversations.
+        <div
+            class="modal-info"
+            id="loginInfo"
+        >
+            Connecte-toi pour enregistrer et retrouver
+            tes conversations.
         </div>
 
         <input
@@ -617,34 +1011,62 @@
             autocomplete="current-password"
         >
 
-        <button class="modal-primary" id="submitLogin">
+        <button
+            class="modal-primary"
+            id="submitLogin"
+        >
             Se connecter
         </button>
 
-        <button class="modal-secondary" id="openSignupFromLogin">
+        <button
+            class="modal-secondary"
+            id="openSignupFromLogin"
+        >
             Créer un compte
         </button>
 
-        <div class="modal-status" id="loginStatus"></div>
+        <div
+            class="modal-status"
+            id="loginStatus"
+        ></div>
 
     </div>
 
 </div>
 
 
-<!-- MODAL INSCRIPTION -->
+<!-- =========================
+     MODAL INSCRIPTION
+========================== -->
 
-<div class="modal-overlay" id="signupModal">
+<div
+    class="modal-overlay"
+    id="signupModal"
+>
 
     <div class="modal">
 
         <div class="modal-header">
-            <h2>Créer un compte</h2>
-            <button class="close-modal" data-close="signupModal">×</button>
+
+            <h2 id="signupTitle">
+                Créer un compte
+            </h2>
+
+            <button
+                class="close-modal"
+                data-close="signupModal"
+            >
+                ×
+            </button>
+
         </div>
 
-        <div class="modal-info">
-            Crée un compte pour conserver ton historique de conversations.
+        <div
+            class="modal-info"
+            id="signupInfo"
+        >
+            Crée un compte pour conserver ton historique
+            de conversations.
         </div>
 
         <input
@@ -668,26 +1090,182 @@
             autocomplete="new-password"
         >
 
-        <button class="modal-primary" id="submitSignup">
+        <button
+            class="modal-primary"
+            id="submitSignup"
+        >
             Créer mon compte
         </button>
 
-        <button class="modal-secondary" id="openLoginFromSignup">
+        <button
+            class="modal-secondary"
+            id="openLoginFromSignup"
+        >
             J'ai déjà un compte
         </button>
 
-        <div class="modal-status" id="signupStatus"></div>
+        <div
+            class="modal-status"
+            id="signupStatus"
+        ></div>
 
     </div>
 
 </div>
 
 
+<!-- =========================
+     PANNEAU PARAMETRES
+========================== -->
+
+<div
+    class="settings-overlay"
+    id="settingsOverlay"
+></div>
+
+<aside
+    class="settings-panel"
+    id="settingsPanel"
+>
+
+    <div class="settings-header">
+
+        <h2 id="settingsTitle">
+            Paramètres
+        </h2>
+
+        <button
+            class="settings-close"
+            id="settingsClose"
+        >
+            ×
+        </button>
+
+    </div>
+
+
+    <!-- LANGUE -->
+
+    <div class="settings-section">
+
+        <span
+            class="settings-label"
+            id="languageLabel"
+        >
+            🌐 Langue
+        </span>
+
+        <div
+            class="settings-description"
+            id="languageDescription"
+        >
+            Choisis la langue de l'interface.
+        </div>
+
+        <div class="settings-options">
+
+            <button
+                class="settings-option"
+                id="languageFrench"
+            >
+                🇫🇷 Français
+            </button>
+
+            <button
+                class="settings-option"
+                id="languageEnglish"
+            >
+                🇬🇧 English
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- THEME -->
+
+    <div class="settings-section">
+
+        <span
+            class="settings-label"
+            id="themeLabel"
+        >
+            🎨 Thème
+        </span>
+
+        <div
+            class="settings-description"
+            id="themeDescription"
+        >
+            Choisis l'apparence de BibleProIA.
+        </div>
+
+        <div class="settings-options">
+
+            <button
+                class="settings-option"
+                id="themeDark"
+            >
+                🌙 Sombre
+            </button>
+
+            <button
+                class="settings-option"
+                id="themeLight"
+            >
+                ☀️ Clair
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- COMPTE -->
+
+    <div class="settings-section">
+
+        <span
+            class="settings-label"
+            id="accountSettingsLabel"
+        >
+            🔐 Compte
+        </span>
+
+        <div
+            class="settings-description"
+            id="accountDescription"
+        >
+            Gestion de ton compte BibleProIA.
+        </div>
+
+        <button
+            class="logout-button"
+            id="settingsLogout"
+        >
+            Se déconnecter
+        </button>
+
+        <div
+            class="not-connected"
+            id="notConnectedText"
+            style="display:none;"
+        >
+            Tu n'es pas connecté.
+            Tu peux utiliser BibleProIA sans compte.
+        </div>
+
+    </div>
+
+</aside>
+
+
 <script>
 
-    /* ================================
+    /* =====================================================
        SUPABASE
-    ================================= */
+    ===================================================== */
 
     const SUPABASE_URL =
         "https://mcsigvlnaghtijgbxeqn.supabase.co";
@@ -702,27 +1280,54 @@
         );
 
 
-    /* ================================
+    /* =====================================================
        VARIABLES
-    ================================= */
+    ===================================================== */
 
     let currentUser = null;
     let currentConversationId = null;
     let isSending = false;
 
+    let currentLanguage =
+        localStorage.getItem("bibleproia-language") || "fr";
 
-    const chat = document.getElementById("chat");
-    const chatForm = document.getElementById("chatForm");
-    const messageInput = document.getElementById("messageInput");
-    const sendButton = document.getElementById("sendButton");
-    const welcome = document.getElementById("welcome");
-    const history = document.getElementById("history");
+    let currentTheme =
+        localStorage.getItem("bibleproia-theme") || "dark";
 
-    const loginModal = document.getElementById("loginModal");
-    const signupModal = document.getElementById("signupModal");
 
-    const loginStatus = document.getElementById("loginStatus");
-    const signupStatus = document.getElementById("signupStatus");
+    /* =====================================================
+       ELEMENTS
+    ===================================================== */
+
+    const chat =
+        document.getElementById("chat");
+
+    const chatForm =
+        document.getElementById("chatForm");
+
+    const messageInput =
+        document.getElementById("messageInput");
+
+    const sendButton =
+        document.getElementById("sendButton");
+
+    const welcome =
+        document.getElementById("welcome");
+
+    const history =
+        document.getElementById("history");
+
+    const loginModal =
+        document.getElementById("loginModal");
+
+    const signupModal =
+        document.getElementById("signupModal");
+
+    const loginStatus =
+        document.getElementById("loginStatus");
+
+    const signupStatus =
+        document.getElementById("signupStatus");
 
     const accountConnected =
         document.getElementById("accountConnected");
@@ -733,53 +1338,575 @@
     const accountEmail =
         document.getElementById("accountEmail");
 
+    const settingsPanel =
+        document.getElementById("settingsPanel");
 
-    /* ================================
+    const settingsOverlay =
+        document.getElementById("settingsOverlay");
+
+
+    /* =====================================================
+       TRADUCTIONS
+    ===================================================== */
+
+    const translations = {
+
+        fr: {
+
+            pageTitle:
+                "BibleProIA",
+
+            newChat:
+                "Nouvelle conversation",
+
+            history:
+                "Historique",
+
+            connect:
+                "Se connecter",
+
+            account:
+                "Mon compte",
+
+            settings:
+                "Paramètres",
+
+            welcomeTitle:
+                "Bienvenue sur BibleProIA",
+
+            welcomeText:
+                "Pose ta question sur la Bible, le christianisme ou l'adventisme du septième jour.",
+
+            welcomeAccount:
+                "Tu peux discuter sans créer de compte. La connexion sert uniquement à sauvegarder ton historique.",
+
+            placeholder:
+                "Pose ta question...",
+
+            settingsTitle:
+                "Paramètres",
+
+            language:
+                "🌐 Langue",
+
+            languageDescription:
+                "Choisis la langue de l'interface.",
+
+            theme:
+                "🎨 Thème",
+
+            themeDescription:
+                "Choisis l'apparence de BibleProIA.",
+
+            accountSettings:
+                "🔐 Compte",
+
+            accountDescription:
+                "Gestion de ton compte BibleProIA.",
+
+            logout:
+                "Se déconnecter",
+
+            notConnected:
+                "Tu n'es pas connecté. Tu peux utiliser BibleProIA sans compte.",
+
+            dark:
+                "🌙 Sombre",
+
+            light:
+                "☀️ Clair",
+
+            login:
+                "Connexion",
+
+            loginInfo:
+                "Connecte-toi pour enregistrer et retrouver tes conversations.",
+
+            signup:
+                "Créer un compte",
+
+            signupInfo:
+                "Crée un compte pour conserver ton historique de conversations.",
+
+            createAccount:
+                "Créer mon compte",
+
+            alreadyAccount:
+                "J'ai déjà un compte",
+
+            thinking:
+                "BibleProIA réfléchit",
+
+            historyLogin:
+                "Connecte-toi pour enregistrer et retrouver tes conversations.",
+
+            noHistory:
+                "Aucune conversation enregistrée.",
+
+            passwordDifferent:
+                "Les deux mots de passe sont différents.",
+
+            fillFields:
+                "Remplis tous les champs.",
+
+            passwordLength:
+                "Le mot de passe doit contenir au moins 6 caractères.",
+
+            serverError:
+                "La réponse de BibleProIA n'a pas pu être récupérée."
+
+        },
+
+        en: {
+
+            pageTitle:
+                "BibleProIA",
+
+            newChat:
+                "New conversation",
+
+            history:
+                "History",
+
+            connect:
+                "Sign in",
+
+            account:
+                "My account",
+
+            settings:
+                "Settings",
+
+            welcomeTitle:
+                "Welcome to BibleProIA",
+
+            welcomeText:
+                "Ask your question about the Bible, Christianity or Seventh-day Adventism.",
+
+            welcomeAccount:
+                "You can chat without creating an account. Sign in only to save your history.",
+
+            placeholder:
+                "Ask your question...",
+
+            settingsTitle:
+                "Settings",
+
+            language:
+                "🌐 Language",
+
+            languageDescription:
+                "Choose the interface language.",
+
+            theme:
+                "🎨 Theme",
+
+            themeDescription:
+                "Choose the appearance of BibleProIA.",
+
+            accountSettings:
+                "🔐 Account",
+
+            accountDescription:
+                "Manage your BibleProIA account.",
+
+            logout:
+                "Sign out",
+
+            notConnected:
+                "You are not signed in. You can use BibleProIA without an account.",
+
+            dark:
+                "🌙 Dark",
+
+            light:
+                "☀️ Light",
+
+            login:
+                "Sign in",
+
+            loginInfo:
+                "Sign in to save and access your conversations.",
+
+            signup:
+                "Create an account",
+
+            signupInfo:
+                "Create an account to keep your conversation history.",
+
+            createAccount:
+                "Create my account",
+
+            alreadyAccount:
+                "I already have an account",
+
+            thinking:
+                "BibleProIA is thinking",
+
+            historyLogin:
+                "Sign in to save and access your conversations.",
+
+            noHistory:
+                "No saved conversations.",
+
+            passwordDifferent:
+                "The two passwords are different.",
+
+            fillFields:
+                "Please fill in all fields.",
+
+            passwordLength:
+                "The password must contain at least 6 characters.",
+
+            serverError:
+                "BibleProIA's response could not be retrieved."
+
+        }
+
+    };
+
+
+    function t(key) {
+
+        return translations[currentLanguage][key];
+
+    }
+
+
+    /* =====================================================
+       APPLICATION LANGUE
+    ===================================================== */
+
+    function applyLanguage() {
+
+        document.documentElement.lang =
+            currentLanguage;
+
+        document.title =
+            t("pageTitle");
+
+        document.getElementById("settingsButtonText")
+            .textContent = t("settings");
+
+        document.getElementById("historyTitle")
+            .textContent = t("history");
+
+        document.getElementById("loginButtonText")
+            .textContent = t("connect");
+
+        document.getElementById("welcomeTitle")
+            .textContent = t("welcomeTitle");
+
+        document.getElementById("welcomeText")
+            .textContent = t("welcomeText");
+
+        document.getElementById("welcomeAccountText")
+            .textContent = t("welcomeAccount");
+
+        messageInput.placeholder =
+            t("placeholder");
+
+        document.getElementById("settingsTitle")
+            .textContent = t("settingsTitle");
+
+        document.getElementById("languageLabel")
+            .textContent = t("language");
+
+        document.getElementById("languageDescription")
+            .textContent = t("languageDescription");
+
+        document.getElementById("themeLabel")
+            .textContent = t("theme");
+
+        document.getElementById("themeDescription")
+            .textContent = t("themeDescription");
+
+        document.getElementById("accountSettingsLabel")
+            .textContent = t("accountSettings");
+
+        document.getElementById("accountDescription")
+            .textContent = t("accountDescription");
+
+        document.getElementById("settingsLogout")
+            .textContent = t("logout");
+
+        document.getElementById("notConnectedText")
+            .textContent = t("notConnected");
+
+        document.getElementById("themeDark")
+            .textContent = t("dark");
+
+        document.getElementById("themeLight")
+            .textContent = t("light");
+
+        document.getElementById("loginTitle")
+            .textContent = t("login");
+
+        document.getElementById("loginInfo")
+            .textContent = t("loginInfo");
+
+        document.getElementById("submitLogin")
+            .textContent = t("connect");
+
+        document.getElementById("openSignupFromLogin")
+            .textContent = t("signup");
+
+        document.getElementById("signupTitle")
+            .textContent = t("signup");
+
+        document.getElementById("signupInfo")
+            .textContent = t("signupInfo");
+
+        document.getElementById("submitSignup")
+            .textContent = t("createAccount");
+
+        document.getElementById("openLoginFromSignup")
+            .textContent = t("alreadyAccount");
+
+        updateLanguageButtons();
+
+        if (!currentUser) {
+
+            const empty =
+                document.getElementById("historyEmpty");
+
+            if (empty) {
+                empty.textContent =
+                    t("historyLogin");
+            }
+
+        }
+
+    }
+
+
+    function updateLanguageButtons() {
+
+        document
+            .getElementById("languageFrench")
+            .classList.toggle(
+                "active",
+                currentLanguage === "fr"
+            );
+
+        document
+            .getElementById("languageEnglish")
+            .classList.toggle(
+                "active",
+                currentLanguage === "en"
+            );
+
+    }
+
+
+    /* =====================================================
+       APPLICATION THEME
+    ===================================================== */
+
+    function applyTheme() {
+
+        document.body.classList.toggle(
+            "light-theme",
+            currentTheme === "light"
+        );
+
+        document
+            .getElementById("themeDark")
+            .classList.toggle(
+                "active",
+                currentTheme === "dark"
+            );
+
+        document
+            .getElementById("themeLight")
+            .classList.toggle(
+                "active",
+                currentTheme === "light"
+            );
+
+    }
+
+
+    /* =====================================================
+       CHOIX LANGUE
+    ===================================================== */
+
+    document
+        .getElementById("languageFrench")
+        .addEventListener("click", () => {
+
+            currentLanguage = "fr";
+
+            localStorage.setItem(
+                "bibleproia-language",
+                "fr"
+            );
+
+            applyLanguage();
+
+        });
+
+
+    document
+        .getElementById("languageEnglish")
+        .addEventListener("click", () => {
+
+            currentLanguage = "en";
+
+            localStorage.setItem(
+                "bibleproia-language",
+                "en"
+            );
+
+            applyLanguage();
+
+        });
+
+
+    /* =====================================================
+       CHOIX THEME
+    ===================================================== */
+
+    document
+        .getElementById("themeDark")
+        .addEventListener("click", () => {
+
+            currentTheme = "dark";
+
+            localStorage.setItem(
+                "bibleproia-theme",
+                "dark"
+            );
+
+            applyTheme();
+
+        });
+
+
+    document
+        .getElementById("themeLight")
+        .addEventListener("click", () => {
+
+            currentTheme = "light";
+
+            localStorage.setItem(
+                "bibleproia-theme",
+                "light"
+            );
+
+            applyTheme();
+
+        });
+
+
+    /* =====================================================
+       PANNEAU PARAMETRES
+    ===================================================== */
+
+    function openSettings() {
+
+        settingsPanel.classList.add("active");
+        settingsOverlay.classList.add("active");
+
+    }
+
+
+    function closeSettings() {
+
+        settingsPanel.classList.remove("active");
+        settingsOverlay.classList.remove("active");
+
+    }
+
+
+    document
+        .getElementById("settingsButton")
+        .addEventListener(
+            "click",
+            openSettings
+        );
+
+
+    document
+        .getElementById("settingsClose")
+        .addEventListener(
+            "click",
+            closeSettings
+        );
+
+
+    settingsOverlay.addEventListener(
+        "click",
+        closeSettings
+    );
+
+
+    /* =====================================================
        MODALES
-    ================================= */
+    ===================================================== */
 
     function openModal(modal) {
+
         modal.classList.add("active");
+
     }
+
 
     function closeModal(modal) {
+
         modal.classList.remove("active");
+
     }
 
-    document.querySelectorAll(".close-modal").forEach(button => {
 
-        button.addEventListener("click", () => {
+    document
+        .querySelectorAll(".close-modal")
+        .forEach(button => {
 
-            const modalId = button.dataset.close;
+            button.addEventListener(
+                "click",
+                () => {
 
-            closeModal(
-                document.getElementById(modalId)
+                    const modalId =
+                        button.dataset.close;
+
+                    closeModal(
+                        document.getElementById(modalId)
+                    );
+
+                }
             );
 
         });
 
-    });
 
-    loginModal.addEventListener("click", event => {
+    loginModal.addEventListener(
+        "click",
+        event => {
 
-        if (event.target === loginModal) {
-            closeModal(loginModal);
+            if (event.target === loginModal) {
+                closeModal(loginModal);
+            }
+
         }
+    );
 
-    });
 
-    signupModal.addEventListener("click", event => {
+    signupModal.addEventListener(
+        "click",
+        event => {
 
-        if (event.target === signupModal) {
-            closeModal(signupModal);
+            if (event.target === signupModal) {
+                closeModal(signupModal);
+            }
+
         }
+    );
 
-    });
 
-
-    /* ================================
+    /* =====================================================
        INTERFACE COMPTE
-    ================================= */
+    ===================================================== */
 
     function updateAuthUI(user) {
 
@@ -793,6 +1920,14 @@
             accountEmail.textContent =
                 user.email || "";
 
+            document
+                .getElementById("settingsLogout")
+                .style.display = "block";
+
+            document
+                .getElementById("notConnectedText")
+                .style.display = "none";
+
             loadConversations();
 
         } else {
@@ -802,10 +1937,17 @@
 
             accountEmail.textContent = "";
 
+            document
+                .getElementById("settingsLogout")
+                .style.display = "none";
+
+            document
+                .getElementById("notConnectedText")
+                .style.display = "block";
+
             history.innerHTML = `
-                <div class="history-empty">
-                    Connecte-toi pour enregistrer et retrouver
-                    tes conversations.
+                <div class="history-empty" id="historyEmpty">
+                    ${t("historyLogin")}
                 </div>
             `;
 
@@ -814,286 +1956,366 @@
     }
 
 
-    /* ================================
-       SESSION AU CHARGEMENT
-    ================================= */
+    /* =====================================================
+       INITIALISATION AUTH
+    ===================================================== */
 
     async function initializeAuth() {
 
         const {
             data: { session }
-        } = await supabaseClient.auth.getSession();
+        } =
+            await supabaseClient.auth.getSession();
 
         updateAuthUI(
-            session ? session.user : null
+            session
+                ? session.user
+                : null
         );
 
     }
 
 
-    /* ================================
-       CHANGEMENT AUTH
-    ================================= */
-
     supabaseClient.auth.onAuthStateChange(
-        async (event, session) => {
+        (event, session) => {
 
             updateAuthUI(
-                session ? session.user : null
+                session
+                    ? session.user
+                    : null
             );
 
         }
     );
 
 
-    /* ================================
-       CONNEXION
-    ================================= */
+    /* =====================================================
+       OUVRIR CONNEXION
+    ===================================================== */
 
     document
         .getElementById("loginButton")
-        .addEventListener("click", () => {
+        .addEventListener(
+            "click",
+            () => {
 
-            loginStatus.textContent = "";
+                loginStatus.textContent = "";
 
-            openModal(loginModal);
+                openModal(loginModal);
 
-        });
+            }
+        );
 
+
+    /* =====================================================
+       CONNEXION
+    ===================================================== */
 
     document
         .getElementById("submitLogin")
-        .addEventListener("click", async () => {
+        .addEventListener(
+            "click",
+            async () => {
 
-            const email =
-                document.getElementById("loginEmail")
-                    .value.trim();
+                const email =
+                    document
+                        .getElementById("loginEmail")
+                        .value
+                        .trim();
 
-            const password =
-                document.getElementById("loginPassword")
-                    .value;
+                const password =
+                    document
+                        .getElementById("loginPassword")
+                        .value;
 
-            loginStatus.textContent = "";
+                loginStatus.textContent = "";
 
-            if (!email || !password) {
+                if (!email || !password) {
 
-                loginStatus.textContent =
-                    "Remplis tous les champs.";
+                    loginStatus.textContent =
+                        t("fillFields");
 
-                return;
+                    return;
+
+                }
+
+                const button =
+                    document.getElementById(
+                        "submitLogin"
+                    );
+
+                button.disabled = true;
+                button.textContent =
+                    currentLanguage === "fr"
+                        ? "Connexion..."
+                        : "Signing in...";
+
+                const {
+                    error
+                } =
+                    await supabaseClient.auth
+                        .signInWithPassword({
+                            email,
+                            password
+                        });
+
+                button.disabled = false;
+                button.textContent =
+                    t("connect");
+
+                if (error) {
+
+                    loginStatus.textContent =
+                        error.message;
+
+                    return;
+
+                }
+
+                closeModal(loginModal);
 
             }
-
-            const button =
-                document.getElementById("submitLogin");
-
-            button.disabled = true;
-            button.textContent = "Connexion...";
-
-            const { error } =
-                await supabaseClient.auth
-                    .signInWithPassword({
-                        email,
-                        password
-                    });
-
-            button.disabled = false;
-            button.textContent = "Se connecter";
-
-            if (error) {
-
-                loginStatus.textContent =
-                    error.message;
-
-                return;
-
-            }
-
-            closeModal(loginModal);
-
-        });
+        );
 
 
-    /* ================================
-       INSCRIPTION
-    ================================= */
+    /* =====================================================
+       OUVRIR INSCRIPTION
+    ===================================================== */
 
     document
         .getElementById("openSignupFromLogin")
-        .addEventListener("click", () => {
+        .addEventListener(
+            "click",
+            () => {
 
-            closeModal(loginModal);
+                closeModal(loginModal);
 
-            signupStatus.textContent = "";
+                signupStatus.textContent = "";
 
-            openModal(signupModal);
+                openModal(signupModal);
 
-        });
+            }
+        );
 
+
+    /* =====================================================
+       INSCRIPTION
+    ===================================================== */
 
     document
         .getElementById("submitSignup")
-        .addEventListener("click", async () => {
+        .addEventListener(
+            "click",
+            async () => {
 
-            const email =
-                document.getElementById("signupEmail")
-                    .value.trim();
+                const email =
+                    document
+                        .getElementById("signupEmail")
+                        .value
+                        .trim();
 
-            const password =
-                document.getElementById("signupPassword")
-                    .value;
+                const password =
+                    document
+                        .getElementById("signupPassword")
+                        .value;
 
-            const confirmPassword =
-                document.getElementById("signupPasswordConfirm")
-                    .value;
+                const confirmPassword =
+                    document
+                        .getElementById(
+                            "signupPasswordConfirm"
+                        )
+                        .value;
 
-            signupStatus.textContent = "";
+                signupStatus.textContent = "";
 
-            if (!email || !password || !confirmPassword) {
+                if (
+                    !email ||
+                    !password ||
+                    !confirmPassword
+                ) {
 
-                signupStatus.textContent =
-                    "Remplis tous les champs.";
+                    signupStatus.textContent =
+                        t("fillFields");
 
-                return;
+                    return;
+
+                }
+
+                if (
+                    password !==
+                    confirmPassword
+                ) {
+
+                    signupStatus.textContent =
+                        t("passwordDifferent");
+
+                    return;
+
+                }
+
+                if (password.length < 6) {
+
+                    signupStatus.textContent =
+                        t("passwordLength");
+
+                    return;
+
+                }
+
+                const button =
+                    document.getElementById(
+                        "submitSignup"
+                    );
+
+                button.disabled = true;
+
+                button.textContent =
+                    currentLanguage === "fr"
+                        ? "Création..."
+                        : "Creating...";
+
+                const {
+                    data,
+                    error
+                } =
+                    await supabaseClient.auth
+                        .signUp({
+                            email,
+                            password
+                        });
+
+                button.disabled = false;
+
+                button.textContent =
+                    t("createAccount");
+
+                if (error) {
+
+                    signupStatus.textContent =
+                        error.message;
+
+                    return;
+
+                }
+
+                if (data.session) {
+
+                    closeModal(signupModal);
+
+                } else {
+
+                    signupStatus.style.color =
+                        "#9ee6a8";
+
+                    signupStatus.textContent =
+                        currentLanguage === "fr"
+                            ? "Compte créé. Tu peux maintenant te connecter."
+                            : "Account created. You can now sign in.";
+
+                }
 
             }
-
-            if (password !== confirmPassword) {
-
-                signupStatus.textContent =
-                    "Les deux mots de passe sont différents.";
-
-                return;
-
-            }
-
-            if (password.length < 6) {
-
-                signupStatus.textContent =
-                    "Le mot de passe doit contenir au moins 6 caractères.";
-
-                return;
-
-            }
-
-            const button =
-                document.getElementById("submitSignup");
-
-            button.disabled = true;
-            button.textContent = "Création...";
-
-            const { data, error } =
-                await supabaseClient.auth.signUp({
-                    email,
-                    password
-                });
-
-            button.disabled = false;
-            button.textContent = "Créer mon compte";
-
-            if (error) {
-
-                signupStatus.textContent =
-                    error.message;
-
-                return;
-
-            }
-
-            if (data.session) {
-
-                closeModal(signupModal);
-
-            } else {
-
-                signupStatus.style.color = "#9ee6a8";
-
-                signupStatus.textContent =
-                    "Compte créé. Tu peux maintenant te connecter.";
-
-            }
-
-        });
+        );
 
 
-    /* ================================
+    /* =====================================================
        RETOUR CONNEXION
-    ================================= */
+    ===================================================== */
 
     document
         .getElementById("openLoginFromSignup")
-        .addEventListener("click", () => {
+        .addEventListener(
+            "click",
+            () => {
 
-            closeModal(signupModal);
+                closeModal(signupModal);
 
-            loginStatus.textContent = "";
+                loginStatus.textContent = "";
 
-            openModal(loginModal);
+                openModal(loginModal);
 
-        });
+            }
+        );
 
 
-    /* ================================
+    /* =====================================================
        DECONNEXION
-    ================================= */
+    ===================================================== */
+
+    async function logout() {
+
+        await supabaseClient.auth.signOut();
+
+        currentUser = null;
+        currentConversationId = null;
+
+        closeSettings();
+
+        updateAuthUI(null);
+
+    }
+
 
     document
-        .getElementById("logoutButton")
-        .addEventListener("click", async () => {
-
-            await supabaseClient.auth.signOut();
-
-            currentUser = null;
-            currentConversationId = null;
-
-            updateAuthUI(null);
-
-        });
+        .getElementById("logoutAccountButton")
+        .addEventListener(
+            "click",
+            logout
+        );
 
 
-    /* ================================
+    document
+        .getElementById("settingsLogout")
+        .addEventListener(
+            "click",
+            logout
+        );
+
+
+    /* =====================================================
        NOUVELLE CONVERSATION
-    ================================= */
+    ===================================================== */
 
     document
         .getElementById("newChatButton")
-        .addEventListener("click", () => {
+        .addEventListener(
+            "click",
+            () => {
 
-            currentConversationId = null;
+                currentConversationId = null;
 
-            chat.innerHTML = `
-                <div class="welcome" id="welcome">
+                chat.innerHTML = `
+                    <div class="welcome" id="welcome">
 
-                    <div class="welcome-icon">✝</div>
+                        <div class="welcome-icon">✝</div>
 
-                    <h1>Bienvenue sur BibleProIA</h1>
+                        <h1>${t("welcomeTitle")}</h1>
 
-                    <p>
-                        Pose ta question sur la Bible,
-                        le christianisme ou l'adventisme
-                        du septième jour.
-                    </p>
+                        <p>${t("welcomeText")}</p>
 
-                    <p>
-                        <small>
-                            Tu peux discuter sans créer de compte.
-                        </small>
-                    </p>
+                        <p>
+                            <small>
+                                ${t("welcomeAccount")}
+                            </small>
+                        </p>
 
-                </div>
-            `;
+                    </div>
+                `;
 
-            messageInput.focus();
+                messageInput.focus();
 
-        });
+            }
+        );
 
 
-    /* ================================
-       CREER UNE CONVERSATION
-       UNIQUEMENT SI CONNECTE
-    ================================= */
+    /* =====================================================
+       CREER CONVERSATION
+       SEULEMENT SI CONNECTE
+    ===================================================== */
 
-    async function createConversation(firstMessage) {
+    async function createConversation(
+        firstMessage
+    ) {
 
         if (!currentUser) {
             return null;
@@ -1104,12 +2326,18 @@
                 ? firstMessage.substring(0, 60) + "..."
                 : firstMessage;
 
-        const { data, error } =
+        const {
+            data,
+            error
+        } =
             await supabaseClient
                 .from("conversations")
                 .insert({
-                    user_id: currentUser.id,
-                    title: title
+                    user_id:
+                        currentUser.id,
+
+                    title:
+                        title
                 })
                 .select()
                 .single();
@@ -1125,36 +2353,49 @@
 
         }
 
-        currentConversationId = data.id;
+        currentConversationId =
+            data.id;
 
         return data;
 
     }
 
 
-    /* ================================
-       ENREGISTRER MESSAGE
-       UNIQUEMENT SI CONNECTE
-    ================================= */
+    /* =====================================================
+       SAUVEGARDER MESSAGE
+    ===================================================== */
 
-    async function saveMessage(role, content) {
+    async function saveMessage(
+        role,
+        content
+    ) {
 
-        if (!currentUser || !currentConversationId) {
+        if (
+            !currentUser ||
+            !currentConversationId
+        ) {
             return;
         }
 
-        const { error } =
+        const {
+            error
+        } =
             await supabaseClient
                 .from("messages")
                 .insert({
+
                     conversation_id:
                         currentConversationId,
 
                     user_id:
                         currentUser.id,
 
-                    role,
-                    content
+                    role:
+                        role,
+
+                    content:
+                        content
+
                 });
 
         if (error) {
@@ -1169,13 +2410,16 @@
     }
 
 
-    /* ================================
-       METTRE A JOUR DATE CONVERSATION
-    ================================= */
+    /* =====================================================
+       DATE CONVERSATION
+    ===================================================== */
 
     async function updateConversationDate() {
 
-        if (!currentUser || !currentConversationId) {
+        if (
+            !currentUser ||
+            !currentConversationId
+        ) {
             return;
         }
 
@@ -1185,14 +2429,17 @@
                 updated_at:
                     new Date().toISOString()
             })
-            .eq("id", currentConversationId);
+            .eq(
+                "id",
+                currentConversationId
+            );
 
     }
 
 
-    /* ================================
+    /* =====================================================
        HISTORIQUE
-    ================================= */
+    ===================================================== */
 
     async function loadConversations() {
 
@@ -1200,14 +2447,23 @@
             return;
         }
 
-        const { data, error } =
+        const {
+            data,
+            error
+        } =
             await supabaseClient
                 .from("conversations")
                 .select("*")
-                .eq("user_id", currentUser.id)
-                .order("updated_at", {
-                    ascending: false
-                });
+                .eq(
+                    "user_id",
+                    currentUser.id
+                )
+                .order(
+                    "updated_at",
+                    {
+                        ascending: false
+                    }
+                );
 
         if (error) {
 
@@ -1222,11 +2478,14 @@
 
         history.innerHTML = "";
 
-        if (!data || data.length === 0) {
+        if (
+            !data ||
+            data.length === 0
+        ) {
 
             history.innerHTML = `
                 <div class="history-empty">
-                    Aucune conversation enregistrée.
+                    ${t("noHistory")}
                 </div>
             `;
 
@@ -1234,31 +2493,38 @@
 
         }
 
-        data.forEach(conversation => {
+        data.forEach(
+            conversation => {
 
-            const element =
-                document.createElement("div");
+                const element =
+                    document.createElement("div");
 
-            element.className = "conversation";
+                element.className =
+                    "conversation";
 
-            element.textContent =
-                conversation.title;
+                element.textContent =
+                    conversation.title;
 
-            element.addEventListener(
-                "click",
-                () => loadConversation(conversation.id)
-            );
+                element.addEventListener(
+                    "click",
+                    () => loadConversation(
+                        conversation.id
+                    )
+                );
 
-            history.appendChild(element);
+                history.appendChild(
+                    element
+                );
 
-        });
+            }
+        );
 
     }
 
 
-    /* ================================
-       CHARGER UNE CONVERSATION
-    ================================= */
+    /* =====================================================
+       CHARGER CONVERSATION
+    ===================================================== */
 
     async function loadConversation(id) {
 
@@ -1266,15 +2532,27 @@
             return;
         }
 
-        const { data, error } =
+        const {
+            data,
+            error
+        } =
             await supabaseClient
                 .from("messages")
                 .select("*")
-                .eq("conversation_id", id)
-                .eq("user_id", currentUser.id)
-                .order("created_at", {
-                    ascending: true
-                });
+                .eq(
+                    "conversation_id",
+                    id
+                )
+                .eq(
+                    "user_id",
+                    currentUser.id
+                )
+                .order(
+                    "created_at",
+                    {
+                        ascending: true
+                    }
+                );
 
         if (error) {
 
@@ -1291,110 +2569,139 @@
 
         chat.innerHTML = "";
 
-        if (!data || data.length === 0) {
+        if (
+            !data ||
+            data.length === 0
+        ) {
             return;
         }
 
-        data.forEach(message => {
+        data.forEach(
+            message => {
 
-            addMessageToChat(
-                message.role,
-                message.content
-            );
+                addMessageToChat(
+                    message.role,
+                    message.content
+                );
 
-        });
+            }
+        );
 
         scrollToBottom();
 
     }
 
 
-    /* ================================
+    /* =====================================================
        AFFICHER MESSAGE
-    ================================= */
+    ===================================================== */
 
-    function addMessageToChat(role, content) {
+    function addMessageToChat(
+        role,
+        content
+    ) {
 
         const message =
             document.createElement("div");
 
         message.className =
             "message " +
-            (role === "user" ? "user" : "ai");
+            (
+                role === "user"
+                    ? "user"
+                    : "ai"
+            );
 
         if (role === "user") {
 
             const bubble =
                 document.createElement("div");
 
-            bubble.className = "user-bubble";
+            bubble.className =
+                "user-bubble";
 
-            bubble.textContent = content;
+            bubble.textContent =
+                content;
 
-            message.appendChild(bubble);
+            message.appendChild(
+                bubble
+            );
 
         } else {
 
             const avatar =
                 document.createElement("div");
 
-            avatar.className = "avatar";
+            avatar.className =
+                "avatar";
 
-            avatar.textContent = "✝";
+            avatar.textContent =
+                "✝";
 
             const text =
                 document.createElement("div");
 
-            text.className = "ai-text";
+            text.className =
+                "ai-text";
 
-            text.textContent = content;
+            text.textContent =
+                content;
 
-            message.appendChild(avatar);
-            message.appendChild(text);
+            message.appendChild(
+                avatar
+            );
+
+            message.appendChild(
+                text
+            );
 
         }
 
-        chat.appendChild(message);
+        chat.appendChild(
+            message
+        );
 
     }
 
 
-    /* ================================
-       INDICATEUR REFLEXION
-    ================================= */
+    /* =====================================================
+       REFLEXION
+    ===================================================== */
 
     function addThinking() {
 
         const message =
             document.createElement("div");
 
-        message.className = "message ai";
+        message.className =
+            "message ai";
 
-        message.id = "thinkingMessage";
+        message.id =
+            "thinkingMessage";
 
         message.innerHTML = `
             <div class="avatar">✝</div>
 
             <div class="thinking">
-                BibleProIA réfléchit<span class="dots"></span>
+                ${t("thinking")}<span class="dots"></span>
             </div>
         `;
 
-        chat.appendChild(message);
+        chat.appendChild(
+            message
+        );
 
         scrollToBottom();
 
     }
 
 
-    /* ================================
-       SUPPRIMER REFLEXION
-    ================================= */
-
     function removeThinking() {
 
         const element =
-            document.getElementById("thinkingMessage");
+            document.getElementById(
+                "thinkingMessage"
+            );
 
         if (element) {
             element.remove();
@@ -1403,9 +2710,9 @@
     }
 
 
-    /* ================================
+    /* =====================================================
        SCROLL
-    ================================= */
+    ===================================================== */
 
     function scrollToBottom() {
 
@@ -1415,15 +2722,16 @@
     }
 
 
-    /* ================================
-       AUTO RESIZE TEXTAREA
-    ================================= */
+    /* =====================================================
+       AUTO RESIZE
+    ===================================================== */
 
     messageInput.addEventListener(
         "input",
         () => {
 
-            messageInput.style.height = "auto";
+            messageInput.style.height =
+                "auto";
 
             messageInput.style.height =
                 Math.min(
@@ -1435,15 +2743,15 @@
     );
 
 
-    /* ================================
+    /* =====================================================
        ENTREE / SHIFT + ENTREE
 
-       Entrée seule :
+       ENTREE :
        -> envoyer
 
-       Shift + Entrée :
+       SHIFT + ENTREE :
        -> nouvelle ligne
-    ================================= */
+    ===================================================== */
 
     messageInput.addEventListener(
         "keydown",
@@ -1464,9 +2772,9 @@
     );
 
 
-    /* ================================
+    /* =====================================================
        ENVOI MESSAGE
-    ================================= */
+    ===================================================== */
 
     chatForm.addEventListener(
         "submit",
@@ -1488,8 +2796,13 @@
             isSending = true;
             sendButton.disabled = true;
 
-            if (welcome) {
-                welcome.remove();
+            const currentWelcome =
+                document.getElementById(
+                    "welcome"
+                );
+
+            if (currentWelcome) {
+                currentWelcome.remove();
             }
 
             addMessageToChat(
@@ -1500,24 +2813,30 @@
             scrollToBottom();
 
             messageInput.value = "";
-            messageInput.style.height = "auto";
+            messageInput.style.height =
+                "auto";
 
             /*
              * IMPORTANT :
-             * On ne demande PAS de connexion ici.
-             *
-             * Tout le monde peut discuter.
+             * aucune connexion n'est nécessaire
+             * pour envoyer un message.
              */
 
-            if (currentUser &&
-                !currentConversationId) {
+            if (
+                currentUser &&
+                !currentConversationId
+            ) {
 
-                await createConversation(question);
+                await createConversation(
+                    question
+                );
 
             }
 
-            if (currentUser &&
-                currentConversationId) {
+            if (
+                currentUser &&
+                currentConversationId
+            ) {
 
                 await saveMessage(
                     "user",
@@ -1540,11 +2859,24 @@
                     question
                 );
 
+                /*
+                 * Langue choisie dans Paramètres.
+                 * Le backend pourra l'utiliser.
+                 */
+
+                formData.append(
+                    "language",
+                    currentLanguage
+                );
+
                 const response =
-                    await fetch("/", {
-                        method: "POST",
-                        body: formData
-                    });
+                    await fetch(
+                        "/",
+                        {
+                            method: "POST",
+                            body: formData
+                        }
+                    );
 
                 if (!response.ok) {
 
@@ -1575,18 +2907,20 @@
                 if (!answerElement) {
 
                     throw new Error(
-                        "La réponse de BibleProIA n'a pas pu être récupérée."
+                        t("serverError")
                     );
 
                 }
 
                 const answer =
-                    answerElement.textContent.trim();
+                    answerElement
+                        .textContent
+                        .trim();
 
                 if (!answer) {
 
                     throw new Error(
-                        "BibleProIA n'a retourné aucune réponse."
+                        t("serverError")
                     );
 
                 }
@@ -1601,12 +2935,14 @@
                 scrollToBottom();
 
                 /*
-                 * Sauvegarde seulement
-                 * si l'utilisateur est connecté.
+                 * Sauvegarde uniquement
+                 * si connecté.
                  */
 
-                if (currentUser &&
-                    currentConversationId) {
+                if (
+                    currentUser &&
+                    currentConversationId
+                ) {
 
                     await saveMessage(
                         "assistant",
@@ -1621,14 +2957,19 @@
 
             } catch (error) {
 
-                console.error(error);
+                console.error(
+                    error
+                );
 
                 removeThinking();
 
                 addMessageToChat(
                     "assistant",
-                    "Une erreur est survenue : " +
-                    error.message
+                    currentLanguage === "fr"
+                        ? "Une erreur est survenue : " +
+                          error.message
+                        : "An error occurred: " +
+                          error.message
                 );
 
             }
@@ -1642,9 +2983,13 @@
     );
 
 
-    /* ================================
+    /* =====================================================
        DEMARRAGE
-    ================================= */
+    ===================================================== */
+
+    applyLanguage();
+
+    applyTheme();
 
     initializeAuth();
 
