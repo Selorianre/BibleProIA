@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>BibleProIA</title>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -30,14 +29,9 @@
 
         button,
         textarea,
-        input,
-        select {
+        input {
             font-family: inherit;
         }
-
-        /* =========================
-           APPLICATION
-        ========================= */
 
         .app {
             display: flex;
@@ -132,10 +126,6 @@
         .conversation:hover {
             background: #242934;
         }
-
-        /* =========================
-           BAS SIDEBAR
-        ========================= */
 
         .sidebar-bottom {
             border-top: 1px solid #292d36;
@@ -392,7 +382,7 @@
         }
 
         /* =========================
-           MODALES CONNEXION
+           MODALES
         ========================= */
 
         .modal-overlay {
@@ -494,7 +484,7 @@
         }
 
         /* =========================
-           PANNEAU PARAMETRES
+           PARAMETRES
         ========================= */
 
         .settings-overlay {
@@ -793,10 +783,6 @@
             .ai-text {
                 max-width: 85%;
             }
-
-            .settings-panel {
-                width: 340px;
-            }
         }
     </style>
 </head>
@@ -816,57 +802,69 @@
             <span>BibleProIA</span>
         </div>
 
-        <button class="new-chat" id="newChatButton">
-            ＋ <span>Nouvelle conversation</span>
+        <button
+            type="button"
+            class="new-chat"
+            id="newChatButton"
+        >
+            ＋ <span id="newChatText">Nouvelle conversation</span>
         </button>
 
-        <div class="history-title" id="historyTitle">
+        <div
+            class="history-title"
+            id="historyTitle"
+        >
             Historique
         </div>
 
-        <div class="history" id="history">
-
-            <div class="history-empty" id="historyEmpty">
-                Connecte-toi pour enregistrer et retrouver
-                tes conversations.
+        <div
+            class="history"
+            id="history"
+        >
+            <div
+                class="history-empty"
+                id="historyEmpty"
+            >
+                Connecte-toi pour enregistrer et retrouver tes conversations.
             </div>
-
         </div>
 
         <div class="sidebar-bottom">
 
             <button
+                type="button"
                 class="sidebar-button"
                 id="settingsButton"
             >
                 ⚙️ <span id="settingsButtonText">Paramètres</span>
             </button>
 
-            <div class="account-connected" id="accountConnected">
-
+            <div
+                class="account-connected"
+                id="accountConnected"
+            >
                 <button
+                    type="button"
                     class="sidebar-button"
                     id="logoutAccountButton"
                 >
-                    👤 <span>Mon compte</span>
+                    👤 <span id="accountText">Mon compte</span>
 
                     <div
                         class="account-email"
                         id="accountEmail"
                     ></div>
                 </button>
-
             </div>
 
             <div id="accountDisconnected">
 
                 <button
+                    type="button"
                     class="sidebar-button"
                     id="loginButton"
                 >
-                    🔐 <span id="loginButtonText">
-                        Se connecter
-                    </span>
+                    🔐 <span id="loginButtonText">Se connecter</span>
                 </button>
 
             </div>
@@ -886,11 +884,19 @@
             BibleProIA
         </div>
 
-        <div class="chat" id="chat">
+        <div
+            class="chat"
+            id="chat"
+        >
 
-            <div class="welcome" id="welcome">
+            <div
+                class="welcome"
+                id="welcome"
+            >
 
-                <div class="welcome-icon">✝</div>
+                <div class="welcome-icon">
+                    ✝
+                </div>
 
                 <h1 id="welcomeTitle">
                     Bienvenue sur BibleProIA
@@ -957,8 +963,13 @@
 ========================== -->
 
 {% if reponse %}
-<div id="server-answer" style="display:none;">
-    <div class="answer-text">{{ reponse }}</div>
+<div
+    id="server-answer"
+    style="display:none;"
+>
+    <div class="answer-text">
+        {{ reponse }}
+    </div>
 </div>
 {% endif %}
 
@@ -981,6 +992,7 @@
             </h2>
 
             <button
+                type="button"
                 class="close-modal"
                 data-close="loginModal"
             >
@@ -993,8 +1005,7 @@
             class="modal-info"
             id="loginInfo"
         >
-            Connecte-toi pour enregistrer et retrouver
-            tes conversations.
+            Connecte-toi pour enregistrer et retrouver tes conversations.
         </div>
 
         <input
@@ -1012,6 +1023,7 @@
         >
 
         <button
+            type="button"
             class="modal-primary"
             id="submitLogin"
         >
@@ -1019,6 +1031,7 @@
         </button>
 
         <button
+            type="button"
             class="modal-secondary"
             id="openSignupFromLogin"
         >
@@ -1053,6 +1066,7 @@
             </h2>
 
             <button
+                type="button"
                 class="close-modal"
                 data-close="signupModal"
             >
@@ -1065,8 +1079,7 @@
             class="modal-info"
             id="signupInfo"
         >
-            Crée un compte pour conserver ton historique
-            de conversations.
+            Crée un compte pour conserver ton historique de conversations.
         </div>
 
         <input
@@ -1091,6 +1104,7 @@
         >
 
         <button
+            type="button"
             class="modal-primary"
             id="submitSignup"
         >
@@ -1098,6 +1112,7 @@
         </button>
 
         <button
+            type="button"
             class="modal-secondary"
             id="openLoginFromSignup"
         >
@@ -1135,6 +1150,7 @@
         </h2>
 
         <button
+            type="button"
             class="settings-close"
             id="settingsClose"
         >
@@ -1165,6 +1181,7 @@
         <div class="settings-options">
 
             <button
+                type="button"
                 class="settings-option"
                 id="languageFrench"
             >
@@ -1172,6 +1189,7 @@
             </button>
 
             <button
+                type="button"
                 class="settings-option"
                 id="languageEnglish"
             >
@@ -1204,6 +1222,7 @@
         <div class="settings-options">
 
             <button
+                type="button"
                 class="settings-option"
                 id="themeDark"
             >
@@ -1211,6 +1230,7 @@
             </button>
 
             <button
+                type="button"
                 class="settings-option"
                 id="themeLight"
             >
@@ -1241,6 +1261,7 @@
         </div>
 
         <button
+            type="button"
             class="logout-button"
             id="settingsLogout"
         >
@@ -1271,7 +1292,7 @@
         "https://mcsigvlnaghtijgbxeqn.supabase.co";
 
     const SUPABASE_KEY =
-        "sb_publishable_IIKiSAjRQJCGHUSGVidnqQ_vUsq8Epv";
+        "sb_publishable_IIKiSAjRQJCGHUSGVidnQ_vUsq8Epv";
 
     const supabaseClient =
         window.supabase.createClient(
@@ -1311,9 +1332,6 @@
     const sendButton =
         document.getElementById("sendButton");
 
-    const welcome =
-        document.getElementById("welcome");
-
     const history =
         document.getElementById("history");
 
@@ -1346,30 +1364,17 @@
 
 
     /* =====================================================
-       TRADUCTIONS
+       TRADUCTION
     ===================================================== */
 
     const translations = {
 
         fr: {
-
-            pageTitle:
-                "BibleProIA",
-
-            newChat:
-                "Nouvelle conversation",
-
-            history:
-                "Historique",
-
-            connect:
-                "Se connecter",
-
-            account:
-                "Mon compte",
-
-            settings:
-                "Paramètres",
+            newChat: "Nouvelle conversation",
+            history: "Historique",
+            connect: "Se connecter",
+            account: "Mon compte",
+            settings: "Paramètres",
 
             welcomeTitle:
                 "Bienvenue sur BibleProIA",
@@ -1382,9 +1387,6 @@
 
             placeholder:
                 "Pose ta question...",
-
-            settingsTitle:
-                "Paramètres",
 
             language:
                 "🌐 Langue",
@@ -1443,39 +1445,25 @@
             noHistory:
                 "Aucune conversation enregistrée.",
 
-            passwordDifferent:
-                "Les deux mots de passe sont différents.",
-
             fillFields:
                 "Remplis tous les champs.",
+
+            passwordDifferent:
+                "Les deux mots de passe sont différents.",
 
             passwordLength:
                 "Le mot de passe doit contenir au moins 6 caractères.",
 
             serverError:
                 "La réponse de BibleProIA n'a pas pu être récupérée."
-
         },
 
         en: {
-
-            pageTitle:
-                "BibleProIA",
-
-            newChat:
-                "New conversation",
-
-            history:
-                "History",
-
-            connect:
-                "Sign in",
-
-            account:
-                "My account",
-
-            settings:
-                "Settings",
+            newChat: "New conversation",
+            history: "History",
+            connect: "Sign in",
+            account: "My account",
+            settings: "Settings",
 
             welcomeTitle:
                 "Welcome to BibleProIA",
@@ -1488,9 +1476,6 @@
 
             placeholder:
                 "Ask your question...",
-
-            settingsTitle:
-                "Settings",
 
             language:
                 "🌐 Language",
@@ -1549,32 +1534,28 @@
             noHistory:
                 "No saved conversations.",
 
-            passwordDifferent:
-                "The two passwords are different.",
-
             fillFields:
                 "Please fill in all fields.",
+
+            passwordDifferent:
+                "The two passwords are different.",
 
             passwordLength:
                 "The password must contain at least 6 characters.",
 
             serverError:
                 "BibleProIA's response could not be retrieved."
-
         }
-
     };
 
 
     function t(key) {
-
         return translations[currentLanguage][key];
-
     }
 
 
     /* =====================================================
-       APPLICATION LANGUE
+       LANGUE
     ===================================================== */
 
     function applyLanguage() {
@@ -1582,101 +1563,158 @@
         document.documentElement.lang =
             currentLanguage;
 
-        document.title =
-            t("pageTitle");
+        document.getElementById(
+            "newChatText"
+        ).textContent =
+            t("newChat");
 
-        document.getElementById("settingsButtonText")
-            .textContent = t("settings");
+        document.getElementById(
+            "historyTitle"
+        ).textContent =
+            t("history");
 
-        document.getElementById("historyTitle")
-            .textContent = t("history");
+        document.getElementById(
+            "loginButtonText"
+        ).textContent =
+            t("connect");
 
-        document.getElementById("loginButtonText")
-            .textContent = t("connect");
+        document.getElementById(
+            "accountText"
+        ).textContent =
+            t("account");
 
-        document.getElementById("welcomeTitle")
-            .textContent = t("welcomeTitle");
+        document.getElementById(
+            "settingsButtonText"
+        ).textContent =
+            t("settings");
 
-        document.getElementById("welcomeText")
-            .textContent = t("welcomeText");
+        document.getElementById(
+            "welcomeTitle"
+        ).textContent =
+            t("welcomeTitle");
 
-        document.getElementById("welcomeAccountText")
-            .textContent = t("welcomeAccount");
+        document.getElementById(
+            "welcomeText"
+        ).textContent =
+            t("welcomeText");
+
+        document.getElementById(
+            "welcomeAccountText"
+        ).textContent =
+            t("welcomeAccount");
 
         messageInput.placeholder =
             t("placeholder");
 
-        document.getElementById("settingsTitle")
-            .textContent = t("settingsTitle");
+        document.getElementById(
+            "settingsTitle"
+        ).textContent =
+            t("settings");
 
-        document.getElementById("languageLabel")
-            .textContent = t("language");
+        document.getElementById(
+            "languageLabel"
+        ).textContent =
+            t("language");
 
-        document.getElementById("languageDescription")
-            .textContent = t("languageDescription");
+        document.getElementById(
+            "languageDescription"
+        ).textContent =
+            t("languageDescription");
 
-        document.getElementById("themeLabel")
-            .textContent = t("theme");
+        document.getElementById(
+            "themeLabel"
+        ).textContent =
+            t("theme");
 
-        document.getElementById("themeDescription")
-            .textContent = t("themeDescription");
+        document.getElementById(
+            "themeDescription"
+        ).textContent =
+            t("themeDescription");
 
-        document.getElementById("accountSettingsLabel")
-            .textContent = t("accountSettings");
+        document.getElementById(
+            "accountSettingsLabel"
+        ).textContent =
+            t("accountSettings");
 
-        document.getElementById("accountDescription")
-            .textContent = t("accountDescription");
+        document.getElementById(
+            "accountDescription"
+        ).textContent =
+            t("accountDescription");
 
-        document.getElementById("settingsLogout")
-            .textContent = t("logout");
+        document.getElementById(
+            "settingsLogout"
+        ).textContent =
+            t("logout");
 
-        document.getElementById("notConnectedText")
-            .textContent = t("notConnected");
+        document.getElementById(
+            "notConnectedText"
+        ).textContent =
+            t("notConnected");
 
-        document.getElementById("themeDark")
-            .textContent = t("dark");
+        document.getElementById(
+            "themeDark"
+        ).textContent =
+            t("dark");
 
-        document.getElementById("themeLight")
-            .textContent = t("light");
+        document.getElementById(
+            "themeLight"
+        ).textContent =
+            t("light");
 
-        document.getElementById("loginTitle")
-            .textContent = t("login");
+        document.getElementById(
+            "loginTitle"
+        ).textContent =
+            t("login");
 
-        document.getElementById("loginInfo")
-            .textContent = t("loginInfo");
+        document.getElementById(
+            "loginInfo"
+        ).textContent =
+            t("loginInfo");
 
-        document.getElementById("submitLogin")
-            .textContent = t("connect");
+        document.getElementById(
+            "submitLogin"
+        ).textContent =
+            t("connect");
 
-        document.getElementById("openSignupFromLogin")
-            .textContent = t("signup");
+        document.getElementById(
+            "openSignupFromLogin"
+        ).textContent =
+            t("signup");
 
-        document.getElementById("signupTitle")
-            .textContent = t("signup");
+        document.getElementById(
+            "signupTitle"
+        ).textContent =
+            t("signup");
 
-        document.getElementById("signupInfo")
-            .textContent = t("signupInfo");
+        document.getElementById(
+            "signupInfo"
+        ).textContent =
+            t("signupInfo");
 
-        document.getElementById("submitSignup")
-            .textContent = t("createAccount");
+        document.getElementById(
+            "submitSignup"
+        ).textContent =
+            t("createAccount");
 
-        document.getElementById("openLoginFromSignup")
-            .textContent = t("alreadyAccount");
+        document.getElementById(
+            "openLoginFromSignup"
+        ).textContent =
+            t("alreadyAccount");
 
         updateLanguageButtons();
 
         if (!currentUser) {
 
             const empty =
-                document.getElementById("historyEmpty");
+                document.getElementById(
+                    "historyEmpty"
+                );
 
             if (empty) {
                 empty.textContent =
                     t("historyLogin");
             }
-
         }
-
     }
 
 
@@ -1695,12 +1733,11 @@
                 "active",
                 currentLanguage === "en"
             );
-
     }
 
 
     /* =====================================================
-       APPLICATION THEME
+       THEME
     ===================================================== */
 
     function applyTheme() {
@@ -1723,99 +1760,114 @@
                 "active",
                 currentTheme === "light"
             );
-
     }
 
 
     /* =====================================================
-       CHOIX LANGUE
+       BOUTONS LANGUE
     ===================================================== */
 
     document
         .getElementById("languageFrench")
-        .addEventListener("click", () => {
+        .addEventListener(
+            "click",
+            function () {
 
-            currentLanguage = "fr";
+                currentLanguage = "fr";
 
-            localStorage.setItem(
-                "bibleproia-language",
-                "fr"
-            );
+                localStorage.setItem(
+                    "bibleproia-language",
+                    "fr"
+                );
 
-            applyLanguage();
-
-        });
+                applyLanguage();
+            }
+        );
 
 
     document
         .getElementById("languageEnglish")
-        .addEventListener("click", () => {
+        .addEventListener(
+            "click",
+            function () {
 
-            currentLanguage = "en";
+                currentLanguage = "en";
 
-            localStorage.setItem(
-                "bibleproia-language",
-                "en"
-            );
+                localStorage.setItem(
+                    "bibleproia-language",
+                    "en"
+                );
 
-            applyLanguage();
-
-        });
+                applyLanguage();
+            }
+        );
 
 
     /* =====================================================
-       CHOIX THEME
+       BOUTONS THEME
     ===================================================== */
 
     document
         .getElementById("themeDark")
-        .addEventListener("click", () => {
+        .addEventListener(
+            "click",
+            function () {
 
-            currentTheme = "dark";
+                currentTheme = "dark";
 
-            localStorage.setItem(
-                "bibleproia-theme",
-                "dark"
-            );
+                localStorage.setItem(
+                    "bibleproia-theme",
+                    "dark"
+                );
 
-            applyTheme();
-
-        });
+                applyTheme();
+            }
+        );
 
 
     document
         .getElementById("themeLight")
-        .addEventListener("click", () => {
+        .addEventListener(
+            "click",
+            function () {
 
-            currentTheme = "light";
+                currentTheme = "light";
 
-            localStorage.setItem(
-                "bibleproia-theme",
-                "light"
-            );
+                localStorage.setItem(
+                    "bibleproia-theme",
+                    "light"
+                );
 
-            applyTheme();
-
-        });
+                applyTheme();
+            }
+        );
 
 
     /* =====================================================
-       PANNEAU PARAMETRES
+       PARAMETRES
     ===================================================== */
 
     function openSettings() {
 
-        settingsPanel.classList.add("active");
-        settingsOverlay.classList.add("active");
+        settingsPanel.classList.add(
+            "active"
+        );
 
+        settingsOverlay.classList.add(
+            "active"
+        );
     }
 
 
     function closeSettings() {
 
-        settingsPanel.classList.remove("active");
-        settingsOverlay.classList.remove("active");
+        settingsPanel.classList.remove(
+            "active"
+        );
 
+        settingsOverlay.classList.remove(
+            "active"
+        );
     }
 
 
@@ -1846,66 +1898,59 @@
     ===================================================== */
 
     function openModal(modal) {
-
         modal.classList.add("active");
-
     }
 
 
     function closeModal(modal) {
-
         modal.classList.remove("active");
-
     }
 
 
     document
         .querySelectorAll(".close-modal")
-        .forEach(button => {
+        .forEach(
+            function (button) {
 
-            button.addEventListener(
-                "click",
-                () => {
+                button.addEventListener(
+                    "click",
+                    function () {
 
-                    const modalId =
-                        button.dataset.close;
-
-                    closeModal(
-                        document.getElementById(modalId)
-                    );
-
-                }
-            );
-
-        });
+                        closeModal(
+                            document.getElementById(
+                                button.dataset.close
+                            )
+                        );
+                    }
+                );
+            }
+        );
 
 
     loginModal.addEventListener(
         "click",
-        event => {
+        function (event) {
 
             if (event.target === loginModal) {
                 closeModal(loginModal);
             }
-
         }
     );
 
 
     signupModal.addEventListener(
         "click",
-        event => {
+        function (event) {
 
             if (event.target === signupModal) {
                 closeModal(signupModal);
             }
-
         }
     );
 
 
     /* =====================================================
-       INTERFACE COMPTE
+       AUTH UI
     ===================================================== */
 
     function updateAuthUI(user) {
@@ -1914,50 +1959,63 @@
 
         if (user) {
 
-            accountConnected.classList.add("active");
-            accountDisconnected.style.display = "none";
+            accountConnected.classList.add(
+                "active"
+            );
+
+            accountDisconnected.style.display =
+                "none";
 
             accountEmail.textContent =
                 user.email || "";
 
-            document
-                .getElementById("settingsLogout")
-                .style.display = "block";
+            document.getElementById(
+                "settingsLogout"
+            ).style.display =
+                "block";
 
-            document
-                .getElementById("notConnectedText")
-                .style.display = "none";
+            document.getElementById(
+                "notConnectedText"
+            ).style.display =
+                "none";
 
             loadConversations();
 
         } else {
 
-            accountConnected.classList.remove("active");
-            accountDisconnected.style.display = "block";
+            accountConnected.classList.remove(
+                "active"
+            );
+
+            accountDisconnected.style.display =
+                "block";
 
             accountEmail.textContent = "";
 
-            document
-                .getElementById("settingsLogout")
-                .style.display = "none";
+            document.getElementById(
+                "settingsLogout"
+            ).style.display =
+                "none";
 
-            document
-                .getElementById("notConnectedText")
-                .style.display = "block";
+            document.getElementById(
+                "notConnectedText"
+            ).style.display =
+                "block";
 
             history.innerHTML = `
-                <div class="history-empty" id="historyEmpty">
+                <div
+                    class="history-empty"
+                    id="historyEmpty"
+                >
                     ${t("historyLogin")}
                 </div>
             `;
-
         }
-
     }
 
 
     /* =====================================================
-       INITIALISATION AUTH
+       AUTH INITIAL
     ===================================================== */
 
     async function initializeAuth() {
@@ -1972,19 +2030,17 @@
                 ? session.user
                 : null
         );
-
     }
 
 
     supabaseClient.auth.onAuthStateChange(
-        (event, session) => {
+        function (event, session) {
 
             updateAuthUI(
                 session
                     ? session.user
                     : null
             );
-
         }
     );
 
@@ -1997,12 +2053,11 @@
         .getElementById("loginButton")
         .addEventListener(
             "click",
-            () => {
+            function () {
 
                 loginStatus.textContent = "";
 
                 openModal(loginModal);
-
             }
         );
 
@@ -2015,7 +2070,7 @@
         .getElementById("submitLogin")
         .addEventListener(
             "click",
-            async () => {
+            async function () {
 
                 const email =
                     document
@@ -2036,7 +2091,6 @@
                         t("fillFields");
 
                     return;
-
                 }
 
                 const button =
@@ -2045,6 +2099,7 @@
                     );
 
                 button.disabled = true;
+
                 button.textContent =
                     currentLanguage === "fr"
                         ? "Connexion..."
@@ -2055,11 +2110,12 @@
                 } =
                     await supabaseClient.auth
                         .signInWithPassword({
-                            email,
-                            password
+                            email: email,
+                            password: password
                         });
 
                 button.disabled = false;
+
                 button.textContent =
                     t("connect");
 
@@ -2069,31 +2125,36 @@
                         error.message;
 
                     return;
-
                 }
 
                 closeModal(loginModal);
 
+                document.getElementById(
+                    "loginEmail"
+                ).value = "";
+
+                document.getElementById(
+                    "loginPassword"
+                ).value = "";
             }
         );
 
 
     /* =====================================================
-       OUVRIR INSCRIPTION
+       INSCRIPTION OUVERTURE
     ===================================================== */
 
     document
         .getElementById("openSignupFromLogin")
         .addEventListener(
             "click",
-            () => {
+            function () {
 
                 closeModal(loginModal);
 
                 signupStatus.textContent = "";
 
                 openModal(signupModal);
-
             }
         );
 
@@ -2106,7 +2167,7 @@
         .getElementById("submitSignup")
         .addEventListener(
             "click",
-            async () => {
+            async function () {
 
                 const email =
                     document
@@ -2138,7 +2199,6 @@
                         t("fillFields");
 
                     return;
-
                 }
 
                 if (
@@ -2150,7 +2210,6 @@
                         t("passwordDifferent");
 
                     return;
-
                 }
 
                 if (password.length < 6) {
@@ -2159,7 +2218,6 @@
                         t("passwordLength");
 
                     return;
-
                 }
 
                 const button =
@@ -2180,8 +2238,8 @@
                 } =
                     await supabaseClient.auth
                         .signUp({
-                            email,
-                            password
+                            email: email,
+                            password: password
                         });
 
                 button.disabled = false;
@@ -2195,7 +2253,6 @@
                         error.message;
 
                     return;
-
                 }
 
                 if (data.session) {
@@ -2211,9 +2268,7 @@
                         currentLanguage === "fr"
                             ? "Compte créé. Tu peux maintenant te connecter."
                             : "Account created. You can now sign in.";
-
                 }
-
             }
         );
 
@@ -2226,14 +2281,13 @@
         .getElementById("openLoginFromSignup")
         .addEventListener(
             "click",
-            () => {
+            function () {
 
                 closeModal(signupModal);
 
                 loginStatus.textContent = "";
 
                 openModal(loginModal);
-
             }
         );
 
@@ -2252,7 +2306,6 @@
         closeSettings();
 
         updateAuthUI(null);
-
     }
 
 
@@ -2280,18 +2333,24 @@
         .getElementById("newChatButton")
         .addEventListener(
             "click",
-            () => {
+            function () {
 
                 currentConversationId = null;
 
                 chat.innerHTML = `
                     <div class="welcome" id="welcome">
 
-                        <div class="welcome-icon">✝</div>
+                        <div class="welcome-icon">
+                            ✝
+                        </div>
 
-                        <h1>${t("welcomeTitle")}</h1>
+                        <h1>
+                            ${t("welcomeTitle")}
+                        </h1>
 
-                        <p>${t("welcomeText")}</p>
+                        <p>
+                            ${t("welcomeText")}
+                        </p>
 
                         <p>
                             <small>
@@ -2303,14 +2362,13 @@
                 `;
 
                 messageInput.focus();
-
             }
         );
 
 
     /* =====================================================
        CREER CONVERSATION
-       SEULEMENT SI CONNECTE
+       UNIQUEMENT SI CONNECTE
     ===================================================== */
 
     async function createConversation(
@@ -2333,11 +2391,8 @@
             await supabaseClient
                 .from("conversations")
                 .insert({
-                    user_id:
-                        currentUser.id,
-
-                    title:
-                        title
+                    user_id: currentUser.id,
+                    title: title
                 })
                 .select()
                 .single();
@@ -2350,14 +2405,12 @@
             );
 
             return null;
-
         }
 
         currentConversationId =
             data.id;
 
         return data;
-
     }
 
 
@@ -2383,7 +2436,6 @@
             await supabaseClient
                 .from("messages")
                 .insert({
-
                     conversation_id:
                         currentConversationId,
 
@@ -2395,7 +2447,6 @@
 
                     content:
                         content
-
                 });
 
         if (error) {
@@ -2404,9 +2455,7 @@
                 "Erreur sauvegarde message :",
                 error
             );
-
         }
-
     }
 
 
@@ -2433,7 +2482,6 @@
                 "id",
                 currentConversationId
             );
-
     }
 
 
@@ -2473,7 +2521,6 @@
             );
 
             return;
-
         }
 
         history.innerHTML = "";
@@ -2490,14 +2537,15 @@
             `;
 
             return;
-
         }
 
         data.forEach(
-            conversation => {
+            function (conversation) {
 
                 const element =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
 
                 element.className =
                     "conversation";
@@ -2507,18 +2555,19 @@
 
                 element.addEventListener(
                     "click",
-                    () => loadConversation(
-                        conversation.id
-                    )
+                    function () {
+
+                        loadConversation(
+                            conversation.id
+                        );
+                    }
                 );
 
                 history.appendChild(
                     element
                 );
-
             }
         );
-
     }
 
 
@@ -2562,10 +2611,10 @@
             );
 
             return;
-
         }
 
-        currentConversationId = id;
+        currentConversationId =
+            id;
 
         chat.innerHTML = "";
 
@@ -2577,18 +2626,16 @@
         }
 
         data.forEach(
-            message => {
+            function (message) {
 
                 addMessageToChat(
                     message.role,
                     message.content
                 );
-
             }
         );
 
         scrollToBottom();
-
     }
 
 
@@ -2602,7 +2649,9 @@
     ) {
 
         const message =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
         message.className =
             "message " +
@@ -2615,7 +2664,9 @@
         if (role === "user") {
 
             const bubble =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             bubble.className =
                 "user-bubble";
@@ -2630,7 +2681,9 @@
         } else {
 
             const avatar =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             avatar.className =
                 "avatar";
@@ -2639,7 +2692,9 @@
                 "✝";
 
             const text =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             text.className =
                 "ai-text";
@@ -2654,13 +2709,11 @@
             message.appendChild(
                 text
             );
-
         }
 
         chat.appendChild(
             message
         );
-
     }
 
 
@@ -2671,7 +2724,9 @@
     function addThinking() {
 
         const message =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
         message.className =
             "message ai";
@@ -2692,7 +2747,6 @@
         );
 
         scrollToBottom();
-
     }
 
 
@@ -2706,7 +2760,6 @@
         if (element) {
             element.remove();
         }
-
     }
 
 
@@ -2718,7 +2771,6 @@
 
         chat.scrollTop =
             chat.scrollHeight;
-
     }
 
 
@@ -2728,7 +2780,7 @@
 
     messageInput.addEventListener(
         "input",
-        () => {
+        function () {
 
             messageInput.style.height =
                 "auto";
@@ -2738,24 +2790,18 @@
                     messageInput.scrollHeight,
                     180
                 ) + "px";
-
         }
     );
 
 
     /* =====================================================
-       ENTREE / SHIFT + ENTREE
-
-       ENTREE :
-       -> envoyer
-
-       SHIFT + ENTREE :
-       -> nouvelle ligne
+       ENTREE = ENVOYER
+       SHIFT + ENTREE = NOUVELLE LIGNE
     ===================================================== */
 
     messageInput.addEventListener(
         "keydown",
-        event => {
+        function (event) {
 
             if (
                 event.key === "Enter" &&
@@ -2765,7 +2811,6 @@
                 event.preventDefault();
 
                 chatForm.requestSubmit();
-
             }
 
         }
@@ -2778,7 +2823,7 @@
 
     chatForm.addEventListener(
         "submit",
-        async event => {
+        async function (event) {
 
             event.preventDefault();
 
@@ -2796,13 +2841,13 @@
             isSending = true;
             sendButton.disabled = true;
 
-            const currentWelcome =
+            const welcome =
                 document.getElementById(
                     "welcome"
                 );
 
-            if (currentWelcome) {
-                currentWelcome.remove();
+            if (welcome) {
+                welcome.remove();
             }
 
             addMessageToChat(
@@ -2813,13 +2858,14 @@
             scrollToBottom();
 
             messageInput.value = "";
+
             messageInput.style.height =
                 "auto";
 
             /*
              * IMPORTANT :
-             * aucune connexion n'est nécessaire
-             * pour envoyer un message.
+             * aucun compte n'est nécessaire
+             * pour discuter.
              */
 
             if (
@@ -2830,7 +2876,6 @@
                 await createConversation(
                     question
                 );
-
             }
 
             if (
@@ -2844,7 +2889,6 @@
                 );
 
                 await updateConversationDate();
-
             }
 
             addThinking();
@@ -2860,8 +2904,8 @@
                 );
 
                 /*
-                 * Langue choisie dans Paramètres.
-                 * Le backend pourra l'utiliser.
+                 * Envoie la langue choisie
+                 * au backend.
                  */
 
                 formData.append(
@@ -2884,7 +2928,6 @@
                         "Erreur serveur HTTP " +
                         response.status
                     );
-
                 }
 
                 const html =
@@ -2893,14 +2936,14 @@
                 const parser =
                     new DOMParser();
 
-                const documentHTML =
+                const parsed =
                     parser.parseFromString(
                         html,
                         "text/html"
                     );
 
                 const answerElement =
-                    documentHTML.querySelector(
+                    parsed.querySelector(
                         "#server-answer .answer-text"
                     );
 
@@ -2909,7 +2952,6 @@
                     throw new Error(
                         t("serverError")
                     );
-
                 }
 
                 const answer =
@@ -2922,7 +2964,6 @@
                     throw new Error(
                         t("serverError")
                     );
-
                 }
 
                 removeThinking();
@@ -2936,7 +2977,7 @@
 
                 /*
                  * Sauvegarde uniquement
-                 * si connecté.
+                 * si l'utilisateur est connecté.
                  */
 
                 if (
@@ -2952,12 +2993,12 @@
                     await updateConversationDate();
 
                     await loadConversations();
-
                 }
 
             } catch (error) {
 
                 console.error(
+                    "Erreur :",
                     error
                 );
 
@@ -2971,14 +3012,12 @@
                         : "An error occurred: " +
                           error.message
                 );
-
             }
 
             isSending = false;
             sendButton.disabled = false;
 
             messageInput.focus();
-
         }
     );
 
