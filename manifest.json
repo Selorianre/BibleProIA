@@ -1,0 +1,11 @@
+{
+  "name": "BibleProIA",
+  "short_name": "BibleProIA",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f1117",
+  "theme_color": "#0f1117",
+  "description": "BibleProIA, une intelligence artificielle chrétienne spécialisée dans la Bible et l'adventisme.",
+  "lang": "fr",
+  "icons": []
+}
