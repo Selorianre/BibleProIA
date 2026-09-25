@@ -393,6 +393,32 @@ def manifest():
     )
 
 
+
+# ============================================================
+# FICHIER DES NOUVEAUTES
+# ============================================================
+
+@app.route("/update.json")
+def update_json():
+
+    update_path = (
+        Path(__file__).resolve().parent
+        / "update.json"
+    )
+
+    if not update_path.exists():
+        return (
+            "Erreur : update.json introuvable.",
+            404
+        )
+
+    return send_from_directory(
+        update_path.parent,
+        update_path.name,
+        mimetype="application/json"
+    )
+
+
 # ============================================================
 # PAGE PRINCIPALE
 # ============================================================
