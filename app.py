@@ -20,6 +20,11 @@ API_KEY = os.environ.get("GEMINI_API_KEY")
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "").rstrip("/")
 SUPABASE_SECRET_KEY = os.environ.get("SUPABASE_SECRET_KEY")
 
+# Dépôt GitHub utilisé pour le journal automatique des nouveautés.
+GITHUB_OWNER = "Selorianre"
+GITHUB_REPO = "BibleProIA"
+GITHUB_BRANCH = "main"
+
 if not API_KEY:
     raise RuntimeError("La variable GEMINI_API_KEY n'est pas configurée.")
 
@@ -395,28 +400,84 @@ def manifest():
 
 
 # ============================================================
-# FICHIER DES NOUVEAUTES
+# NOUVEAUTES AUTOMATIQUES DEPUIS GITHUB
 # ============================================================
 
 @app.route("/update.json")
 def update_json():
+    """
+    Renvoie le dernier commit de la branche main sous la forme attendue
+    par le système de nouveautés du site.
 
-    update_path = (
-        Path(__file__).resolve().parent
-        / "update.json"
+    Le SHA du commit sert de version unique : chaque nouveau commit
+    déclenche donc une nouvelle fenêtre chez les utilisateurs qui ne
+    l'ont pas encore vue.
+    """
+
+    api_url = (
+        "https://api.github.com/repos/"
+        f"{GITHUB_OWNER}/{GITHUB_REPO}/commits/"
+        f"{urllib_parse.quote(GITHUB_BRANCH, safe='')}"
     )
 
-    if not update_path.exists():
-        return (
-            "Erreur : update.json introuvable.",
-            404
-        )
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "User-Agent": "BibleProIA-update-checker",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
 
-    return send_from_directory(
-        update_path.parent,
-        update_path.name,
-        mimetype="application/json"
+    req = urllib_request.Request(
+        api_url,
+        headers=headers,
+        method="GET"
     )
+
+    try:
+        with urllib_request.urlopen(req, timeout=10) as response:
+            data = json.loads(
+                response.read().decode("utf-8")
+            )
+
+        commit = data.get("commit", {})
+        author = commit.get("author") or {}
+        message = (commit.get("message") or "").strip()
+        sha = (data.get("sha") or "").strip()
+
+        if not sha or not message:
+            return jsonify({
+                "error": "Réponse GitHub incomplète."
+            }), 502
+
+        # Le message complet peut contenir un titre puis plusieurs lignes.
+        # Chaque ligne non vide devient un élément de la liste des nouveautés.
+        message_lines = [
+            line.strip()
+            for line in message.splitlines()
+            if line.strip()
+        ]
+
+        commit_date = author.get("date") or ""
+
+        return jsonify({
+            "version": sha,
+            "short_version": sha[:7],
+            "date": commit_date,
+            "title": "✨ BibleProIA a été mis à jour",
+            "changes": message_lines or [message],
+            "commit_url": data.get("html_url", "")
+        })
+
+    except HTTPError as e:
+        print(f"Erreur GitHub nouveautés HTTP {e.code}")
+        return jsonify({
+            "error": "Impossible de récupérer la dernière mise à jour."
+        }), 502
+
+    except (URLError, TimeoutError, json.JSONDecodeError) as e:
+        print(f"Erreur GitHub nouveautés : {e}")
+        return jsonify({
+            "error": "Impossible de récupérer la dernière mise à jour."
+        }), 502
 
 
 # ============================================================
