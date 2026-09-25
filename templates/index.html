@@ -862,6 +862,326 @@
             color: #17191d;
         }
 
+
+        /* =====================================================
+           ADMINISTRATION
+        ===================================================== */
+
+        .admin-entry {
+            display: none !important;
+        }
+
+        .admin-entry.active {
+            display: block !important;
+        }
+
+        .admin-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1090;
+            background: rgba(0, 0, 0, 0.62);
+        }
+
+        .admin-overlay.active {
+            display: block;
+        }
+
+        .admin-panel {
+            display: none;
+            position: fixed;
+            inset: 4vh 4vw;
+            z-index: 1100;
+            background: #151820;
+            color: #fff;
+            border: 1px solid #303540;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+        }
+
+        .admin-panel.active {
+            display: flex;
+        }
+
+        .admin-nav {
+            width: 235px;
+            flex-shrink: 0;
+            padding: 16px 12px;
+            overflow-y: auto;
+            background: #101218;
+            border-right: 1px solid #292d36;
+        }
+
+        .admin-brand {
+            padding: 7px 8px 18px;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .admin-nav-button {
+            width: 100%;
+            padding: 11px 10px;
+            margin-bottom: 3px;
+            border: 0;
+            border-radius: 9px;
+            background: transparent;
+            color: #cdd2dc;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .admin-nav-button:hover,
+        .admin-nav-button.active {
+            background: #292e39;
+            color: #fff;
+        }
+
+        .admin-main {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-header {
+            min-height: 64px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            border-bottom: 1px solid #292d36;
+        }
+
+        .admin-header h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .admin-close {
+            width: 38px;
+            height: 38px;
+            border: 0;
+            border-radius: 10px;
+            background: #242934;
+            color: #fff;
+            cursor: pointer;
+            font-size: 22px;
+        }
+
+        .admin-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 22px;
+        }
+
+        .admin-page {
+            display: none;
+        }
+
+        .admin-page.active {
+            display: block;
+        }
+
+        .admin-page h3 {
+            margin: 0 0 6px;
+            font-size: 22px;
+        }
+
+        .admin-muted {
+            color: #9299a5;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .admin-card,
+        .admin-section {
+            background: #1b1f27;
+            border: 1px solid #303540;
+            border-radius: 14px;
+            padding: 16px;
+        }
+
+        .admin-section {
+            margin-top: 14px;
+        }
+
+        .admin-card-label {
+            color: #9299a5;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .admin-card-value {
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .admin-section h4 {
+            margin: 0 0 10px;
+        }
+
+        .admin-status-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid #292d36;
+        }
+
+        .admin-status-row:last-child {
+            border-bottom: 0;
+        }
+
+        .admin-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: #203525;
+            color: #a8edb3;
+            font-size: 12px;
+        }
+
+        .admin-badge.pending {
+            background: #39321d;
+            color: #f3d889;
+        }
+
+        .admin-action {
+            margin: 4px 6px 4px 0;
+            padding: 10px 12px;
+            border: 1px solid #3a404c;
+            border-radius: 9px;
+            background: #242934;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .admin-action:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+        }
+
+        .admin-action.danger {
+            border-color: #57363b;
+            background: #2b1d20;
+            color: #ffb6bd;
+        }
+
+        .admin-input,
+        .admin-textarea {
+            width: 100%;
+            margin: 7px 0;
+            padding: 11px 12px;
+            border: 1px solid #363b46;
+            border-radius: 9px;
+            outline: none;
+            background: #101218;
+            color: #fff;
+        }
+
+        .admin-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .admin-note {
+            margin-top: 12px;
+            padding: 12px 14px;
+            border-left: 3px solid #777f8e;
+            background: #181c23;
+            color: #b5bbc5;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        body.light-theme .admin-panel,
+        body.light-theme .admin-main {
+            background: #f5f6f8;
+            color: #17191d;
+        }
+
+        body.light-theme .admin-nav,
+        body.light-theme .admin-card,
+        body.light-theme .admin-section,
+        body.light-theme .admin-note {
+            background: #fff;
+        }
+
+        body.light-theme .admin-nav,
+        body.light-theme .admin-header,
+        body.light-theme .admin-card,
+        body.light-theme .admin-section {
+            border-color: #d8dbe0;
+        }
+
+        body.light-theme .admin-nav-button {
+            color: #444a54;
+        }
+
+        body.light-theme .admin-nav-button:hover,
+        body.light-theme .admin-nav-button.active {
+            background: #e7e9ed;
+            color: #17191d;
+        }
+
+        body.light-theme .admin-input,
+        body.light-theme .admin-textarea {
+            background: #fff;
+            color: #17191d;
+            border-color: #d8dbe0;
+        }
+
+        @media (max-width: 800px) {
+            .admin-panel {
+                inset: 0;
+                border: 0;
+                border-radius: 0;
+            }
+
+            .admin-panel.active {
+                flex-direction: column;
+            }
+
+            .admin-nav {
+                width: 100%;
+                display: flex;
+                gap: 6px;
+                padding: 8px;
+                overflow-x: auto;
+                overflow-y: hidden;
+                border-right: 0;
+                border-bottom: 1px solid #292d36;
+            }
+
+            .admin-brand {
+                display: none;
+            }
+
+            .admin-nav-button {
+                width: auto;
+                margin: 0;
+                white-space: nowrap;
+            }
+
+            .admin-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .admin-content {
+                padding: 15px;
+            }
+        }
+
         /* =====================================================
            MOBILE
         ===================================================== */
@@ -1210,7 +1530,7 @@
                 ⚙️ <span id="settingsButtonText">Paramètres</span>
             </button>
 
-            <div class="admin-entry" id="adminEntry">
+            <div class="admin-entry" id="adminEntry" style="display:none;">
                 <button type="button" class="sidebar-button" id="adminButton">
                     🛡️ <span>Administration</span>
                 </button>
@@ -2891,6 +3211,7 @@
 
         currentUserIsAdmin = false;
         adminEntry.classList.remove("active");
+        adminEntry.style.display = "none";
 
         if (!user) {
             return false;
@@ -2914,6 +3235,9 @@
             "active",
             currentUserIsAdmin
         );
+
+        adminEntry.style.display =
+            currentUserIsAdmin ? "block" : "none";
 
         return currentUserIsAdmin;
     }
@@ -3169,6 +3493,7 @@
 
             currentUserIsAdmin = false;
             adminEntry.classList.remove("active");
+            adminEntry.style.display = "none";
             closeAdmin();
 
             document
