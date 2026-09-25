@@ -1,0 +1,11 @@
+{
+  "version": "1.1.0",
+  "date": "25 septembre 2026",
+  "title": "✨ BibleProIA a été mis à jour",
+  "changes": [
+    "Ajout du panneau Administration réservé au compte administrateur.",
+    "Ajout des premières statistiques et fonctions de gestion.",
+    "Ajout de la page Nouveautés après les mises à jour.",
+    "Améliorations et corrections générales de l'interface."
+  ]
+}
