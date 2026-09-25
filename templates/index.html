@@ -1195,6 +1195,77 @@
         body.light-theme .update-card { background:#fff; color:#17191d; border-color:#d8dbe0; }
         body.light-theme .update-confirm { background:#17191d; color:#fff; }
 
+
+        /* =====================================================
+           SYNTHESE VOCALE
+        ===================================================== */
+        .tts-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 7px;
+            margin-top: 12px;
+        }
+
+        .tts-button {
+            border: 1px solid #3a404c;
+            border-radius: 9px;
+            padding: 8px 11px;
+            background: #242934;
+            color: #fff;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .tts-button:hover {
+            background: #303642;
+        }
+
+        .tts-button:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+        }
+
+        .tts-status {
+            color: #9299a5;
+            font-size: 12px;
+        }
+
+        .tts-settings-row {
+            margin-top: 12px;
+        }
+
+        .tts-settings-row label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        .tts-select,
+        .tts-range {
+            width: 100%;
+        }
+
+        .tts-select {
+            padding: 10px;
+            border: 1px solid #363b46;
+            border-radius: 9px;
+            background: #101218;
+            color: #fff;
+        }
+
+        body.light-theme .tts-button {
+            background: #fff;
+            color: #17191d;
+            border-color: #d8dbe0;
+        }
+
+        body.light-theme .tts-select {
+            background: #fff;
+            color: #17191d;
+            border-color: #d8dbe0;
+        }
+
         /* =====================================================
            MOBILE
         ===================================================== */
@@ -2413,6 +2484,51 @@
     </div>
 
     
+
+    <div class="settings-section">
+        <span class="settings-label">🔊 Synthèse vocale</span>
+
+        <div class="settings-description">
+            Fais lire les réponses de BibleProIA à voix haute.
+        </div>
+
+        <div class="tts-settings-row">
+            <label>
+                <input type="checkbox" id="ttsEnabled" checked>
+                Activer la synthèse vocale
+            </label>
+        </div>
+
+        <div class="tts-settings-row">
+            <label>
+                <input type="checkbox" id="ttsAutoRead">
+                Lire automatiquement les nouvelles réponses
+            </label>
+        </div>
+
+        <div class="tts-settings-row">
+            <label for="ttsVoice">Voix française</label>
+            <select id="ttsVoice" class="tts-select">
+                <option value="">Voix française par défaut</option>
+            </select>
+        </div>
+
+        <div class="tts-settings-row">
+            <label for="ttsRate">
+                Vitesse : <span id="ttsRateValue">1.0×</span>
+            </label>
+            <input
+                type="range"
+                id="ttsRate"
+                class="tts-range"
+                min="0.75"
+                max="1.5"
+                step="0.05"
+                value="1"
+            >
+        </div>
+    </div>
+
     <div class="settings-section">
         <span class="settings-label">✨ Nouveautés</span>
         <div class="settings-description">Consulte les dernières améliorations de BibleProIA.</div>
@@ -5028,6 +5144,128 @@
     window.addEventListener("load", function () {
         loadLatestUpdate(false);
     });
+
+
+    /* =====================================================
+       SYNTHESE VOCALE
+    ===================================================== */
+    const ttsSupported = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+    let ttsVoices = [];
+    let currentTtsButton = null;
+
+    function getTtsSettings() {
+        return {
+            enabled: localStorage.getItem("bibleproia_tts_enabled") !== "false",
+            autoRead: localStorage.getItem("bibleproia_tts_auto") === "true",
+            voice: localStorage.getItem("bibleproia_tts_voice") || "",
+            rate: Number(localStorage.getItem("bibleproia_tts_rate") || "1")
+        };
+    }
+
+    function saveTtsSettings() {
+        localStorage.setItem("bibleproia_tts_enabled", document.getElementById("ttsEnabled").checked ? "true" : "false");
+        localStorage.setItem("bibleproia_tts_auto", document.getElementById("ttsAutoRead").checked ? "true" : "false");
+        localStorage.setItem("bibleproia_tts_voice", document.getElementById("ttsVoice").value);
+        localStorage.setItem("bibleproia_tts_rate", document.getElementById("ttsRate").value);
+    }
+
+    function loadTtsVoices() {
+        if (!ttsSupported) return;
+        ttsVoices = speechSynthesis.getVoices();
+        const select = document.getElementById("ttsVoice");
+        if (!select) return;
+        const saved = getTtsSettings().voice;
+        select.innerHTML = '<option value="">Voix française par défaut</option>';
+        ttsVoices.filter(v => (v.lang || "").toLowerCase().startsWith("fr")).forEach(function(v) {
+            const o = document.createElement("option");
+            o.value = v.name;
+            o.textContent = v.name + " (" + v.lang + ")";
+            select.appendChild(o);
+        });
+        if (saved) select.value = saved;
+    }
+
+    function cleanTextForSpeech(text) {
+        return String(text || "").replace(/https?:\/\/\S+/gi, " ").replace(/\bwww\.\S+/gi, " ").replace(/\s+/g, " ").trim();
+    }
+
+    function stopSpeech() {
+        if (!ttsSupported) return;
+        speechSynthesis.cancel();
+        if (currentTtsButton) currentTtsButton.textContent = "🔊 Écouter";
+        currentTtsButton = null;
+    }
+
+    function speakText(text, button) {
+        const settings = getTtsSettings();
+        if (!ttsSupported || !settings.enabled) return;
+        const clean = cleanTextForSpeech(text);
+        if (!clean) return;
+        stopSpeech();
+        const u = new SpeechSynthesisUtterance(clean);
+        u.lang = "fr-FR";
+        u.rate = settings.rate;
+        const voice = ttsVoices.find(v => v.name === settings.voice) ||
+                      ttsVoices.find(v => (v.lang || "").toLowerCase().startsWith("fr"));
+        if (voice) u.voice = voice;
+        currentTtsButton = button || null;
+        if (button) button.textContent = "⏹ Arrêter";
+        u.onend = u.onerror = function() {
+            if (button) button.textContent = "🔊 Écouter";
+            if (currentTtsButton === button) currentTtsButton = null;
+        };
+        speechSynthesis.speak(u);
+    }
+
+    function addTtsControls(el) {
+        if (!ttsSupported || !el || el.querySelector(".tts-controls")) return;
+        const text = cleanTextForSpeech(el.innerText);
+        if (!text) return;
+        const box = document.createElement("div");
+        box.className = "tts-controls";
+        const listen = document.createElement("button");
+        listen.type = "button"; listen.className = "tts-button"; listen.textContent = "🔊 Écouter";
+        const pause = document.createElement("button");
+        pause.type = "button"; pause.className = "tts-button"; pause.textContent = "⏸ Pause";
+        const stop = document.createElement("button");
+        stop.type = "button"; stop.className = "tts-button"; stop.textContent = "⏹ Arrêter";
+        listen.onclick = function() {
+            if (currentTtsButton === listen && speechSynthesis.speaking) stopSpeech();
+            else speakText(text, listen);
+        };
+        pause.onclick = function() {
+            if (!speechSynthesis.speaking) return;
+            if (speechSynthesis.paused) { speechSynthesis.resume(); pause.textContent = "⏸ Pause"; }
+            else { speechSynthesis.pause(); pause.textContent = "▶ Reprendre"; }
+        };
+        stop.onclick = function() { stopSpeech(); pause.textContent = "⏸ Pause"; };
+        box.append(listen, pause, stop);
+        el.appendChild(box);
+    }
+
+    function findAssistantMessages() {
+        document.querySelectorAll(".assistant-message,.bot-message,.ai-message,.message.assistant,.message.bot,.message.ai").forEach(addTtsControls);
+    }
+
+    function initTts() {
+        const e=document.getElementById("ttsEnabled"), a=document.getElementById("ttsAutoRead"),
+              v=document.getElementById("ttsVoice"), r=document.getElementById("ttsRate"),
+              rv=document.getElementById("ttsRateValue");
+        if (!e || !a || !v || !r || !rv) return;
+        const st=getTtsSettings();
+        e.checked=st.enabled; a.checked=st.autoRead; r.value=String(st.rate);
+        rv.textContent=Number(st.rate).toFixed(2).replace(/0$/,"")+"×";
+        if (!ttsSupported) { e.checked=false; e.disabled=a.disabled=v.disabled=r.disabled=true; return; }
+        loadTtsVoices();
+        e.onchange=function(){ saveTtsSettings(); if(!e.checked) stopSpeech(); };
+        a.onchange=saveTtsSettings; v.onchange=saveTtsSettings;
+        r.oninput=function(){ rv.textContent=Number(r.value).toFixed(2).replace(/0$/,"")+"×"; saveTtsSettings(); };
+        findAssistantMessages();
+        new MutationObserver(findAssistantMessages).observe(document.body,{childList:true,subtree:true});
+    }
+
+    if (ttsSupported) speechSynthesis.onvoiceschanged=loadTtsVoices;
+    window.addEventListener("load", initTts);
 
 </script>
 </body>
