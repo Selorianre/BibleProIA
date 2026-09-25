@@ -535,30 +535,61 @@
             padding: 0;
         }
 
-        .site-footer {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            flex-wrap: wrap;
-            padding: 8px 14px 12px;
+        .sidebar-legal {
+            border-top: 1px solid #292d36;
+            margin-top: 10px;
+            padding: 12px 10px 2px;
             color: #858b97;
-            font-size: 12px;
-            background: #0f1117;
+            font-size: 11px;
+            line-height: 1.5;
         }
 
-        .site-footer button {
+        .sidebar-legal-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 8px;
+            margin-bottom: 7px;
+        }
+
+        .legal-link-button {
             border: none;
             background: transparent;
             color: #aeb4bf;
             cursor: pointer;
-            padding: 2px 4px;
-            font-size: 12px;
+            padding: 0;
+            font-size: 11px;
+            text-align: left;
         }
 
-        .site-footer button:hover {
+        .legal-link-button:hover {
             color: #fff;
             text-decoration: underline;
+        }
+
+        .settings-about {
+            display: none;
+        }
+
+        .settings-legal-button {
+            width: 100%;
+            border: 1px solid #363b46;
+            background: #101218;
+            color: #fff;
+            padding: 13px 14px;
+            border-radius: 9px;
+            cursor: pointer;
+            text-align: left;
+            margin-bottom: 8px;
+        }
+
+        .settings-legal-button:hover {
+            background: #242934;
+        }
+
+        .settings-copyright {
+            color: #8f96a2;
+            font-size: 12px;
+            margin-top: 8px;
         }
 
         /* =====================================================
@@ -729,6 +760,29 @@
             border-color: #e0e2e6;
         }
 
+        body.light-theme .sidebar-legal {
+            border-color: #e0e2e6;
+            color: #777d88;
+        }
+
+        body.light-theme .legal-link-button {
+            color: #626873;
+        }
+
+        body.light-theme .legal-link-button:hover {
+            color: #17191d;
+        }
+
+        body.light-theme .settings-legal-button {
+            background: #f4f5f7;
+            color: #17191d;
+            border-color: #d8dbe0;
+        }
+
+        body.light-theme .settings-legal-button:hover {
+            background: #e7e9ed;
+        }
+
         body.light-theme .welcome p {
             color: #707680;
         }
@@ -859,6 +913,14 @@
             .sidebar-button {
                 text-align: left;
                 font-size: 14px;
+            }
+
+            .sidebar-legal {
+                display: none;
+            }
+
+            .settings-about {
+                display: block;
             }
 
             .new-chat {
@@ -1168,6 +1230,19 @@
 
             </div>
 
+            <div class="sidebar-legal">
+                <div class="sidebar-legal-links">
+                    <button type="button" class="legal-link-button" id="privacySidebarButton">
+                        Politique de confidentialité
+                    </button>
+                    <span>·</span>
+                    <button type="button" class="legal-link-button" id="creditsSidebarButton">
+                        Crédits
+                    </button>
+                </div>
+                <div>© 2026 BibleProIA</div>
+            </div>
+
         </div>
 
     </aside>
@@ -1223,12 +1298,6 @@
 
             </div>
 
-        </div>
-
-        <div class="site-footer">
-            <span>© 2026 BibleProIA</span>
-            <button type="button" id="privacyButton">Politique de confidentialité</button>
-            <button type="button" id="creditsButton">Crédits</button>
         </div>
 
     </main>
@@ -1817,6 +1886,38 @@
             style="display:none;"
         >
             Tu n'es pas connecté. Tu peux utiliser BibleProIA sans compte.
+        </div>
+
+    </div>
+
+    <div class="settings-section settings-about">
+
+        <span class="settings-label">
+            ℹ️ À propos
+        </span>
+
+        <div class="settings-description">
+            Informations sur BibleProIA.
+        </div>
+
+        <button
+            type="button"
+            class="settings-legal-button"
+            id="privacySettingsButton"
+        >
+            🔒 Politique de confidentialité
+        </button>
+
+        <button
+            type="button"
+            class="settings-legal-button"
+            id="creditsSettingsButton"
+        >
+            📄 Crédits
+        </button>
+
+        <div class="settings-copyright">
+            © 2026 BibleProIA
         </div>
 
     </div>
@@ -4006,22 +4107,38 @@
        INFORMATIONS LÉGALES
     ===================================================== */
 
+    function openPrivacyModal() {
+        closeSettings();
+        closeMobileMenu();
+        openModal(privacyModal);
+    }
+
+    function openCreditsModal() {
+        closeSettings();
+        closeMobileMenu();
+        openModal(creditsModal);
+    }
+
     document
-        .getElementById("privacyButton")
-        .addEventListener("click", function () {
-            openModal(privacyModal);
-        });
+        .getElementById("privacySidebarButton")
+        .addEventListener("click", openPrivacyModal);
+
+    document
+        .getElementById("creditsSidebarButton")
+        .addEventListener("click", openCreditsModal);
+
+    document
+        .getElementById("privacySettingsButton")
+        .addEventListener("click", openPrivacyModal);
+
+    document
+        .getElementById("creditsSettingsButton")
+        .addEventListener("click", openCreditsModal);
 
     document
         .getElementById("privacyClose")
         .addEventListener("click", function () {
             closeModal(privacyModal);
-        });
-
-    document
-        .getElementById("creditsButton")
-        .addEventListener("click", function () {
-            openModal(creditsModal);
         });
 
     document
@@ -4045,4 +4162,3 @@
 
 </body>
 </html>
-```
