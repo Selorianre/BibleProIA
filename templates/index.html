@@ -1210,6 +1210,12 @@
                 ⚙️ <span id="settingsButtonText">Paramètres</span>
             </button>
 
+            <div class="admin-entry" id="adminEntry">
+                <button type="button" class="sidebar-button" id="adminButton">
+                    🛡️ <span>Administration</span>
+                </button>
+            </div>
+
             <div class="account-connected" id="accountConnected">
 
                 <button type="button" class="sidebar-button" id="accountButton">
@@ -1747,6 +1753,190 @@
 </div>
 
 
+
+<!-- =====================================================
+     ADMINISTRATION
+===================================================== -->
+
+<div class="admin-overlay" id="adminOverlay"></div>
+
+<section class="admin-panel" id="adminPanel" aria-hidden="true">
+
+    <nav class="admin-nav">
+        <div class="admin-brand">🛡️ BibleProIA Admin</div>
+        <button class="admin-nav-button active" data-admin-page="dashboard">📊 Tableau de bord</button>
+        <button class="admin-nav-button" data-admin-page="users">👥 Utilisateurs</button>
+        <button class="admin-nav-button" data-admin-page="conversations">💬 Conversations</button>
+        <button class="admin-nav-button" data-admin-page="ai">🤖 Intelligence artificielle</button>
+        <button class="admin-nav-button" data-admin-page="knowledge">📚 Base de connaissances</button>
+        <button class="admin-nav-button" data-admin-page="announcements">📢 Annonces</button>
+        <button class="admin-nav-button" data-admin-page="moderation">🛡️ Sécurité</button>
+        <button class="admin-nav-button" data-admin-page="feedback">📝 Retours</button>
+        <button class="admin-nav-button" data-admin-page="logs">📜 Journal admin</button>
+        <button class="admin-nav-button" data-admin-page="system">⚙️ Système</button>
+    </nav>
+
+    <div class="admin-main">
+        <header class="admin-header">
+            <div>
+                <h2 id="adminPageTitle">Tableau de bord</h2>
+                <div class="admin-muted" id="adminIdentity"></div>
+            </div>
+            <button type="button" class="admin-close" id="adminClose">×</button>
+        </header>
+
+        <div class="admin-content">
+
+            <div class="admin-page active" data-admin-content="dashboard">
+                <h3>Vue d'ensemble</h3>
+                <div class="admin-muted">État de ton espace administrateur BibleProIA.</div>
+
+                <div class="admin-grid">
+                    <div class="admin-card">
+                        <div class="admin-card-label">Accès administrateur</div>
+                        <div class="admin-card-value" id="adminAccessStat">✓</div>
+                    </div>
+                    <div class="admin-card">
+                        <div class="admin-card-label">Mes conversations</div>
+                        <div class="admin-card-value" id="adminConversationStat">—</div>
+                    </div>
+                    <div class="admin-card">
+                        <div class="admin-card-label">Mes messages</div>
+                        <div class="admin-card-value" id="adminMessageStat">—</div>
+                    </div>
+                    <div class="admin-card">
+                        <div class="admin-card-label">Service</div>
+                        <div class="admin-card-value">En ligne</div>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h4>État des fonctions</h4>
+                    <div class="admin-status-row"><span>Authentification Supabase</span><span class="admin-badge">Configurée</span></div>
+                    <div class="admin-status-row"><span>Historique des conversations</span><span class="admin-badge">Actif</span></div>
+                    <div class="admin-status-row"><span>Accès administrateur</span><span class="admin-badge">Protégé par la table admins</span></div>
+                    <div class="admin-status-row"><span>Statistiques globales</span><span class="admin-badge pending">Backend requis</span></div>
+                </div>
+
+                <div class="admin-note">
+                    Les nombres affichés ici sont uniquement ceux que les règles Supabase autorisent au navigateur à lire. Les statistiques globales et actions sensibles doivent être ajoutées côté serveur pour rester sécurisées.
+                </div>
+            </div>
+
+            <div class="admin-page" data-admin-content="users">
+                <h3>Utilisateurs</h3>
+                <div class="admin-muted">Gestion des comptes BibleProIA.</div>
+                <div class="admin-section">
+                    <input class="admin-input" placeholder="Rechercher un utilisateur par e-mail" disabled>
+                    <button class="admin-action" disabled>Rechercher</button>
+                    <button class="admin-action" disabled>Exporter les statistiques</button>
+                    <button class="admin-action danger" disabled>Suspendre un compte</button>
+                    <div class="admin-note">La liste globale des comptes, la suspension et la suppression doivent passer par une route serveur administrateur. Aucune clé service_role n'est placée dans cette page.</div>
+                </div>
+            </div>
+
+            <div class="admin-page" data-admin-content="conversations">
+                <h3>Conversations</h3>
+                <div class="admin-muted">Statistiques et outils liés aux conversations.</div>
+                <div class="admin-section">
+                    <div class="admin-status-row"><span>Mes conversations visibles</span><strong id="adminConversationDetail">—</strong></div>
+                    <div class="admin-status-row"><span>Mes messages visibles</span><strong id="adminMessageDetail">—</strong></div>
+                    <button class="admin-action" id="adminRefreshStats">Actualiser</button>
+                    <div class="admin-note">Le contenu privé des conversations des autres utilisateurs n'est pas affiché ici. Une future vue de modération devra être limitée aux cas nécessaires et journalisée.</div>
+                </div>
+            </div>
+
+            <div class="admin-page" data-admin-content="ai">
+                <h3>Intelligence artificielle</h3>
+                <div class="admin-muted">Configuration et supervision de l'IA.</div>
+                <div class="admin-section">
+                    <div class="admin-status-row"><span>Interface IA</span><span class="admin-badge">Active</span></div>
+                    <div class="admin-status-row"><span>Modèle utilisé</span><span class="admin-badge pending">À exposer par le backend</span></div>
+                    <div class="admin-status-row"><span>Nombre total de requêtes</span><span class="admin-badge pending">Journalisation requise</span></div>
+                    <div class="admin-status-row"><span>Temps de réponse moyen</span><span class="admin-badge pending">Journalisation requise</span></div>
+                    <div class="admin-status-row"><span>Erreurs IA</span><span class="admin-badge pending">Journalisation requise</span></div>
+                    <button class="admin-action" disabled>Changer de modèle</button>
+                    <button class="admin-action" disabled>Modifier le prompt système</button>
+                </div>
+            </div>
+
+            <div class="admin-page" data-admin-content="knowledge">
+                <h3>Base de connaissances</h3>
+                <div class="admin-muted">Supervision des sources utilisées par BibleProIA.</div>
+                <div class="admin-section">
+                    <button class="admin-action" disabled>Voir les fichiers</button>
+                    <button class="admin-action" disabled>Ajouter une source</button>
+                    <button class="admin-action" disabled>Réindexer la base</button>
+                    <button class="admin-action danger" disabled>Retirer une source</button>
+                    <div class="admin-note">Ces commandes nécessitent des endpoints serveur afin que personne ne puisse modifier la base de connaissances depuis le navigateur.</div>
+                </div>
+            </div>
+
+            <div class="admin-page" data-admin-content="announcements">
+                <h3>Annonces</h3>
+                <div class="admin-muted">Prépare des messages globaux pour les utilisateurs.</div>
+                <div class="admin-section">
+                    <input class="admin-input" id="adminAnnouncementTitle" placeholder="Titre de l'annonce">
+                    <textarea class="admin-textarea" id="adminAnnouncementText" placeholder="Message à afficher aux utilisateurs..."></textarea>
+                    <button class="admin-action" id="adminAnnouncementPreview">Prévisualiser</button>
+                    <button class="admin-action" disabled>Publier pour tous</button>
+                    <div class="admin-note" id="adminAnnouncementPreviewBox">La publication globale sera activée après création du stockage/backend des annonces.</div>
+                </div>
+            </div>
+
+            <div class="admin-page" data-admin-content="moderation">
+                <h3>Sécurité & modération</h3>
+                <div class="admin-muted">Outils de protection du service.</div>
+                <div class="admin-section">
+                    <div class="admin-status-row"><span>RLS Supabase</span><span class="admin-badge">À conserver activé</span></div>
+                    <div class="admin-status-row"><span>Rate limiting</span><span class="admin-badge pending">À ajouter au backend</span></div>
+                    <div class="admin-status-row"><span>Détection d'abus</span><span class="admin-badge pending">À ajouter</span></div>
+                    <div class="admin-status-row"><span>Journal des erreurs</span><span class="admin-badge pending">À ajouter</span></div>
+                    <button class="admin-action" disabled>Voir les incidents</button>
+                    <button class="admin-action" disabled>Gérer les comptes bloqués</button>
+                </div>
+            </div>
+
+            <div class="admin-page" data-admin-content="feedback">
+                <h3>Retours utilisateurs</h3>
+                <div class="admin-muted">Centralisation future des avis, bugs et signalements.</div>
+                <div class="admin-section">
+                    <button class="admin-action" disabled>Voir les retours</button>
+                    <button class="admin-action" disabled>Voir les signalements</button>
+                    <button class="admin-action" disabled>Marquer comme traité</button>
+                    <div class="admin-note">Il faudra créer une table de feedback avant d'activer cette section.</div>
+                </div>
+            </div>
+
+            <div class="admin-page" data-admin-content="logs">
+                <h3>Journal administrateur</h3>
+                <div class="admin-muted">Historique des actions sensibles.</div>
+                <div class="admin-section">
+                    <div class="admin-status-row"><span>Connexion admin actuelle</span><strong id="adminLogIdentity">—</strong></div>
+                    <div class="admin-status-row"><span>Ouverture du panneau</span><strong id="adminOpenedAt">—</strong></div>
+                    <button class="admin-action" disabled>Exporter le journal</button>
+                    <div class="admin-note">Pour un vrai audit, les actions devront être enregistrées côté serveur : une trace uniquement dans le navigateur pourrait être effacée.</div>
+                </div>
+            </div>
+
+            <div class="admin-page" data-admin-content="system">
+                <h3>Système</h3>
+                <div class="admin-muted">Informations techniques de BibleProIA.</div>
+                <div class="admin-section">
+                    <div class="admin-status-row"><span>Site</span><strong>bibleproia.fr</strong></div>
+                    <div class="admin-status-row"><span>Authentification / données</span><strong>Supabase</strong></div>
+                    <div class="admin-status-row"><span>Thème actuel</span><strong id="adminThemeValue">—</strong></div>
+                    <div class="admin-status-row"><span>Langue actuelle</span><strong id="adminLanguageValue">—</strong></div>
+                    <div class="admin-status-row"><span>Version interface</span><strong>Admin v1</strong></div>
+                    <button class="admin-action" id="adminSystemRefresh">Actualiser les informations</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
 <!-- =====================================================
      PARAMETRES
 ===================================================== -->
@@ -2026,6 +2216,17 @@
 
     const settingsOverlay =
         document.getElementById("settingsOverlay");
+
+    const adminEntry =
+        document.getElementById("adminEntry");
+
+    const adminPanel =
+        document.getElementById("adminPanel");
+
+    const adminOverlay =
+        document.getElementById("adminOverlay");
+
+    let currentUserIsAdmin = false;
 
     const sidebar =
         document.getElementById("sidebar");
@@ -2682,6 +2883,207 @@
     );
 
 
+
+    /* =====================================================
+       ADMINISTRATION
+    ===================================================== */
+
+    async function checkAdminAccess(user) {
+
+        currentUserIsAdmin = false;
+        adminEntry.classList.remove("active");
+
+        if (!user) {
+            return false;
+        }
+
+        const { data, error } =
+            await supabaseClient
+                .from("admins")
+                .select("user_id")
+                .eq("user_id", user.id)
+                .maybeSingle();
+
+        if (error) {
+            console.error("Vérification admin :", error);
+            return false;
+        }
+
+        currentUserIsAdmin = !!data;
+
+        adminEntry.classList.toggle(
+            "active",
+            currentUserIsAdmin
+        );
+
+        return currentUserIsAdmin;
+    }
+
+
+    function closeAdmin() {
+
+        adminPanel.classList.remove("active");
+        adminOverlay.classList.remove("active");
+        adminPanel.setAttribute("aria-hidden", "true");
+    }
+
+
+    async function openAdmin() {
+
+        if (!currentUser) {
+            return;
+        }
+
+        const allowed =
+            await checkAdminAccess(currentUser);
+
+        if (!allowed) {
+            return;
+        }
+
+        closeMobileMenu();
+        closeSettings();
+
+        adminPanel.classList.add("active");
+        adminOverlay.classList.add("active");
+        adminPanel.setAttribute("aria-hidden", "false");
+
+        document.getElementById("adminIdentity").textContent =
+            currentUser.email || currentUser.id;
+
+        document.getElementById("adminLogIdentity").textContent =
+            currentUser.email || currentUser.id;
+
+        document.getElementById("adminOpenedAt").textContent =
+            new Date().toLocaleString();
+
+        refreshAdminSystemInfo();
+        await refreshAdminStats();
+    }
+
+
+    async function refreshAdminStats() {
+
+        if (!currentUserIsAdmin || !currentUser) {
+            return;
+        }
+
+        const conversationsResult =
+            await supabaseClient
+                .from("conversations")
+                .select("id", { count: "exact", head: true })
+                .eq("user_id", currentUser.id);
+
+        const messagesResult =
+            await supabaseClient
+                .from("messages")
+                .select("id", { count: "exact", head: true })
+                .eq("user_id", currentUser.id);
+
+        const conversationCount =
+            conversationsResult.error
+                ? "—"
+                : (conversationsResult.count ?? 0);
+
+        const messageCount =
+            messagesResult.error
+                ? "—"
+                : (messagesResult.count ?? 0);
+
+        document.getElementById("adminConversationStat").textContent =
+            conversationCount;
+
+        document.getElementById("adminMessageStat").textContent =
+            messageCount;
+
+        document.getElementById("adminConversationDetail").textContent =
+            conversationCount;
+
+        document.getElementById("adminMessageDetail").textContent =
+            messageCount;
+    }
+
+
+    function refreshAdminSystemInfo() {
+
+        document.getElementById("adminThemeValue").textContent =
+            currentTheme === "light" ? "Clair" : "Sombre";
+
+        document.getElementById("adminLanguageValue").textContent =
+            currentLanguage === "fr" ? "Français" : "English";
+    }
+
+
+    document
+        .getElementById("adminButton")
+        .addEventListener("click", openAdmin);
+
+    document
+        .getElementById("adminClose")
+        .addEventListener("click", closeAdmin);
+
+    adminOverlay.addEventListener("click", closeAdmin);
+
+    document
+        .getElementById("adminRefreshStats")
+        .addEventListener("click", refreshAdminStats);
+
+    document
+        .getElementById("adminSystemRefresh")
+        .addEventListener("click", refreshAdminSystemInfo);
+
+    document
+        .getElementById("adminAnnouncementPreview")
+        .addEventListener("click", function () {
+
+            const title =
+                document.getElementById("adminAnnouncementTitle")
+                    .value.trim();
+
+            const text =
+                document.getElementById("adminAnnouncementText")
+                    .value.trim();
+
+            document.getElementById("adminAnnouncementPreviewBox")
+                .textContent =
+                    (title ? title + " — " : "") +
+                    (text || "Écris un message pour afficher sa prévisualisation.");
+        });
+
+
+    document
+        .querySelectorAll(".admin-nav-button")
+        .forEach(function (button) {
+
+            button.addEventListener("click", function () {
+
+                const page =
+                    button.dataset.adminPage;
+
+                document
+                    .querySelectorAll(".admin-nav-button")
+                    .forEach(function (item) {
+                        item.classList.toggle(
+                            "active",
+                            item === button
+                        );
+                    });
+
+                document
+                    .querySelectorAll(".admin-page")
+                    .forEach(function (item) {
+                        item.classList.toggle(
+                            "active",
+                            item.dataset.adminContent === page
+                        );
+                    });
+
+                document.getElementById("adminPageTitle").textContent =
+                    button.textContent.trim();
+            });
+        });
+
+
     /* =====================================================
        AUTH UI
     ===================================================== */
@@ -2709,6 +3111,7 @@
                 .style.display = "none";
 
             loadConversations();
+            checkAdminAccess(user);
 
         } else {
 
@@ -2721,6 +3124,10 @@
 
             accountEmail.textContent =
                 "";
+
+            currentUserIsAdmin = false;
+            adminEntry.classList.remove("active");
+            closeAdmin();
 
             document
                 .getElementById("settingsLogout")
@@ -4162,3 +4569,4 @@
 
 </body>
 </html>
+```
