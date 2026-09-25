@@ -2454,6 +2454,21 @@
 </aside>
 
 
+<!-- =====================================================
+     NOUVEAUTÉS
+===================================================== -->
+
+<div class="update-modal" id="updateModal" aria-hidden="true">
+    <div class="update-card" role="dialog" aria-modal="true" aria-labelledby="updateTitle">
+        <h2 id="updateTitle">✨ Nouveautés</h2>
+        <div class="update-meta" id="updateMeta"></div>
+        <ul class="update-list" id="updateList"></ul>
+        <button type="button" class="update-confirm" id="updateConfirm">
+            J'ai compris
+        </button>
+    </div>
+</div>
+
 <script>
 
     /* =====================================================
@@ -4995,31 +5010,25 @@
         }
     }
 
-    document.getElementById("updateConfirm").addEventListener("click", function () {
-        closeUpdateModal(true);
-    });
+    const updateConfirmButton = document.getElementById("updateConfirm");
+    if (updateConfirmButton) {
+        updateConfirmButton.addEventListener("click", function () {
+            closeUpdateModal(true);
+        });
+    }
 
-    document.getElementById("openUpdatesButton").addEventListener("click", function () {
-        closeSettings();
-        loadLatestUpdate(true);
-    });
+    const openUpdatesButton = document.getElementById("openUpdatesButton");
+    if (openUpdatesButton) {
+        openUpdatesButton.addEventListener("click", function () {
+            closeSettings();
+            loadLatestUpdate(true);
+        });
+    }
 
     window.addEventListener("load", function () {
         loadLatestUpdate(false);
     });
 
 </script>
-
-
-<div class="update-modal" id="updateModal" aria-hidden="true">
-    <div class="update-card" role="dialog" aria-modal="true" aria-labelledby="updateTitle">
-        <h2 id="updateTitle">✨ Nouveautés</h2>
-        <div class="update-meta" id="updateMeta"></div>
-        <ul class="update-list" id="updateList"></ul>
-        <button type="button" class="update-confirm" id="updateConfirm">J'ai compris</button>
-    </div>
-</div>
-
 </body>
 </html>
-```
