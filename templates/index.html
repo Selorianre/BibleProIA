@@ -1827,10 +1827,9 @@
                 <h3>Utilisateurs</h3>
                 <div class="admin-muted">Gestion des comptes BibleProIA.</div>
                 <div class="admin-section">
-                    <input class="admin-input" placeholder="Rechercher un utilisateur par e-mail" disabled>
-                    <button class="admin-action" disabled>Rechercher</button>
-                    <button class="admin-action" disabled>Exporter les statistiques</button>
-                    <button class="admin-action danger" disabled>Suspendre un compte</button>
+                    <input class="admin-input" id="adminUserSearch" placeholder="Rechercher un utilisateur par e-mail">
+                    <button class="admin-action" id="adminUserSearchButton">Rechercher</button>
+                    <div id="adminUsersResult" class="admin-note">Charge les utilisateurs pour commencer.</div>
                     <div class="admin-note">La liste globale des comptes, la suspension et la suppression doivent passer par une route serveur administrateur. Aucune clé service_role n'est placée dans cette page.</div>
                 </div>
             </div>
@@ -2962,45 +2961,75 @@
     }
 
 
-    async function refreshAdminStats() {
+    async function adminApi(path, options = {}) {
 
-        if (!currentUserIsAdmin || !currentUser) {
-            return;
+        const { data: { session } } = await supabaseClient.auth.getSession();
+
+        if (!session || !session.access_token) {
+            throw new Error("Session expirée. Reconnecte-toi.");
         }
 
-        const conversationsResult =
-            await supabaseClient
-                .from("conversations")
-                .select("id", { count: "exact", head: true })
-                .eq("user_id", currentUser.id);
+        const response = await fetch(path, {
+            ...options,
+            headers: {
+                ...(options.headers || {}),
+                "Authorization": "Bearer " + session.access_token,
+                "Content-Type": "application/json"
+            }
+        });
 
-        const messagesResult =
-            await supabaseClient
-                .from("messages")
-                .select("id", { count: "exact", head: true })
-                .eq("user_id", currentUser.id);
+        let data = {};
+        try { data = await response.json(); } catch (_) {}
 
-        const conversationCount =
-            conversationsResult.error
-                ? "—"
-                : (conversationsResult.count ?? 0);
+        if (!response.ok) {
+            throw new Error(data.error || "Erreur administrateur.");
+        }
 
-        const messageCount =
-            messagesResult.error
-                ? "—"
-                : (messagesResult.count ?? 0);
+        return data;
+    }
 
-        document.getElementById("adminConversationStat").textContent =
-            conversationCount;
 
-        document.getElementById("adminMessageStat").textContent =
-            messageCount;
+    async function refreshAdminStats() {
 
-        document.getElementById("adminConversationDetail").textContent =
-            conversationCount;
+        if (!currentUserIsAdmin || !currentUser) return;
 
-        document.getElementById("adminMessageDetail").textContent =
-            messageCount;
+        try {
+            const data = await adminApi("/api/admin/stats");
+
+            document.getElementById("adminConversationStat").textContent = data.conversations ?? "—";
+            document.getElementById("adminMessageStat").textContent = data.messages ?? "—";
+            document.getElementById("adminConversationDetail").textContent = data.conversations ?? "—";
+            document.getElementById("adminMessageDetail").textContent = data.messages ?? "—";
+            document.getElementById("adminAccessStat").textContent =
+                data.users !== null && data.users !== undefined ? data.users + " utilisateurs" : "✓";
+        } catch (error) {
+            console.error("Stats admin :", error);
+            document.getElementById("adminAccessStat").textContent = "Erreur";
+        }
+    }
+
+
+    async function loadAdminUsers() {
+        const input = document.getElementById("adminUserSearch");
+        const resultBox = document.getElementById("adminUsersResult");
+        const search = input.value.trim();
+        resultBox.textContent = "Chargement...";
+
+        try {
+            const data = await adminApi("/api/admin/users?search=" + encodeURIComponent(search));
+            if (!data.users || data.users.length === 0) {
+                resultBox.textContent = "Aucun utilisateur trouvé.";
+                return;
+            }
+            resultBox.innerHTML = data.users.map(function (user) {
+                const email = escapeHtml(user.email || "Sans e-mail");
+                const created = user.created_at ? new Date(user.created_at).toLocaleString() : "—";
+                const last = user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : "Jamais";
+                return "<div style='padding:10px 0;border-bottom:1px solid #303540'><strong>" + email + "</strong><br><span class='admin-muted'>Créé : " + escapeHtml(created) + " · Dernière connexion : " + escapeHtml(last) + "</span></div>";
+            }).join("");
+        } catch (error) {
+            resultBox.textContent = error.message;
+        }
     }
 
 
@@ -3027,6 +3056,19 @@
     document
         .getElementById("adminRefreshStats")
         .addEventListener("click", refreshAdminStats);
+
+    document
+        .getElementById("adminUserSearchButton")
+        .addEventListener("click", loadAdminUsers);
+
+    document
+        .getElementById("adminUserSearch")
+        .addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                loadAdminUsers();
+            }
+        });
 
     document
         .getElementById("adminSystemRefresh")
@@ -4569,4 +4611,3 @@
 
 </body>
 </html>
-```
