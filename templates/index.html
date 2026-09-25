@@ -510,6 +510,57 @@
             margin-bottom: 15px;
         }
 
+        .legal-modal {
+            max-width: 760px;
+        }
+
+        .legal-content {
+            color: #d8dbe2;
+            font-size: 14px;
+            line-height: 1.65;
+        }
+
+        .legal-content h3 {
+            color: #fff;
+            margin: 20px 0 8px;
+            font-size: 16px;
+        }
+
+        .legal-content p {
+            margin: 8px 0;
+        }
+
+        .legal-content ul {
+            margin: 8px 0 8px 20px;
+            padding: 0;
+        }
+
+        .site-footer {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding: 8px 14px 12px;
+            color: #858b97;
+            font-size: 12px;
+            background: #0f1117;
+        }
+
+        .site-footer button {
+            border: none;
+            background: transparent;
+            color: #aeb4bf;
+            cursor: pointer;
+            padding: 2px 4px;
+            font-size: 12px;
+        }
+
+        .site-footer button:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
         /* =====================================================
            SETTINGS
         ===================================================== */
@@ -1174,6 +1225,12 @@
 
         </div>
 
+        <div class="site-footer">
+            <span>© 2026 BibleProIA</span>
+            <button type="button" id="privacyButton">Politique de confidentialité</button>
+            <button type="button" id="creditsButton">Crédits</button>
+        </div>
+
     </main>
 
 </div>
@@ -1280,6 +1337,14 @@
         <button
             type="button"
             class="modal-secondary"
+            id="forgotPasswordButton"
+        >
+            🔑 Mot de passe oublié ?
+        </button>
+
+        <button
+            type="button"
+            class="modal-secondary"
             id="openSignupFromLogin"
         >
             Créer un compte
@@ -1288,6 +1353,57 @@
         <div
             class="modal-status"
             id="loginStatus"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     MOT DE PASSE OUBLIÉ
+===================================================== -->
+
+<div class="modal-overlay" id="forgotPasswordModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <h2>Mot de passe oublié ?</h2>
+
+            <button
+                type="button"
+                class="close-modal"
+                id="forgotPasswordClose"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div class="modal-info">
+            Entre ton adresse e-mail et nous t'enverrons un lien pour réinitialiser ton mot de passe.
+        </div>
+
+        <input
+            type="email"
+            id="forgotPasswordEmail"
+            placeholder="Adresse e-mail"
+            autocomplete="email"
+        >
+
+        <button
+            type="button"
+            class="modal-primary"
+            id="sendForgotPassword"
+        >
+            Envoyer le lien
+        </button>
+
+        <div
+            class="modal-status"
+            id="forgotPasswordStatus"
         ></div>
 
     </div>
@@ -1399,18 +1515,108 @@
             id="accountModalEmail"
         ></div>
 
-        <button
-            type="button"
-            class="modal-primary"
-            id="changePasswordButton"
-        >
-            🔑 Changer le mot de passe
-        </button>
 
-        <div
-            class="modal-status"
-            id="passwordStatus"
-        ></div>
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     POLITIQUE DE CONFIDENTIALITÉ
+===================================================== -->
+
+<div class="modal-overlay" id="privacyModal">
+
+    <div class="modal legal-modal">
+
+        <div class="modal-header">
+            <h2>Politique de confidentialité</h2>
+            <button type="button" class="close-modal" id="privacyClose">×</button>
+        </div>
+
+        <div class="legal-content">
+            <p><strong>Dernière mise à jour : 24 septembre 2026</strong></p>
+
+            <h3>1. Responsable du traitement</h3>
+            <p>BibleProIA est un service développé et exploité par <strong>Parisien-Delattre Samuel</strong>.</p>
+            <p>Contact : <strong>samuelaprisiendelattre123@gmail.com</strong></p>
+
+            <h3>2. Données traitées</h3>
+            <p>Lorsque tu utilises BibleProIA avec un compte, le service peut traiter notamment ton adresse e-mail, les informations nécessaires à l'authentification et ton historique de conversations.</p>
+            <p>Les messages que tu envoies à BibleProIA peuvent également être transmis au service d'intelligence artificielle utilisé pour générer les réponses.</p>
+
+            <h3>3. Finalités</h3>
+            <ul>
+                <li>Créer et gérer ton compte ;</li>
+                <li>te permettre d'utiliser BibleProIA ;</li>
+                <li>enregistrer et retrouver ton historique de conversations lorsque tu es connecté ;</li>
+                <li>permettre la récupération de ton compte et la réinitialisation de ton mot de passe ;</li>
+                <li>assurer la sécurité et le bon fonctionnement du service.</li>
+            </ul>
+
+            <h3>4. Base légale</h3>
+            <p>Les traitements nécessaires à la création et à la gestion du compte reposent principalement sur l'exécution du service demandé par l'utilisateur. Les traitements nécessaires à la sécurité et au fonctionnement du service peuvent reposer sur l'intérêt légitime du responsable du traitement, lorsque cette base est applicable.</p>
+
+            <h3>5. Prestataires</h3>
+            <p>BibleProIA utilise des prestataires techniques pour l'hébergement, l'authentification, le stockage des données et la génération des réponses d'intelligence artificielle. Ces prestataires ne sont utilisés que dans la mesure nécessaire au fonctionnement des fonctionnalités concernées.</p>
+
+            <h3>6. Conservation</h3>
+            <p>Les données du compte et l'historique sont conservés aussi longtemps que le compte est actif, sauf obligation ou nécessité légitime de conservation plus longue. Tu peux demander la suppression de ton compte et de tes conversations à tout moment.</p>
+
+            <h3>7. Tes droits</h3>
+            <p>Conformément au RGPD, tu peux demander, selon les conditions applicables, l'accès à tes données, leur rectification, leur effacement, la limitation du traitement, ainsi que l'exercice de ton droit d'opposition ou de portabilité lorsque celui-ci s'applique.</p>
+            <p>Pour exercer tes droits, contacte : <strong>samuelaprisiendelattre123@gmail.com</strong>.</p>
+            <p>Tu peux également introduire une réclamation auprès de la <strong>CNIL</strong>.</p>
+
+            <h3>8. Suppression du compte</h3>
+            <p>Pour demander la suppression de ton compte et de ton historique, contacte l'adresse e-mail ci-dessus en indiquant l'adresse e-mail associée à ton compte. La demande sera traitée après vérification nécessaire.</p>
+
+            <h3>9. Sécurité</h3>
+            <p>BibleProIA met en œuvre des mesures techniques destinées à protéger les données contre les accès non autorisés et à sécuriser les échanges. Aucun service en ligne ne peut toutefois garantir une sécurité absolue.</p>
+
+            <h3>10. Évolution de la politique</h3>
+            <p>Cette politique peut être mise à jour lorsque le fonctionnement de BibleProIA ou les traitements de données évoluent. La date de dernière mise à jour est indiquée en haut de cette page.</p>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     CRÉDITS
+===================================================== -->
+
+<div class="modal-overlay" id="creditsModal">
+
+    <div class="modal legal-modal">
+
+        <div class="modal-header">
+            <h2>Crédits</h2>
+            <button type="button" class="close-modal" id="creditsClose">×</button>
+        </div>
+
+        <div class="legal-content">
+            <h3>BibleProIA</h3>
+            <p>Assistant d'étude biblique utilisant l'intelligence artificielle.</p>
+
+            <h3>Développement</h3>
+            <p>Projet développé par <strong>Parisien-Delattre Samuel</strong>.</p>
+
+            <h3>Technologies et services</h3>
+            <ul>
+                <li>HTML, CSS et JavaScript pour l'interface web ;</li>
+                <li>Python pour le backend ;</li>
+                <li>Supabase pour l'authentification et le stockage des données ;</li>
+                <li>Render pour l'hébergement ;</li>
+                <li>Google Gemini pour les fonctionnalités d'intelligence artificielle.</li>
+            </ul>
+
+            <h3>Site</h3>
+            <p><a href="https://bibleproia.fr" target="_blank" rel="noopener noreferrer" style="color:#fff;">https://bibleproia.fr</a></p>
+
+            <p>Merci aux projets, bibliothèques et services open source et tiers utilisés pour permettre le fonctionnement de BibleProIA.</p>
+        </div>
 
     </div>
 
@@ -1674,6 +1880,15 @@
     const loginModal =
         document.getElementById("loginModal");
 
+    const forgotPasswordModal =
+        document.getElementById("forgotPasswordModal");
+
+    const privacyModal =
+        document.getElementById("privacyModal");
+
+    const creditsModal =
+        document.getElementById("creditsModal");
+
     const signupModal =
         document.getElementById("signupModal");
 
@@ -1686,11 +1901,12 @@
     const loginStatus =
         document.getElementById("loginStatus");
 
+    const forgotPasswordStatus =
+        document.getElementById("forgotPasswordStatus");
+
     const signupStatus =
         document.getElementById("signupStatus");
 
-    const passwordStatus =
-        document.getElementById("passwordStatus");
 
     const newPasswordStatus =
         document.getElementById("newPasswordStatus");
@@ -2768,8 +2984,8 @@
                     .textContent =
                     currentUser.email || "";
 
-                passwordStatus.textContent =
-                    "";
+                /* Le changement de mot de passe se fait uniquement via
+                   le parcours « Mot de passe oublié ? ». */
 
                 openModal(
                     accountModal
@@ -2796,65 +3012,89 @@
 
 
     /* =====================================================
-       CHANGEMENT MOT DE PASSE
+       MOT DE PASSE OUBLIÉ
     ===================================================== */
 
     document
-        .getElementById(
-            "changePasswordButton"
-        )
+        .getElementById("forgotPasswordButton")
+        .addEventListener(
+            "click",
+            function () {
+
+                loginStatus.textContent = "";
+                forgotPasswordStatus.textContent = "";
+
+                document
+                    .getElementById("forgotPasswordEmail")
+                    .value = document
+                        .getElementById("loginEmail")
+                        .value
+                        .trim();
+
+                closeModal(loginModal);
+                openModal(forgotPasswordModal);
+            }
+        );
+
+
+    document
+        .getElementById("forgotPasswordClose")
+        .addEventListener(
+            "click",
+            function () {
+                closeModal(forgotPasswordModal);
+            }
+        );
+
+
+    document
+        .getElementById("sendForgotPassword")
         .addEventListener(
             "click",
             async function () {
 
-                if (!currentUser) {
+                const email =
+                    document
+                        .getElementById("forgotPasswordEmail")
+                        .value
+                        .trim();
+
+                forgotPasswordStatus.textContent = "";
+
+                if (!email) {
+                    forgotPasswordStatus.textContent =
+                        "Entre ton adresse e-mail.";
                     return;
                 }
 
                 const button =
-                    document
-                        .getElementById(
-                            "changePasswordButton"
-                        );
+                    document.getElementById("sendForgotPassword");
 
-                passwordStatus.style.color =
-                    "#9da3ae";
-
-                passwordStatus.textContent =
-                    t("sendingLink");
-
-                button.disabled =
-                    true;
+                button.disabled = true;
+                button.textContent = "Envoi...";
 
                 const { error } =
                     await supabaseClient.auth
                         .resetPasswordForEmail(
-                            currentUser.email,
+                            email,
                             {
                                 redirectTo:
-                                    window.location.origin
+                                    "https://bibleproia.fr/"
                             }
                         );
 
-                button.disabled =
-                    false;
+                button.disabled = false;
+                button.textContent = "Envoyer le lien";
 
                 if (error) {
-
-                    passwordStatus.style.color =
-                        "#ff9c9c";
-
-                    passwordStatus.textContent =
-                        error.message;
-
+                    forgotPasswordStatus.style.color = "#ff9c9c";
+                    forgotPasswordStatus.textContent = error.message;
                     return;
                 }
 
-                passwordStatus.style.color =
-                    "#9ee6a8";
-
-                passwordStatus.textContent =
-                    t("passwordSent");
+                forgotPasswordStatus.style.color = "#9ee6a8";
+                forgotPasswordStatus.textContent =
+                    "Si cette adresse correspond à un compte, un lien de réinitialisation a été envoyé.";
             }
         );
 
@@ -3754,9 +3994,41 @@
                 closeMobileMenu();
 
                 closeSettings();
+                closeModal(forgotPasswordModal);
+                closeModal(privacyModal);
+                closeModal(creditsModal);
             }
         }
     );
+
+
+    /* =====================================================
+       INFORMATIONS LÉGALES
+    ===================================================== */
+
+    document
+        .getElementById("privacyButton")
+        .addEventListener("click", function () {
+            openModal(privacyModal);
+        });
+
+    document
+        .getElementById("privacyClose")
+        .addEventListener("click", function () {
+            closeModal(privacyModal);
+        });
+
+    document
+        .getElementById("creditsButton")
+        .addEventListener("click", function () {
+            openModal(creditsModal);
+        });
+
+    document
+        .getElementById("creditsClose")
+        .addEventListener("click", function () {
+            closeModal(creditsModal);
+        });
 
 
     /* =====================================================
